@@ -1,0 +1,12 @@
+*.~sql
+archive/
+c/
+local/
+rdbms/
+test/
+tests/
+tmp/
+tpt/
+troubles1/
+afiedt.sql
+sqlplus_settings.sql

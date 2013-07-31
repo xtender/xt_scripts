@@ -1,0 +1,1 @@
+@tpt/snapper ash,ash1=plsql_object_id+plsql_subprogram_id+sql_id,ash2=sid+user+event+wait_class 5 1 all

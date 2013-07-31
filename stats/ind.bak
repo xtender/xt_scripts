@@ -1,0 +1,57 @@
+@inc/input_vars_init.sql
+
+column TAB_NAME                     for a30
+column IND_NAME                     for a30
+column PARTITION_NAME               for a20
+column PARTITION_POSITION           for 999
+column SUBPARTITION_NAME            for a20
+column SUBPARTITION_POSITION        for 999
+column OBJECT_TYPE                  for a12
+
+column BLEVEL                       for 99
+--column LEAF_BLOCKS                                        NUMBER
+--column DISTINCT_KEYS                                      NUMBER
+--column AVG_LEAF_BLOCKS_PER_KEY                            NUMBER
+--column AVG_DATA_BLOCKS_PER_KEY                            NUMBER
+--column CLUSTERING_FACTOR                                  NUMBER
+--column NUM_ROWS                                           NUMBER
+--column AVG_CACHED_BLOCKS                                  NUMBER
+--column AVG_CACHE_HIT_RATIO                                NUMBER
+--column SAMPLE_SIZE                                        NUMBER
+--column LAST_ANALYZED                                      DATE
+
+column GLOBAL_STATS                 for a3;
+column USER_STATS                   for a3;
+column STATTYPE_LOCKED              for a5;
+column STALE_STATS                  for a3;
+
+break on tab_name skip 1
+select 
+       TABLE_OWNER||'.'||TABLE_NAME  tab_name
+     , OWNER||'.'||INDEX_NAME        ind_name
+     , LAST_ANALYZED
+--     , PARTITION_NAME       
+     , PARTITION_POSITION   p_pos
+--     , SUBPARTITION_NAME    
+--     , SUBPARTITION_POSITION
+     , OBJECT_TYPE          
+     , BLEVEL                 
+     , LEAF_BLOCKS            
+     , DISTINCT_KEYS          
+     , AVG_LEAF_BLOCKS_PER_KEY avg_lf_pk
+     , AVG_DATA_BLOCKS_PER_KEY avg_dat_pk
+     , CLUSTERING_FACTOR       cl_factor
+     , NUM_ROWS               
+     , AVG_CACHED_BLOCKS       
+     , AVG_CACHE_HIT_RATIO    
+     , SAMPLE_SIZE            
+     , GLOBAL_STATS   
+     , USER_STATS     
+     , STATTYPE_LOCKED
+     , STALE_STATS    
+from dba_ind_statistics st 
+where 
+      st.index_name like upper('&1')
+  and st.owner      like nvl(upper('&2'),'%')
+/
+@inc/input_vars_undef.sql

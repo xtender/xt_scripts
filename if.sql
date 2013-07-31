@@ -1,0 +1,9 @@
+set timing off
+col do_next new_val do_next noprint;
+select 
+      case 
+         when &1 then 'inc/null'
+         else 'inc/comment_on'
+      end as do_next
+from dual;
+@&do_next

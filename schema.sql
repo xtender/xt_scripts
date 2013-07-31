@@ -1,0 +1,1 @@
+alter session set current_schema=&schema_name;

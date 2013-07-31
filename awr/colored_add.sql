@@ -1,0 +1,1 @@
+exec dbms_workload_repository.add_colored_sql('&1');

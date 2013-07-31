@@ -1,0 +1,1 @@
+@tpt/snapper ash=sid+sql_id+event+wait_class,stats,gather=sw 5 1 "select distinct hh.session_id from v$active_session_history hh where hh.sample_time>sysdate-10/24/60 and hh.sql_id='&1'"

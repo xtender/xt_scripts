@@ -1,0 +1,14 @@
+@inc/input_vars_init;
+prompt &_C_REVERSE ***                Show plan from awr              *** &_C_RESET
+prompt 
+prompt Syntax: @awr/plan sql_id [format [plan_hash_value] ]
+
+select * 
+from table(
+   dbms_xplan.display_awr(/*sql_id          => */ '&1'
+                         ,/*plan_hash_value => */ '&2'
+                         ,/*db_id           => */ '&DB_ID'
+                         ,/*format          => */  nvl('&2','advanced')
+                         )
+  );
+@inc/input_vars_undef;

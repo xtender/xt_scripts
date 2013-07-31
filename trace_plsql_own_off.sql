@@ -1,0 +1,1 @@
+alter session set events '10928 trace name context off';

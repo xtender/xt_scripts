@@ -1,0 +1,1 @@
+exec sys.dbms_system.set_ev(&SID, &serial, 10046, &Level, '');

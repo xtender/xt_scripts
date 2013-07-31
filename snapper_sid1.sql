@@ -1,0 +1,1 @@
+@tpt/snapper ash,ash1,ash2=sql_id+event+wait_class+p1_text+p1 &1 &2 &3

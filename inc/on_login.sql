@@ -11,10 +11,17 @@ set trim            on
 set trimspool       on
 set editfile        "afiedt.sql"
 
-DEFINE _EDITOR  ="c:\Program Files\SciTE\SciTE.exe"
-DEFINE _TEMPDIR ="c:/temp/sqlplus-tmp/"
-DEFINE _SPOOLS  ="c:/temp/spools/"
-DEFINE _START   ="start"
+-- windows: @inc/on_login_win
+-- DEFINE _EDITOR  ="c:\Program Files\SciTE\SciTE.exe"
+-- DEFINE _TEMPDIR ="c:/temp/sqlplus-tmp/"
+-- DEFINE _SPOOLS  ="c:/temp/spools/"
+-- DEFINE _START   ="start"
+-- *nix: @inc/on_login_nix
+-- DEFINE _EDITOR  ="/usr/bin/mcedit"
+-- DEFINE _TEMPDIR ="/tmp/sqlplus/tmp/"
+-- DEFINE _SPOOLS  ="/tmp/sqlplus/spools/"
+-- DEFINE _START   ="open"
+
 ------------------------------------------------
 --  Set default format for usual columns
 col owner       format a20

@@ -1,4 +1,0 @@
-create or replace package xt_pkg is
-  n number:=&1;
-end;
-/

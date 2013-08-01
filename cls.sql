@@ -1,3 +1,3 @@
+--host clear
 prompt &_CLS
-$clear
 clear scr

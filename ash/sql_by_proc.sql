@@ -1,4 +1,6 @@
 @inc/input_vars_init;
+prompt *** &_C_REVERSE Find queries by procedure_name. &_C_RESET
+prompt * Usage: @sql_by_proc object_mask [owner_mask]
 col sql_text     format a80;
 col top_sql_text format a80;
 with p as (

@@ -17,6 +17,6 @@ select
 from dba_source s
 where
     s.owner like upper('&_OWNER_MASK')
-&_IF_CASESENS   and s.text like '%&_CODE%'
-&_IF_INCASESENS and upper(s.text) like upper('%&_CODE%')
+&_IF_CASESENS   and s.text like '%'||q'[&_CODE]'||'%'
+&_IF_INCASESENS and upper(s.text) like upper('%'||q'[&_CODE]'||'%')
 /

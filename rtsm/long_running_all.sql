@@ -6,19 +6,17 @@ select case
        end show_text
 from dual;
 
-col sql_id   format a13 ;
-col sql_text format a120;
-col stext30  format a30 ;
-col ple      format a40 ;
-col plo      format a40 ;
-col module   format a12 ;
-col program  format a20 ;
-col username format a25 ;
+col sql_id   format a13
+col sql_text format a120
+col ple      format a40
+col plo      format a40
+col module   format a12
+col program  format a20
+col username format a25
 with rtsm as (
             select 
                r.sid
               ,r.sql_id
-              ,substr(regexp_replace(trim(r.sql_text),'\s{2,}',' '),1,30) stext30
               ,r.sql_exec_id
               ,r.sql_plan_hash_value        as plan_hv
               ,r.user#
@@ -47,22 +45,9 @@ with rtsm as (
               ,r.DISK_READS
 &_stext       ,r.sql_text
 &_stext       ,r.is_full_sqltext
-            from v$sql_monitor r
-                ,v$sqlarea s
-                ,v$sqlcommand c
+            from v$sql_monitor r 
             where r.status = 'EXECUTING'
-            and r.username!='DAEMON'
-            and s.sql_id=r.sql_id
-            and s.COMMAND_TYPE = c.COMMAND_TYPE
-            and c.COMMAND_NAME in ( 'CREATE TABLE'
-                                   ,'INSERT'
-                                   ,'SELECT'
-                                   ,'UPDATE'
-                                   ,'DELETE'
-                                   ,'ANALYZE TABLE'
-                                   ,'ANALYZE INDEX'
-                                   ,'ANALYZE CLUSTER'
-                                  )
+            and username!='DAEMON'
             order by r.ELAPSED_TIME desc
 )
 select *

@@ -94,7 +94,8 @@ BEGIN
                                   density      => n_density,
                                   nullcnt      => n_nullcnt,
                                   srec         => rec_srec,
-                                  avgclen      => n_avgclen
+                                  avgclen      => n_avgclen,
+                                  force        => true
                                   );
    ELSE
      raise_application_error(-20001,'!!!!! There are more than 1 bucket !!!!!!');

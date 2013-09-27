@@ -13,4 +13,4 @@ begin
    execute immediate v_text;
 end;
 /
-@xplan
+@xplan "+note"

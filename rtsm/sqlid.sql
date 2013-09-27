@@ -1,14 +1,3 @@
-prompt eXplain with Profile: Running DBMS_SQLTUNE.REPORT_SQL_MONITOR for SQL_ID='&1'....
-
-@inc/input_vars_init
-set termout off timing off ver off feed off head off lines 10000000 pagesize 0
-
-define MONSQLID=&1
-spool &_TEMPDIR\xprof_&MONSQLID..html
-
-@@xprof ALL ACTIVE SQL_ID "'&MONSQLID'"
-
-spool off
-host &_START &_TEMPDIR\xprof_&MONSQLID..html
-undef MONSQLID
-@inc/input_vars_undef
+col sqlmon format a240;
+select dbms_sqltune.report_sql_monitor(sql_id => '&1',report_level => 'ALL',type => 'TEXT') sqlmon from dual;
+col sqlmon clear;

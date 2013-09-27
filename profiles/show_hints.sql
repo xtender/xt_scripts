@@ -47,7 +47,7 @@ from dual;
 set termout on
 ---------------------------------------------------------------------------------------
 -- formatting:
-col profile_name    format a30
+col name            format a30
 col outline_hints   format a200
 break on name skip 1
 
@@ -73,8 +73,7 @@ break on name skip 1
        and p.signature = sd.signature 
        and p.category  = sd.category
        and p.obj_type  = sd.obj_type
-      order by    1
-         &_if_nq ,2
+      order by    p.name,x.n
    ;
    /* end when */
 
@@ -91,8 +90,7 @@ break on name skip 1
            upper(p.name) like '&_profile_name'
        and p.category  = h.category  
        and p.signature = h.signature
-      order by    1
-         &_if_nq ,2
+      order by    p.name,h.attr#
       ;
    /* end when */
 

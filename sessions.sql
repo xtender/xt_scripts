@@ -28,10 +28,17 @@ select
     --,s.row_wait_obj#
     ,(select object_name from dba_objects o where object_id=s.row_wait_obj#) objname
 from gv$session s 
-where s.status='ACTIVE' 
-  and s.wait_class!='Idle'
-  and s.sid!=sys_context('userenv','sid')
-  and (s.username like upper('%'||'&1'||'%') or upper(osuser) like upper('%'||'&1'||'%'))
+where 
+    (
+        s.status='ACTIVE' 
+    and s.wait_class!='Idle'
+    and s.sid!=sys_context('userenv','sid')
+    and nvl('&1','%') = '%'
+    )
+  or 
+    ('&1' is not null and s.username like upper('%'||'&1'||'%') )
+  or 
+    ('&1' is not null and upper(osuser) like upper('%'||'&1'||'%'))
 order by s.type,s.osuser
 /
 col username      clear;

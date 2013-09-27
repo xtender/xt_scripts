@@ -118,6 +118,7 @@ ORDER BY
     plan.plan_hash_value
   , plan.child_number
   , plan.id
+  , sq.samples desc
 /
 clear BREAKs
 @inc/input_vars_undef.sql;

@@ -40,6 +40,8 @@ set colsep " | "
                      tt.owner
                     ,tt.table_name
                     ,case when tt.LAST_ANALYZED is null then 'not analyzed' else 'stale' end stats_status
+                    ,tt.SEGMENT_CREATED  as seg
+                    ,(select sum(bytes) from dba_segments s where s.owner=tt.owner and s.segment_name=tt.table_name and s.segment_type like 'TABLE%') seg_size
                     ,ts.user_stats       as user_stats
                     ,tt.PARTITIONED      as part
                     ,tt.TEMPORARY        as tmp

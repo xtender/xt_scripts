@@ -1,45 +1,51 @@
-col structure format a15;
-col function  format a20;
-with t as (
-      select--+ leading(cur hp) use_nl(cur hp) no_merge
-            cur.INST_ID  as INST_ID 
-           ,cur.KGLNAOBJ as SQL_TEXT 
-           ,cur.KGLFNOBJ as SQL_FULLTEXT 
-           ,cur.KGLNAHSH as HASH_VALUE 
-           ,cur.KGLOBT03 as SQL_ID 
-           ,cur.KGLOBHD6 as HEAP_DESC 
-           ,RTRIM(SUBSTR(hp.KSMCHCOM 
-                        ,1 
-                        ,INSTR(hp.KSMCHCOM, ':', 1, 1) - 1) 
-                 ) 
-                  as STRUCTURE 
-           ,LTRIM(SUBSTR(hp.KSMCHCOM 
-                        ,(- (LENGTH(hp.KSMCHCOM) - 
-                         INSTR(hp.KSMCHCOM, ':', 1, 1))) 
-                        ,LENGTH(hp.KSMCHCOM) - 
-                        INSTR(hp.KSMCHCOM, ':', 1, 1) + 1) 
-                 ) 
-                  as FUNCTION 
-           ,hp.KSMCHCOM as CHUNK_COM 
-           ,hp.KSMCHPTR as CHUNK_PTR 
-           ,hp.KSMCHSIZ as CHUNK_SIZE 
-           ,hp.KSMCHCLS as ALLOC_CLASS 
-           ,hp.KSMCHTYP as CHUNK_TYPE 
-           ,hp.KSMCHPAR as SUBHEAP_DESC 
-      from
-            sys.x$kglcursor cur
-          , sys.x$ksmhp hp 
-      where
-            hp.KSMCHDS    = cur.KGLOBHD6 
-      and   cur.KGLHDADR != cur.KGLHDPAR 
-      and   cur.INST_ID   = USERENV('INSTANCE') 
-      and   cur.KGLOBT03  = '&1'
-)
-select heap_desc,structure,function,chunk_com,alloc_class,chunk_type,subheap_desc
-      ,sum(CHUNK_SIZE),count(*)
-from t
-group by HEAP_DESC,STRUCTURE,FUNCTION,CHUNK_COM,ALLOC_CLASS,CHUNK_TYPE,SUBHEAP_DESC
-order by sum(CHUNK_SIZE) desc
+@inc/input_vars_init.sql
+
+with xt_v$sql_shared_memory as (
+      SELECT *
+      FROM   (select/*+ ordered use_nl(h c) no_merge */
+               c.inst_id                                                                INST_ID    
+              ,kglnaobj                                                                 SQL_TEXT
+              ,kglfnobj                                                                 SQL_FULLTEXT  
+              ,kglnahsh                                                                 HASH_VALUE      
+              ,kglobt03                                                                 SQL_ID   
+              ,kglobhd6                                                                 HEAP_DESC
+              ,rtrim(substr(ksmchcom, 1, instr(ksmchcom, ' :', 1, 1)-1))               "STRUCTURE"
+              ,ltrim(substr(ksmchcom                                                    
+                           ,- (length(ksmchcom) - (instr(ksmchcom, ' :', 1, 1)))        
+                           ,(length(ksmchcom) -(instr(ksmchcom, ' :', 1, 1)) + 1)))     "FUNCTION"   
+              ,ksmchcom                                                                 CHUNK_COM   
+              ,ksmchptr                                                                 CHUNK_PTR  
+              ,ksmchsiz                                                                 CHUNK_SIZE 
+              ,ksmchcls                                                                 ALLOC_CLASS  
+              ,ksmchtyp                                                                 CHUNK_TYPE
+              ,ksmchpar                                                                 SUBHEAP_DESC
+              from   sys.vx$kglcursor c, sys.vx$ksmhp h
+              where  
+                     ksmchds   = kglobhd6
+              and    kglhdadr != kglhdpar
+              and    c.inst_id = USERENV('INSTANCE')
+             )
+) -------------
+select 
+--*
+--/*
+    chunk_com, 
+    alloc_class, 
+    sum(chunk_size) totsize,
+    count(*),
+    count (distinct chunk_size) diff_sizes,
+    round(avg(chunk_size)) avgsz,
+    min(chunk_size) minsz,
+    max(chunk_size) maxsz
+--*/
+from xt_v$sql_shared_memory sm
+where sm.sql_id='&1'
+--/*
+GROUP BY
+    chunk_com,
+    alloc_class
+ORDER BY
+    totsize DESC   
+--*/
 /
-col structure clear;
-col function  clear;
+@inc/input_vars_undef.sql

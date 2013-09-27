@@ -37,6 +37,7 @@ select
    ,ix.distinct_keys
    ,ix.blevel
    ,ix.leaf_blocks
+   ,ix.clustering_factor as cl_factor
    ,ix.last_analyzed
    ,ix.global_stats
    ,ix.user_stats

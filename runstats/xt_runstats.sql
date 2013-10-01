@@ -311,3 +311,5 @@ as
 
 end xt_runstats;
 /
+create public synonym xt_runstats for xt_runstats;
+grant execute on xt_runstats to public;

@@ -4,7 +4,7 @@ spool &_TEMPDIR./tmp.sql
 with t as
 ( select column_value s 
   from 
-  table(sys.odcivarchar2list('&1','&2','&3','&4','&5','&6','&7','&8','&9','&10','&11','&12'))
+  table(sys.odcivarchar2list('&1','&2','&3','&4','&5','&6','&7','&8','&9','&10','&11','&12','&13','&14','&15','&16','&17','&18','&19','&20'))
 )
 select 
    'DEF '|| regexp_substr(s, '^[^=]+') || ' = '|| regexp_substr(s, '[^=]+$')
@@ -13,5 +13,4 @@ where s like '%=%';
 spool off
 @&_TEMPDIR./tmp.sql
 set termout on head on feed on timing on;
-select * from dual;
 @inc/input_vars_undef;

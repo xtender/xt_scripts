@@ -43,8 +43,11 @@ where
  and h.owner       = c.owner(+)
  and h.table_name  = c.table_name(+)
  and h.column_name = c.column_name(+)
-order by 1,2,3,4;
-col column_name             clear
-col endpoint_actual_value   clear
-col data_type               clear
-@inc/input_vars_undef
+order by 1,2,3,4
+/
+col table_name              clear;
+col column_name             clear;
+col endpoint_actual_value   clear;
+col ep_value                clear;
+col data_type               clear;
+@inc/input_vars_undef;

@@ -1,3 +1,7 @@
+prompt Histograms by owner/table/column_name
+prompt Syntax 1: @histograms owner table column
+prompt Syntax 2: @histograms table column
+@inc/input_vars_init
 col tab                    format a35
 col col                    format a30
 col endpoint_value         format a39
@@ -226,6 +230,7 @@ begin
       xdetail:=xdetail||'<DETAIL '
                          ||' TAB="'||r.tab||'"'
                          ||' COL="'||r.col||'"'
+                         ||' ENDPOINT_NUMBER="'||to_char(r.ENDPOINT_NUMBER,'TM9')||'"'
                          ||' ENDPOINT_VALUE="'||to_char(r.endpoint_value,'TM9')||'"'
                          ||'> <EP1><![CDATA['||xml_enquote(v_ep1)||']]></EP1>"'
                       ||' </DETAIL>'||chr(10);
@@ -293,7 +298,8 @@ begin
                                columns 
                                  tab                    varchar2(100) path '@TAB'
                                 ,col                    varchar2(30)  path '@COL'
-                                ,endpoint_value         varchar2(30)        path '@ENDPOINT_VALUE'
+                                ,endpoint_number        number        path '@ENDPOINT_NUMBER'
+                                ,endpoint_value         varchar2(30)  path '@ENDPOINT_VALUE'
                                 ,ep1                    varchar2(100) path 'EP1'
                               )
           )
@@ -303,9 +309,17 @@ begin
           from xdata,xdetail
           where xdata.tab          = xdetail.tab
           and xdata.col            = xdetail.col
-          and xdata.endpoint_value = xdetail.endpoint_value
+          --and xdata.endpoint_value = xdetail.endpoint_value
+          and xdata.endpoint_number = xdetail.endpoint_number
           --where rownum<10
        ]' using xdata,xdetail;
 end;
 /
 print cur_out;
+col tab                    clear;
+col col                    clear;
+col endpoint_value         clear;
+col endpoint_actual_value  clear;
+col data_type              clear;
+
+@inc/input_vars_undef;

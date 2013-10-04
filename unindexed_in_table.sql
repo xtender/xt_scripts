@@ -6,7 +6,7 @@ col constraint_name   for a30
 col cols              for a60
 
 doc 
-Example: @unindex_in_table owner_mask table_mask
+Example: @unindex_in_table table_mask owner_mask
 #
 
 with 

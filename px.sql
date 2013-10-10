@@ -8,6 +8,7 @@ col event       format a60;
 select 
      decode(px.sid,px.qcsid,'QC','  ') F
     ,px.*
+    ,ss.sql_id
     ,ss.username
     ,ss.terminal
     ,ss.osuser

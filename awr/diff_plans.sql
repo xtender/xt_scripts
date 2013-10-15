@@ -32,6 +32,7 @@ declare
       is 
           select 
              sql_id
+            ,st.parsing_schema_name                                        parsing_schema
             ,plan_hash_value                                               plan_hv
             ,sum(st.elapsed_time_delta)                                    ela
             ,sum(st.executions_delta)                                      execs
@@ -56,6 +57,11 @@ declare
              and (p_since is null or sn.end_interval_time>=p_since)
           group by 
              st.sql_id
+            ,st.parsing_schema_name
+            ,st.plan_hash_value
+          order by 
+             st.sql_id
+            ,st.parsing_schema_name
             ,st.plan_hash_value;
     -- end cursor c_plans.
     ----------------------------
@@ -75,7 +81,8 @@ declare
        else
           v_snaps:='disabled';
        end if;
-       return      'plan_hash_value  : '|| to_char( p_info.plan_hv     ,'FMTM9')
+       return      'parsing_schema   : '||          p_info.parsing_schema
+        ||chr(10)||'plan_hash_value  : '|| to_char( p_info.plan_hv     ,'FMTM9')
         ||chr(10)||'sum(elapsed),secs: '|| to_char( p_info.ela/1e6     ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
         ||chr(10)||'executions       : '|| to_char( p_info.execs       ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
         ||chr(10)||'first_begin      : '|| to_char( p_info.first_begin ,'yyyy-mm-dd hh24:mi:ss')

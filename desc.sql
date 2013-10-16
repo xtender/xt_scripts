@@ -53,10 +53,10 @@ select case '&_type'
         when 'INDEX' then 'desc_index'
         else 'desc'
       end as "_EXEC"
-      ,case when '&_type' in ('INDEX','TABLE') then 'seg_size'
+      ,case when '&_type' in ('INDEX','TABLE') then 'seg'
             else 'inc/null'
        end "_show_seg"
-      ,case when '&_type'='TABLE' then 'get_indexes'
+      ,case when '&_type'='TABLE' then 'indexes'
             else 'inc/null'
        end "_get_indexes"
 from dual;

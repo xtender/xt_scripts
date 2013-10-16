@@ -94,7 +94,7 @@ declare
     end format_info;
     /** function get_plan */
     function get_plan( p_sqlid   in varchar2
-                     , p_table   in varchar2 default 'v$sql_plan_statistics'
+                     , p_table   in varchar2 default 'v$sql_plan'
                      , p_plan_hv in number   default null
                      , p_format  in varchar2 default 'ADVANCED'
                      , p_type    in varchar2 default 'HTML'

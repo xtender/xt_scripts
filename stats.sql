@@ -1,13 +1,23 @@
 prompt ***************************************
 prompt *****   Usage: @stats sid mask    *****
+@inc/input_vars_init;
 col value   format 999999999999999
 col name    format a40
+
+accept _sid -
+         default &1 -
+         prompt "Enter sid[&1]: ";
+accept _mask -
+         default "%&2%" -
+         prompt "Statname mask[%&2%]: ";
 select * 
 from v$sesstat st
     ,v$statname sn
-where sid=&1
+where sid=&_sid
 and st.statistic#=sn.STATISTIC#
-and sn.name like '%&2%'
+and sn.name like '&_mask'
 /
-col value clear
-col name clear
+col value   clear;
+col name    clear;
+undef _mask _sid;
+@inc/input_vars_undef;

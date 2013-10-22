@@ -33,14 +33,23 @@ col object_name format a30
 @inc/session_info
 @inc/version_info
 @inc/colors
+
+alter session set nls_numeric_characters=q'[.']';
+set sqlprompt "SQL> "
+def x=inc/comment_on
+col x new_value x noprint
+select 'inc/null' x from dual;
 ------------------------------------------------
 -- Show connect info and set sqlprompt
+@&x
+
 set termout on
+
 @inc/title "&db_name / &my_user / &db_host_name   SID=&my_sid    SERIAL#=&my_serial#     SPID=&my_spid     IS_DBA=&my_is_dba / INST_ID = &DB_INST_ID / DB_VERSION = &DB_VERSION"
 
 -- set sqlprompt "[ _USER'@'_CONNECT_IDENTIFIER _PRIVILEGE] >> "
 -- set sqlprompt "[ &my_user@&db_name ] >> "
-set sqlprompt "SQL> "
+
 
 PROMPT ======================================================================
 PROMPT =======  Connected to  &my_user@&db_name(&db_host_name)  
@@ -54,7 +63,8 @@ REM prompt =======  DB_HOST_NAME  &DB_HOST_NAME
 prompt =======  DB_VERSION    &DB_VERSION
 PROMPT ======================================================================
 
-alter session set nls_numeric_characters=q'[.']';
+/* end_if */
+set termout on
 
 ------------------------------------------------
 @inc/params_undef

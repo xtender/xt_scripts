@@ -1,3 +1,4 @@
+prompt &_S_REVERSE *** Find user from dba_users by user_id(number) *** &_C_RESET
 col username                format a30;
 col account_status          format a15;
 col external_name           format a15;
@@ -10,7 +11,7 @@ col password                    noprint
 col lock_date                   noprint;
 col expiry_date                 noprint;
 col editions_enabled            noprint;
-select * from dba_users where user_id=&1;
+select * from dba_users where user_id =&1;
 col username                    clear;
 col password                    clear;
 col account_status              clear;

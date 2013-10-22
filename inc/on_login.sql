@@ -54,6 +54,8 @@ REM prompt =======  DB_HOST_NAME  &DB_HOST_NAME
 prompt =======  DB_VERSION    &DB_VERSION
 PROMPT ======================================================================
 
+alter session set nls_numeric_characters=q'[.']';
+
 ------------------------------------------------
 @inc/params_undef
 --set timing on

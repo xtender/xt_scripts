@@ -1,11 +1,13 @@
-prompt eXplain with Profile: Running DBMS_SQLTUNE.REPORT_SQL_MONITOR for SQL_ID='&1'....
+prompt eXplain with Profile: Running DBMS_SQLTUNE.REPORT_SQL_MONITOR for SQL_ID='&1' and EXEC_ID='&2'....
 
-@sqlplus_store
-set termout off timing off ver off feed off head off lines 10000000 pagesize 0
+@inc/input_vars_init;
+define MON_SQLID   ="&1"
+define MON_SQLEXEC ="&2"
+define MON_FILE=&_TEMPDIR\xprof_&MON_SQLID._&MON_SQLEXEC..html
+spool &MON_FILE
 
-define MON_SQLID   =&1
-define MON_SQLEXEC =&2
-spool &_TEMPDIR\xprof_&MONSQLID..html
+set termout off timing off ver off feed off head off lines 32767 pagesize 0
+
 
 SELECT
 	DBMS_SQLTUNE.REPORT_SQL_MONITOR( 
@@ -16,5 +18,5 @@ SELECT
 FROM dual
 /
 spool off
-host &_START &_TEMPDIR\xprof_&MONSQLID..html
-@sqlplus_restore
+host &_START &MON_FILE
+@inc/input_vars_undef;

@@ -13,5 +13,6 @@ spool off
 col qtext   clear
 set termout on head on
 prompt ################################  Formatted query text #################################################;
-host perl inc/sql_format_standalone.pl tmp/to_format.sql
+--host perl inc/sql_format_standalone.pl tmp/to_format.sql
+host java -jar inc/SQLBeautifier.jar tmp/to_format.sql
 prompt ################################  Formatted query text End #############################################;

@@ -8,14 +8,14 @@ col _SEG_OWNER  new_value _SEG_OWNER    noprint;
 col _SEG_NAME   new_value _SEG_NAME     noprint;
 set termout off timing off
 select
-  decode(instr('&1','.')
+  upper(decode(instr('&1','.')
           ,0,nvl('&2','%')
           ,substr('&1',1,instr('&1','.')-1)
-        ) "_SEG_OWNER"
- ,decode(instr('&1','.')
+        )) "_SEG_OWNER"
+ ,upper(decode(instr('&1','.')
           ,0,'&1'
           ,substr('&1',instr('&1','.')+1)
-        ) "_SEG_NAME"
+        )) "_SEG_NAME"
 from dual;
 
 COL owner           FOR A15;
@@ -30,7 +30,8 @@ with sys_dba_segs
 (owner, segment_name, partition_name, segment_type, segment_type_id, segment_subtype, tablespace_id, tablespace_name, blocksize, header_file, header_block, bytes, blocks, extents, initial_extent, next_extent, min_extents, max_extents, max_size, retention, minretention, pct_increase, freelists, freelist_groups, relative_fno, buffer_pool_id, flash_cache, cell_flash_cache, segment_flags, segment_objd)
 as 
 (
-   select u.name, o.name, o.subname,
+   select
+          u.name, o.name, o.subname,
           so.object_type, s.type#,
           decode(bitand(s.spare1, 2097408), 2097152, 'SECUREFILE', 256, 'ASSM', 'MSSM'),
           ts.ts#, ts.name, ts.blocksize,
@@ -65,7 +66,7 @@ as
      and s.ts# = f.ts#
      and s.file# = f.relfile#
 )
-select 
+select
                            s.owner
                           ,s.segment_name
                           ,s.partition_name
@@ -76,8 +77,8 @@ select
                           ,s.tablespace_name
 from sys_dba_segs s
 where 
-     s.segment_name like upper('&_SEG_NAME')
- and s.owner        like upper('&_SEG_OWNER')
+     s.segment_name like '&_SEG_NAME'
+ and s.owner        like '&_SEG_OWNER'
 --  and segment_type_id = decode(upper('input_param'),'TABLE',5,'INDEX',6,'LOB',8)
 order by 1,2,3
 /

@@ -14,6 +14,5 @@ col qtext   clear
 set termout on head on
 prompt ################################  Formatted query text #################################################;
 --host perl inc/sql_format_standalone.pl &_SPOOLS/to_format.sql
---host java -jar inc/SQLBeautifier.jar &_SPOOLS/to_format.sql
-host "cat &_SPOOLS/to_format.sql | java -jar inc/SQLBeautifier.jar "
+host java -jar inc/SQLBeautifier.jar &_SPOOLS/to_format.sql
 prompt ################################  Formatted query text End #############################################;

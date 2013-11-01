@@ -1,7 +1,7 @@
 set termout off timing off head off
 col qtext format a1500
 prompt ################################  Original query text:  ################################################;
-spool tmp/to_format.sql
+spool &_SPOOLS/to_format.sql
 select
     coalesce(
         (select sql_fulltext from v$sqlarea a where a.sql_id='&1')
@@ -13,6 +13,6 @@ spool off
 col qtext   clear
 set termout on head on
 prompt ################################  Formatted query text #################################################;
---host perl inc/sql_format_standalone.pl tmp/to_format.sql
-host java -jar inc/SQLBeautifier.jar tmp/to_format.sql
+--host perl inc/sql_format_standalone.pl &_SPOOLS/to_format.sql
+host java -jar inc/SQLBeautifier.jar &_SPOOLS/to_format.sql
 prompt ################################  Formatted query text End #############################################;

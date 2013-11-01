@@ -59,7 +59,7 @@ break on name skip 1
          &_if_nq   ,decode(p.obj_type,1,'Profile',2,'Baseline',3,'Patch') type
          &_if_nq   ,x.n
          &_if_nq   ,x.hints as outline_hints 
-         &_if_q    ',q''['||x.hints||']' as outline_hints 
+         &_if_q    ',q''['||x.hints||']''' as outline_hints 
       from sys.sqlobj$ p
           ,sys.sqlobj$data sd
           ,xmltable('/outline_data/hint' 

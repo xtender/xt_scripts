@@ -4,6 +4,7 @@ col inst_id       format 9999;
 col osuser        format a18;
 col process       format a12;
 col program       format a20;
+col module        format a20;
 col terminal      format a20;
 col type          format a10;
 col sql_id        format a13;
@@ -19,6 +20,7 @@ select
     --,s.schemaname
     ,s.osuser,s.process
     ,substr(s.program,1,20) program
+    ,s.module
     ,s.terminal,s.type
 &_IF_ORA11_OR_HIGHER    ,s.SQL_EXEC_START
     ,s.sql_id
@@ -36,15 +38,20 @@ where
     and nvl('&1','%') = '%'
     )
   or 
-    ('&1' is not null and s.username like upper('%'||'&1'||'%') )
-  or 
-    ('&1' is not null and upper(osuser) like upper('%'||'&1'||'%'))
+    ('&1' is not null 
+      and (
+              s.username    like upper('%'||'&1'||'%') 
+           or upper(osuser) like upper('%'||'&1'||'%')
+           or upper(module) like upper('%'||'&1'||'%')
+           )
+    )
 order by s.type,s.osuser
 /
 col username      clear;
 col inst_id       clear;
 col osuser        clear;
 col process       clear;
+col module        clear;
 col program       clear;
 col terminal      clear;
 col type          clear;

@@ -11,8 +11,9 @@ def _IF_MORE=""
 def _IF_ONE="--"
 col _IF_ONE       new_value   _IF_ONE   noprint
 col _IF_MORE      new_value   _IF_MORE  noprint
-
-prompt Enabling PLSQL_TRACE(event 10928, level 1) for session (&_predicate):
+col sid           new_value   _sid
+col serial        new_value   _serial
+prompt Enabling PLSQL_TRACE(event 10938, level 165) for session (&_predicate):
 with u_info as (
    select
       s.USERNAME                                   as username
@@ -43,16 +44,16 @@ select
 from u_info
 where &_predicate
 ;
-
-prompt Spooling into &_SPOOLS./to_exec.sql
-prompt Will be executed:
-prompt 
-spool &_SPOOLS./to_exec.sql
-prompt &_IF_MORE prompt Too many rows. Please set params right. Exiting...
-prompt &_IF_ONE oradebug setospid &_trace_os_pid
-prompt &_IF_ONE oradebug EVENT 10928 trace name context forever, level 1
-spool off
-prompt /*############################*/
-prompt
-Pause If anything wrong press Ctrl+C. Otherwise press enter to enable plsql trace on session...
-@&_SPOOLS./to_exec.sql
+set serverout on;
+begin
+    dbms_system.set_ev(&_sid, &_serial, 10938, 165,'');
+    dbms_output.put_line('PLSQL_TRACE enabled for session: sid=&_sid serial=&_serial');
+end;
+/
+set serverout off;
+col username    clear;
+col serial      clear;
+col terminal    clear;
+col sid         clear;
+col ora_pid     clear;
+col os_pid      clear;

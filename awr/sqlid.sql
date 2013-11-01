@@ -45,44 +45,48 @@ col disk_reads_per_exec for a15
 
 with t as (
 select/*+ SQLSTAT */
-        st.snap_id
-       ,snaps.begin_interval_time time_start
-       ,snaps.end_interval_time time_end
-       ,st.dbid
-       ,st.plan_hash_value
-       ,to_char(decode(st.executions_delta,0,0,st.elapsed_time_delta / 1e6 / st.executions_delta),'9999.99990')  as elaexe
-       ,to_char(decode(st.executions_delta,0,0,st.cpu_time_delta     / 1e6 / st.executions_delta),'9999.99990')  as elacpu
-       ,to_char(decode(st.executions_delta,0,0,st.iowait_delta       / 1e6 / st.executions_delta),'9999.99990')  as ela_io
-       ,to_char(decode(st.executions_delta,0,0,st.apwait_delta       / 1e6 / st.executions_delta),'9999.99990')  as ela_app
-       ,to_char(decode(st.executions_delta,0,0,st.PLSEXEC_TIME_DELTA / 1e6 / st.executions_delta),'9999.99990')  as ela_pls
-       ,to_char(decode(st.executions_total,0,0,st.elapsed_time_total / 1e6 / st.executions_total),'9999.99990')  as all_elaexe
-       ,st.executions_delta                                                                                      as cnt 
-       ,st.executions_total                                                                                      as all_cnt
-       ,to_char(decode(st.executions_delta,0,0,st.buffer_gets_delta / st.executions_delta ),'99g999g999d90',q'[nls_numeric_characters='.`']') buf_gets_per_exec
-       ,to_char(decode(st.executions_delta,0,0,st.disk_reads_delta / st.executions_delta ),'999999.90')          as disk_reads_per_exec
-       ,st.module
-       ,st.action
-       ,st.sql_profile
-       ,st.parsing_schema_name
-       ,to_char(decode(st.executions_delta,0,0,st.fetches_delta                 /  st.executions_delta),'9999.0')  as fetches_delta
-       ,st.end_of_fetch_count_delta eofetch_delta
-       ,st.invalidations_delta
-       ,st.parse_calls_delta
-       ,to_char(decode(st.executions_delta,0,0,st.ROWS_PROCESSED_DELTA          /  st.executions_delta),'999999.0')  as ROWS_PROCESSED_D
-       ,to_char(decode(st.executions_delta,0,0,st.DIRECT_WRITES_DELTA           /  st.executions_delta),'999999.0')  as DIRECT_WRITES_D
-       ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_READ_REQUESTS_DELTA  /  st.executions_delta),'999999.0')  as PH_READ_REQS_D
-       ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_READ_BYTES_DELTA     /  st.executions_delta),'999999.0')  as PH_READ_BYTES_D
-       ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_REQUESTS_DELTA /  st.executions_delta),'999999.0')  as PH_WRITE_REQS_D
-       ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_BYTES_DELTA    /  st.executions_delta),'999999.0')  as PH_WRITE_BYTES_D
+                        st.snap_id
+                       ,st.instance_number                                                                                       as inst_id
+                       ,snaps.begin_interval_time                                                                                as time_start
+                       ,snaps.end_interval_time                                                                                  as time_end
+                       ,st.dbid
+                       ,st.plan_hash_value                                                                                       as plan_hv
+                       ,to_char(decode(st.executions_delta,0,0,st.elapsed_time_delta / 1e6 / st.executions_delta),'9999.99990')  as elaexe
+                       ,to_char(decode(st.executions_delta,0,0,st.cpu_time_delta     / 1e6 / st.executions_delta),'9999.99990')  as elacpu
+                       ,to_char(decode(st.executions_delta,0,0,st.iowait_delta       / 1e6 / st.executions_delta),'9999.99990')  as ela_io
+                       ,to_char(decode(st.executions_delta,0,0,st.apwait_delta       / 1e6 / st.executions_delta),'9999.99990')  as ela_app
+                       ,to_char(decode(st.executions_delta,0,0,st.PLSEXEC_TIME_DELTA / 1e6 / st.executions_delta),'9999.99990')  as ela_pls
+                       ,to_char(decode(st.executions_total,0,0,st.elapsed_time_total / 1e6 / st.executions_total),'9999.99990')  as all_elaexe
+                       ,st.executions_delta                                                                                      as cnt 
+                       ,st.executions_total                                                                                      as all_cnt
+                       ,to_char(decode(st.executions_delta,0,0,st.buffer_gets_delta / st.executions_delta ),'99g999g999d90',q'[nls_numeric_characters='.`']') buf_gets_per_exec
+                       ,to_char(decode(st.executions_delta,0,0,st.disk_reads_delta / st.executions_delta ),'999999.90')          as disk_reads_per_exec
+                       ,st.module
+                       ,st.action
+                       ,st.sql_profile
+                       ,st.parsing_schema_name
+                       ,to_char(decode(st.executions_delta,0,0,st.fetches_delta                 /  st.executions_delta),'9999.0')  as fetches_delta
+                       ,st.end_of_fetch_count_delta eofetch_delta
+                       ,st.invalidations_delta
+                       ,st.parse_calls_delta
+                       ,to_char(decode(st.executions_delta,0,0,st.ROWS_PROCESSED_DELTA          /  st.executions_delta),'999999.0')  as ROWS_PROCESSED_D
+                       ,to_char(decode(st.executions_delta,0,0,st.DIRECT_WRITES_DELTA           /  st.executions_delta),'999999.0')  as DIRECT_WRITES_D
+&_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_READ_REQUESTS_DELTA  /  st.executions_delta),'999999.0')  as PH_READ_REQS_D
+&_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_READ_BYTES_DELTA     /  st.executions_delta),'999999.0')  as PH_READ_BYTES_D
+&_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_REQUESTS_DELTA /  st.executions_delta),'999999.0')  as PH_WRITE_REQS_D
+&_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_BYTES_DELTA    /  st.executions_delta),'999999.0')  as PH_WRITE_BYTES_D
 
 from v$database db
     ,dba_hist_sqlstat st
     ,dba_hist_snapshot snaps
 where 
-      st.sql_id  = '&1'
-  and st.dbid    = db.dbid
-  and st.snap_id = snaps.snap_id
-  and st.executions_delta>0
+      snaps.dbid            = db.dbid
+  and snaps.instance_number = userenv('instance')
+  and st.sql_id             = '&1'
+  and st.dbid               = db.dbid
+  and st.snap_id            = snaps.snap_id
+--  and st.instance_number    = snaps.instance_number
+  and st.executions_delta   > 0
 order by 1 desc
 )
 select *

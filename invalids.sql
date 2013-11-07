@@ -7,6 +7,7 @@ select
     ,object_type
     ,object_name
     ,status 
+    ,o.timestamp
 from dba_objects o 
 where o.owner     like nvl(upper('&_owner'),'%')
   and object_type like nvl(upper('&_otype'),'%')

@@ -12,7 +12,8 @@ col UNIQ            format a4
 col SEG_BLOCKS      heading "Sum blocks"
 col SEG_SIZE        heading "Size(Mb)"
 col PARTITIONED     format a4 heading "Part"
-prompt &_C_RED. *** Size(MB) is valid only for 8kb blocksize. It is just multiplication of blocks*8kb
+prompt &_C_REVERSE. *** Indexes: table_name like '&1' and owner like nvl(upper('&2'),'%') &_C_RESET
+prompt &_C_RED. *** Size(MB) is valid only for 8kb blocksize. It is just multiplication of blocks*8kb &_C_RESET
 break  on owner skip 3 on table_name on index_name on VISIBLE on UNIQ on BLEVEL on NUM_ROWS on SEG_BLOCKS on SEG_SIZE -
        on LEAF_BLOCKS on DISTINCT_KEYS on CL_FACTOR on LAST_ANALYZED on PARTITIONED on created on last_ddl_time skip 1;
 

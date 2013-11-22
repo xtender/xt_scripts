@@ -4,6 +4,8 @@ prompt *** Usage: @src object_mask [owner_mask]
 col owner format a30;
 col text  format a80;
 set serverout on;
+declare 
+   prev_obj varchar2(92);
 begin
    for r in (  select src.owner,src.name,src.type,src.line,rtrim(src.text,chr(10)) text
                      ,max(length(owner))over() len_owner
@@ -22,6 +24,7 @@ begin
                 || ' | ' || to_char(r.line,'9999')
                 || ' | ' || rpad(r.text ,r.len_text )
       );
+      prev_obj:=r.owner||'.'||r.name||'.'||r.type;
    end loop;
 end;
 /

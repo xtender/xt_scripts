@@ -1,5 +1,10 @@
 prompt Usage: @unindexed_since_create 2013-01-01 OD
 @inc/input_vars_init.sql
+
+col _owner new_val _owner noprint;
+select nvl('&2','%') "_owner" from dual;
+col _owner clear;
+
 set head off feed off
 col OWNER           noprint
 col TABLE_NAME      noprint
@@ -13,7 +18,7 @@ col INDEXING        format a200
 
 spool &_SPOOLS./indexes_creation.sql
 
-@inc/unindexed_since.inc "&1" "&2"
+@inc/unindexed_since.inc "&1" "&_owner"
 spool off;
 ho &_START &_SPOOLS./indexes_creation.sql
 

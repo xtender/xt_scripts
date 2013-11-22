@@ -1,9 +1,32 @@
+set termout off
+col "_by_sid"  new_val _by_sid
+col "_by_mask" new_val _by_mask
+select 
+   case 
+      when translate('&1','x0123456789','x') is null and '&1' is not null 
+       then ''
+       else '--'
+   end "_by_sid"
+  ,case 
+      when translate('&1','x0123456789','x') is null and '&1' is not null 
+       then '--'
+       else ''
+   end "_by_mask"
+from dual;
+col by_sid  clear;
+col by_mask clear;
+set termout on
+
 col username    format  a20
 col inst        format  999
 col serial      format  a7
 col event       format  a30
 col wait_class  format  a15
 col osuser      format  a12
+col machine     format  a15
+col action      format  a15
+col client_info format  a15
+col client_ident format a15
 col program     format  a15
 col terminal    format  a20
 col module      format  a20
@@ -13,13 +36,17 @@ col pe_object   format  a35
 col po_object   format  a35
 col sql_exec_start  format a14 heading sql_started
 with u_info as (
-   select
+   select--+ leading(s p pe po) no_merge(s)
       s.USERNAME                                   as username
      ,s.inst_id                                    as inst
      ,s.sid                                        as sid
      ,trim(s.serial#                             ) as serial
      ,s.serial#                                    as serial#
      ,s.osuser                                     as osuser
+     ,s.machine                                    as machine
+     ,s.action
+     ,s.client_info
+     ,s.client_identifier
      ,s.event                                      as event
      ,s.wait_class                                 as wait_class
      ,s.TERMINAL                                   as terminal
@@ -43,7 +70,8 @@ with u_info as (
             ||nvl2(po.PROCEDURE_NAME,'.'||po.PROCEDURE_NAME,'')
            ,null
           )                                        as po_object
-   from gv$session  s
+   from 
+        gv$session s
        ,gv$process  p
        ,dba_procedures pe
        ,dba_procedures po
@@ -54,14 +82,19 @@ with u_info as (
     and pe.SUBPROGRAM_ID(+)    = s.PLSQL_ENTRY_SUBPROGRAM_ID
     and po.OBJECT_ID    (+)    = s.PLSQL_OBJECT_ID
     and po.SUBPROGRAM_ID(+)    = s.PLSQL_SUBPROGRAM_ID
-    and (s.sid = &1 or upper(s.osuser) like upper('%&1%') or s.username like upper('%&1%'))
+    &_by_sid.  and sid=&1
+    &_by_mask. and (upper(osuser) like upper('%&1%') or username like upper('%&1%'))
 )
-select 
+select--+ gather_plan_statistics
     username
     ,inst
     ,sid
     ,serial
     ,osuser
+    ,machine
+    ,action
+    ,client_info
+    ,client_identifier as client_ident
     ,event
     ,wait_class
 --    ,terminal
@@ -75,3 +108,20 @@ select
     ,po_object
 from u_info
 /
+col username    clear;
+col inst        clear;
+col serial      clear;
+col event       clear;
+col wait_class  clear;
+col osuser      clear;
+col machine     clear;
+col action      clear;
+col client_info clear
+col client_ident clear
+col program     clear;
+col terminal    clear;
+col module      clear;
+col os_pid      clear;
+col ora_pid     clear;
+col pe_object   clear;
+col po_object   clear;

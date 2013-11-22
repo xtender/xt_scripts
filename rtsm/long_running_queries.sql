@@ -69,7 +69,12 @@ select *
 from rtsm
 where rownum<=15
 /
-col sql_text clear
-col ple      clear
-col plo      clear
-col module   clear
+col show_text clear;
+col sql_id   clear;
+col sql_text clear;
+col stext30  clear;
+col ple      clear;
+col plo      clear;
+col module   clear;
+col program  clear;
+col username clear;

@@ -1,4 +1,4 @@
-set termout off timing off head off
+set termout off timing off head off feed off
 col qtext format a1500
 prompt ################################  Original query text:  ################################################;
 spool &_SPOOLS/to_format.sql

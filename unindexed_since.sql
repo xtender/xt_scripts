@@ -1,8 +1,11 @@
 prompt Usage: @unindexed_since 2013-01-01 OD
 
 @inc/input_vars_init.sql
+
 col _owner new_val _owner noprint;
 select nvl('&2','%') "_owner" from dual;
+col _owner clear;
+
 
 col OWNER           format a12
 col TABLE_NAME      format a30
@@ -13,7 +16,7 @@ col R_COLS          format a50
 col COLS            format a50
 col INDEXING        noprint
 
-@inc/unindexed_since.inc "&1" "&2"
+@inc/unindexed_since.inc "&1" "&_owner"
 
 col OWNER           clear
 col TABLE_NAME      clear

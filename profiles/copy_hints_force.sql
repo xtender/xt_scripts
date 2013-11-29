@@ -3,7 +3,6 @@ prompt &_C_RED * Enter % into desc sql_id if you want find by mask" &_C_RESET
 
 accept _src_profile prompt "Enter source profile: ";
 accept _dst_sql_id  prompt "Enter dest sql_id   : ";
-accept _dst_mask    prompt "Enter sql_text mask : ";
 accept _description prompt "Enter description   : ";
 
 set serverout on;
@@ -11,7 +10,6 @@ declare
     --------------------
     -- PARAMS:
     l_profile    varchar2(30)    := trim('&_src_profile');
-    l_mask       clob            := '&_dst_mask';
     l_manual     int             := 0; -- 1 - true, 0 - false
     l_dest_sqlid varchar2(13)    := trim('&_dst_sql_id');
     l_dest_text  varchar2(32767) := null;
@@ -23,37 +21,10 @@ declare
     --------------------
     cursor c_new_queries 
        is
-          with t as (
-               select 
-                  a.sql_id
-                 ,(select p.name from dba_sql_profiles p
-                   where  p.name = 'PROF_'||a.sql_id
-                  ) as prof_name
-                 ,sql_text
-                 ,sql_fulltext
-               from gv$sqlarea a
-                   ,(select s.sql_id,min(s.INST_ID) min_inst
-                     from gv$sql s
-                     where (s.sql_id = l_dest_sqlid or (l_dest_sqlid = '%' and s.sql_fulltext like l_mask escape '\'))
-                       and s.SQL_PROFILE is null
-                     group by s.sql_id
-                    ) x
-               where a.sql_id      = x.sql_id
-                 and a.INST_ID     = x.min_inst
-                 and a.sql_profile is null
-               union all
-               select 
-                  l_dest_sqlid
-                 ,null
-                 ,l_dest_text
-                 ,to_clob(l_dest_text)
-               from dual
-               where 1=l_manual
-         )
-         select sql_id, sql_fulltext
-         from t
-         where t.prof_name is null
-         order by sql_id
+          select s.sql_id,sql_fulltext
+          from gv$sql s
+          where s.sql_id = l_dest_sqlid 
+            and rownum=1
          ;
     -- end cursor
     --------------------------
@@ -106,7 +77,7 @@ declare
        dbms_output.put_line('----------');
     end show_hints;
 begin
-    -- vars:
+    -- заполняем исходные переменные:
     select instance_number 
           into l_instance
     from v$instance;

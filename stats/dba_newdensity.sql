@@ -1,6 +1,5 @@
-prompt Creating view dba_newdensity...;
 create or replace view dba_newdensity as
-with 
+with
  histgrm1 as (
    select--+ inline merge
       owner                 as owner
@@ -10,7 +9,7 @@ with
      ,endpoint_value        as ep_val
      ,endpoint_actual_value as ep_act_val
      ,lag(endpoint_number) over(partition by owner,table_name,column_name order by endpoint_number) as ep_num_prev
-   from 
+   from
       dba_histograms h1
 )
 ,histgrm2 as (
@@ -27,7 +26,7 @@ with
                , 1, 0
                , 1
              ) as popularity
-   from 
+   from
       histgrm1 h
 )
 ,hist_agg as (
@@ -38,7 +37,7 @@ with
       ,max(ep_num) as BktCnt -- should be equal to sum(bkt)
       ,sum(decode(popularity, 1, bkt,0))  as PopBktCnt
       ,sum(decode(popularity, 1, 1  ,0))  as PopValCnt
-      ,min(bkt) keep(dense_rank first order by decode(popularity,1,ep_num)) as bkt_least_popular_value
+      ,min(decode(popularity,1,bkt)) as bkt_least_popular_value
    from histgrm2
    group by owner,table_name,column_name
 )
@@ -51,23 +50,20 @@ select
    ,h.PopBktCnt
    ,h.PopValCnt
    ,st.num_distinct as NDV
+   ,h.bkt_least_popular_value
    ,st.density      as old_Density
    ,case st.histogram
       when 'FREQUENCY'
-           then   0.5 * bkt_least_popular_value / t.num_rows
+           then  0.5 * bkt_least_popular_value / BktCnt
       when 'HEIGHT BALANCED'
            then   ( 1 - PopBktCnt / BktCnt ) / (st.num_distinct - PopValCnt)
     end as newdensity
-from 
+from
      dba_tab_col_statistics st
     ,hist_agg   h
-    ,dba_tables t
-where 
+where
       st.owner       = h.owner
   and st.table_name  = h.table_name
-  and st.column_name = h.column_name
-  and st.owner       = t.owner
-  and st.table_name  = t.table_name
-;
-prompt Creating synonym dba_newdensity...;
+  and st.column_name = h.column_name;
 create public synonym dba_newdensity for dba_newdensity;
+grant select on dba_newdensity to public;

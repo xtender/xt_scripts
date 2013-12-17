@@ -52,6 +52,7 @@ with
       where executions_delta>0
         and dbid in (select/*+ precompute_subquery */ db.dbid from v$database db)
         and snap_id >= (select min(sn.snap_id) from dba_hist_snapshot sn where sn.end_interval_time>cast(trunc(sysdate) as timestamp))
+        and PARSING_SCHEMA_NAME!='ARCSHOW'
       group by sql_id
               ,plan_hash_value 
   )
@@ -75,14 +76,16 @@ with
       where executions_delta>0
         and dbid in (select/*+ precompute_subquery */ db.dbid from v$database db)
         and snap_id < (select min(sn.snap_id) from dba_hist_snapshot sn where sn.end_interval_time>cast(trunc(sysdate) as timestamp))
+        and snap_id >= (select max(sn.snap_id) from dba_hist_snapshot sn where sn.end_interval_time<cast(trunc(sysdate-10) as timestamp))
+        and PARSING_SCHEMA_NAME!='ARCSHOW'
       group by sql_id
               ,plan_hash_value 
   )
  ,sqls_filtr as (
       select l.sql_id
       from last_day l
+      where exists(select 1 from prev_data p where p.sql_id=l.sql_id and p.plan_hv!=l.plan_hv and p.elaexe*1.5<l.elaexe)
       group by l.sql_id
-      having exists(select 1 from prev_data p where p.sql_id=l.sql_id and p.elaexe<min(l.elaexe) and p.plan_hv!)
   )
 --------------------------------------
 select
@@ -93,7 +96,8 @@ select
   ,plsql_time     , java_time         , phy_r_reqs       , phy_r_bytes      , phy_w_reqs       , phy_w_bytes      , dir_writes
   ,opt_phy_reads
 from last_day l 
-where plans_cnt>1 or l.sql_id in (select f.sql_id from sqls_filtr f)
+where --plans_cnt>1 or 
+      l.sql_id in (select f.sql_id from sqls_filtr f)
 --------------------------------------
 union all
 --------------------------------------
@@ -107,5 +111,5 @@ select
 from prev_data p
 where
      p.sql_id in (select f.sql_id from sqls_filtr f)
-order by 2,3 nulls last
+order by 2,4,3 nulls last
 

@@ -8,13 +8,14 @@ from dual;
 col sql_text_trunc  format a100 word;
 col to_purge        format a30;
 SELECT/*+NOTME*/ 
-       sa.sql_id
+       inst_id
+     , sa.sql_id
      , sa.ADDRESS || ',' || sa.HASH_VALUE                           as to_purge
      , sa.plan_hash_value                                           as phv
      , sa.executions                                                as execs
      , sa.elapsed_time/1e6/decode(sa.executions,0,1,sa.executions)  as elaexe
      , substr(sql_text,1,300)                                       as sql_text_trunc
-FROM v$sql sa
+FROM gv$sql sa
 where
               upper(sa.sql_text) like upper('%&1%')
           and sql_text not like 'SELECT/*+NOTME*/%'

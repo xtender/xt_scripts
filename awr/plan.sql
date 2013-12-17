@@ -6,7 +6,7 @@ prompt Syntax: @awr/plan sql_id [format [plan_hash_value] ]
 select * 
 from table(
    dbms_xplan.display_awr(/*sql_id          => */ '&1'
-                         ,/*plan_hash_value => */ '&2'
+                         ,/*plan_hash_value => */ '&3'
                          ,/*db_id           => */ '&DB_ID'
                          ,/*format          => */  nvl('&2','advanced')
                          )

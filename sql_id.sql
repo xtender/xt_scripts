@@ -20,7 +20,7 @@ REM ################### PLSQL OBJECT ##############################
 REM ################### SQL_MONITOR ######################
 @if "'&_O_RELEASE'>'11.2'" then
    
-   @rtsm/execs "&_sql_id_1" "" "" "" "" ""
+   @rtsm/execs "&_sql_id_1" "and sql_exec_start>sysdate-2/24" "" "" "" ""
    
 /* end if */
 

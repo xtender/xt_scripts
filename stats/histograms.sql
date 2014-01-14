@@ -2,6 +2,7 @@ prompt Histograms by owner/table/column_name
 prompt Syntax 1: @histograms owner table column
 prompt Syntax 2: @histograms table column
 @inc/input_vars_init
+col owner                   format a25
 col table_name              format a30
 col column_name             format a30
 col endpoint_actual_value   format a50
@@ -45,6 +46,7 @@ where
  and h.column_name = c.column_name(+)
 order by 1,2,3,4
 /
+col owner                   clear;
 col table_name              clear;
 col column_name             clear;
 col endpoint_actual_value   clear;

@@ -12,8 +12,9 @@ sub out_xml{
     my $data = shift;
     my $doc = XML::LibXML::Document->new('1.0', 'utf-8');
     my $root = $doc->createElement("SQL");
-    $root->setAttribute('sql_id'     => $data->{sql_id});
-    $root->setAttribute('trace_file' => $data->{trace_file});
+    $root->setAttribute('sql_id'     => $data->{sql_id}     );
+    $root->setAttribute('trace_file' => $data->{trace_file} );
+    $root->setAttribute('sql_text'   => $data->{sql_text}   );
     
     my $xbindsets = $doc->createElement('bindsets');
     
@@ -22,15 +23,9 @@ sub out_xml{
         
         for my $bind (sort keys %{$bindset->{values}}) {
             my $xbind = $doc->createElement('bind');
-            $xbind->setAttribute('name'=>$bind);
-            
-            my $xvalue = $doc->createElement('value');
-            $xvalue->appendTextNode($bindset->{values}->{$bind}->{value});
-            my $xdtype = $doc->createElement('datatype');
-            $xdtype->appendTextNode($bindset->{values}->{$bind}->{datatype});
-            
-            $xbind->appendChild($xvalue);
-            $xbind->appendChild($xdtype);
+            $xbind->setAttribute('name'     => $bind);
+            $xbind->setAttribute('datatype' => $bindset->{values}->{$bind}->{datatype});
+            $xbind->appendTextNode($bindset->{values}->{$bind}->{value});
             
             $xbindset->appendChild($xbind);
         }
@@ -75,7 +70,17 @@ sub output{
 
 sub debug{
     print @_ if DEBUG
+}
+
+sub get_sql_text{
+    my $fin=shift;
+    my $sql_text;
+    while(<$fin>){
+        last if /END OF STMT/;
+        $sql_text.=$_;
     }
+    return $sql_text;
+}
 
 sub parse{
 
@@ -88,19 +93,21 @@ sub parse{
     debug "SQL_ID = $sqlid\n";
     
     my %cursors;
+    my %sql_texts;
     my $cur;
     my $n=-1;
     my $bind_num;
     my $dty;
+    my $fin;
     # get all cursors:
-    open(FIN, "<", $fname) || die "@!";
+    open($fin, "<", $fname) || die "@!";
     L0:
-    while (<FIN>){
+    while (<$fin>){
         my $current = $_;
         
         if(/PARSING IN CURSOR #(\d+) .* sqlid='([^']+)'/){
-            $cursors{$1}=$2;
-            #debug($_);
+            $cursors{$1} = $2;
+            $sql_texts{$2} = get_sql_text($fin) if !$sql_texts{$2};
             next L0;
         }
         #elsif(/CLOSE #(\d+):/){
@@ -111,12 +118,13 @@ sub parse{
             $cur = $1;
             if($cursors{$cur} eq $sqlid) {
                 $n++;
+                $res->{sql_text} = $sql_texts{$cursors{$cur}} if $n==0;
                 $res->{binds}[$n]->{cur}=$cur;
                 #debug "\ncursor = $cur";
                 debug("\n");
                 BINDS:
                 while(1){
-                    $b=<FIN>;
+                    $b=<$fin>;
                     if($b!~/^ .*/){
                         last BINDS;
                     }elsif($b=~/^ (Bind#\d+)/){
@@ -133,10 +141,9 @@ sub parse{
             }
         }
     }
-    close FIN;
+    close $fin;
     return $res
 }
-
 
 # main:
 my ($p_tracefile,$p_sqlid,$p_format) = @ARGV;

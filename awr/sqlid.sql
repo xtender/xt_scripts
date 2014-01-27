@@ -22,7 +22,7 @@ col sql_child_number    head CH#        for 999
 col SQL_PROFILE         head PROFILE    for a19
 col time_start          for a24
 col time_end            for a24
-col module              for a18
+col module              for a30
 col action              for a18
 col parsing_schema_name for a18
 col elaexe              for a13

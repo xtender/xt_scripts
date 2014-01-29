@@ -1,7 +1,7 @@
 /*
-alter session set db_file_multiblock_read_count=512;
-create index SYS.IX_WRH$_SQL_PLAN_OBJ# on SYS.WRH$_SQL_PLAN(OBJECT#)                       tablespace ix_users2 online;
-create index SYS.IX_WRH$_SQL_PLAN_OWNER_OBJ on SYS.WRH$_SQL_PLAN(OBJECT_OWNER,OBJECT_NAME) tablespace ix_users2 online;
+alter session set db_file_multiblock_read_count=256;
+create index SYS.IX_WRH$_SQL_PLAN_OBJ# on SYS.WRH$_SQL_PLAN(OBJECT#)                       tablespace ... online;
+create index SYS.IX_WRH$_SQL_PLAN_OWNER_OBJ on SYS.WRH$_SQL_PLAN(OBJECT_OWNER,OBJECT_NAME) tablespace ... online;
 */
 with t_indexes as (
      select--+ materialize
@@ -12,7 +12,7 @@ with t_indexes as (
          ,dba_objects o
          ,dba_segments sg
      where  
-           i.owner         = 'OD'
+           i.owner         = '&tab_owner'
        and i.table_name    = '&tab_name'
        and i.table_owner   = 'OD'
        and i.owner         = o.owner

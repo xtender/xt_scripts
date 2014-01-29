@@ -1,4 +1,4 @@
-prompt Usage: @unindexed_since_create 2013-01-01 OD
+prompt Usage: @unindexed_since_create 2013-01-01 [owner]
 @inc/input_vars_init.sql
 
 col _owner new_val _owner noprint;

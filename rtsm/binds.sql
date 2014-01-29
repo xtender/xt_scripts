@@ -1,5 +1,6 @@
 @inc/input_vars_init;
 PROMPT *            &_C_RED *** Binds values from Real-Time SQL Monitor *** &_C_RESET;
+PROMPT * Usage @rtsm/binds sql_id [sql_exec_id] [status_mask]
 
 col USERNAME    format a25;
 col status      format a15;

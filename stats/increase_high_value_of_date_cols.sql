@@ -1,6 +1,6 @@
 accept tab_owner - 
-		prompt 'Enter value for tab_owner[OD]: ' -
-		default 'OD';
+		prompt 'Enter value for tab_owner[&_USER]: ' -
+		default '&_USER';
 
 accept tab_name - 
 		prompt 'Enter value for tab_name: ';

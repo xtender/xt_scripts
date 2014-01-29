@@ -20,12 +20,12 @@ set embedded OFF
 set escape OFF
 set escchar OFF
 set exitcommit ON
-set feedback 6
+set feedback OFF
 set flagger OFF
 set flush ON
 set heading ON
 set headsep "|"
-set linesize 1500
+set linesize 999
 set logsource ""
 set long 10000000
 set longchunksize 10000000
@@ -54,7 +54,7 @@ set suffix "sql"
 set tab OFF
 set termout ON
 set time OFF
-set timing ON
+set timing OFF
 set trimout ON
 set trimspool ON
 set underline "-"

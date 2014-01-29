@@ -1,4 +1,4 @@
-prompt Usage: @unindexed_since 2013-01-01 OD
+prompt * Usage: @unindexed_since 2013-01-01 [owner]
 
 @inc/input_vars_init.sql
 

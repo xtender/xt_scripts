@@ -1,3 +1,11 @@
+accept tab_owner - 
+       prompt 'Owner[&_USER]: ' -
+       default '&_USER';
+
+accept tab_name - 
+       prompt 'Table: ';
+
+
 set serverout on;
 declare
 
@@ -96,8 +104,8 @@ declare
    end print_unindexed_by_table;
 begin
   print_unindexed_by_table(
-    nvl(upper('&table_owner'),'OD')
-   ,upper('&table_name')
+    upper('&tab_owner')
+   ,upper('&tab_name')
   );
 end;
 /

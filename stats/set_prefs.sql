@@ -1,6 +1,6 @@
 accept tab_owner - 
-       prompt 'Owner: ' -
-       default 'OD';
+       prompt 'Owner[&_USER]: ' -
+       default '&_USER';
 
 accept tab_name - 
        prompt 'Table: ';

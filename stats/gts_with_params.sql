@@ -1,6 +1,6 @@
 accept tab_owner - 
-       prompt 'Enter value for owner mask[OD]: ' -
-       default 'OD';
+       prompt 'Enter value for owner mask[&_USER]: ' -
+       default '&_USER';
 
 accept tab_name - 
        prompt 'Enter value for table mask: ';

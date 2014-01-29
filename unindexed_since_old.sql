@@ -30,7 +30,7 @@ with
             c.last_change      > date'&1'
         and c.constraint_type  = 'R'
         and c.status           = 'ENABLED'
-        and c.owner            = 'OD'
+        and c.owner            = nvl('&2','&_USER')
         and cc.owner           = c.owner
         and cc.table_name      = c.table_name
         and cc.constraint_name = c.constraint_name

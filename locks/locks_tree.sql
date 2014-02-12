@@ -39,6 +39,7 @@ with
    select--+ materialize no_merge use_hash(ss.w ss.e ss.s)
           ss.sid
          ,ss.serial#
+         ,ss.inst_id
          ,ss.username
          ,ss.terminal
          ,ss.osuser
@@ -57,9 +58,10 @@ with
          ,ss.wait_time
          ,ss.seconds_in_wait
          ,ss.blocking_session
+         ,ss.blocking_instance
          ,ss.blocking_session_status
          ,rownum rn
-   from v$session ss
+   from gv$session ss
    where 1=1
  )
 ,lock_tree as (
@@ -86,7 +88,7 @@ with
          ,CONNECT_BY_ISLEAF leaf
    from   v#session s
    start with s.blocking_session_status = 'VALID'
-   connect by nocycle prior s.BLOCKING_SESSION = s.sid
+   connect by nocycle prior s.BLOCKING_SESSION = s.sid and prior s.BLOCKING_INSTANCE = s.INST_ID
 )
 select --+ no_merge(lt)
              level lev

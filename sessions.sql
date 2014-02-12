@@ -43,6 +43,7 @@ where
               s.username    like upper('%'||'&1'||'%') 
            or upper(osuser) like upper('%'||'&1'||'%')
            or upper(module) like upper('%'||'&1'||'%')
+           or sql_id        like      ('%'||'&1'||'%')
            )
     )
 order by s.type,s.osuser

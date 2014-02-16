@@ -1,7 +1,7 @@
 def _mask='([, ]*\:"SYS_B_\d+")+';
-def _JARO_WINKLER_DISTANCE=70;
-accept _with_select      prompt "Enter sql_id: " default 'n';
+
 accept _with_select      prompt "Consider select-list? [Y/N, default=N]: " default 'n';
+accept _min_distance     prompt "Enter minimal Jaro-Winkler distance [90-100, default=99]: " default 99;
        
 col prf_name             format a20;
 col prf_description      format a20 word;
@@ -14,10 +14,6 @@ col prf_sql_text         format a80 word;
 
 col elaexe               format 9999.9990;
 
-
-
-
-
 with
  sqlarea_norm as (
      select
@@ -26,19 +22,24 @@ with
         --,sql_fulltext as sql_text
         ,force_matching_signature as sql_signature
         ,case 
-             when sql_fulltext like '%:"SYS_B_%' 
-                then cast(substrb(
-                                regexp_replace(sql_fulltext,'&_mask',':"SYS_B_XXX"') 
-                               ,1,4000) as varchar2(4000))
-             else cast(substrb(sql_fulltext,1,4000) as varchar2(4000))
+            when length(sql_text)<length(sql_fulltext) 
+               then
+                  case 
+                     when sql_fulltext like '%:"SYS_B_%' 
+                        then cast(substrb(
+                                        regexp_replace(sql_fulltext,'&_mask',':"SYS_B_XXX"') 
+                                       ,1,4000) as varchar2(4000))
+                     else cast(substrb(sql_fulltext,1,4000) as varchar2(4000))
+                  end
+            else
+                  case 
+                     when sql_text like '%:"SYS_B_%'
+                        then regexp_replace(sql_text,'&_mask',':"SYS_B_XXX"')
+                     else sql_text
+                  end
          end
             as sql_text_normalized
-     from 
-         (
-          select sql_id, sql_profile, force_matching_signature, cast(substrb(sql_fulltext,1,4000)as varchar2(4000)) sql_fulltext from v$sqlarea aa where aa.sql_id = '&_sql_id' and rownum=1
-          union
-          select sql_id, null       ,null                      , cast(substrb(sql_text,1,4000)as varchar2(4000)) from dba_hist_sqltext st where st.sql_id = '&_sql_id' and st.dbid = (select dbid from v$database) and rownum=1
-         )
+     from v$sqlarea aa
 )
 ,profiles_norm as (
      select 
@@ -106,7 +107,7 @@ with
       select t.*
             ,row_number()over(order by jaro_winkler desc) rn
       from t
-      where jaro_winkler>&_JARO_WINKLER_DISTANCE
+      where jaro_winkler>&_min_distance
 )
 select--+ leading(t1)
        t1.sql_id

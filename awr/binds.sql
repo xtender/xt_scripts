@@ -25,8 +25,12 @@ select--+ leading(snaps b) use_nl(snaps b)
       ,b.last_captured
       ,b.position
       ,b.name
-      ,b.value_string
       ,b.datatype_string
+&_IF_LOWER_THAN_ORA11       ,decode(b.datatype_string
+&_IF_LOWER_THAN_ORA11               ,'TIMESTAMP',to_char(anydata.accesstimestamp(value_anydata))
+&_IF_LOWER_THAN_ORA11               ,b.value_string
+&_IF_LOWER_THAN_ORA11               ) as value_string /*  Bug 6156624 */
+&_IF_ORA112_OR_HIGHER       ,b.value_string
 from snaps s
     ,dba_hist_sqlbind b
 where sql_id            = '&1'

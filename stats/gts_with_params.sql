@@ -38,6 +38,7 @@ begin
                   force => true 
                 , ownname => r.owner
                 , tabname => r.table_name
+                , block_sample     => true
                 , cascade          => &&_CASCADE
                 , degree           => '&&_DEGREE'
                 , estimate_percent => '&&_ESTIMATE_PERCENT'

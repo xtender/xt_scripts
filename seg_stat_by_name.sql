@@ -1,8 +1,4 @@
-set timing off
-col dbid new_val dbid noprint
-select d.dbid from v$database d
-/
-select 
+select--+ leading(s o ss sn)
     to_char(sn.begin_interval_time,'yyyy-mm-dd hh24:"00"') beg_time
    ,to_char(sn.end_interval_time,'yyyy-mm-dd hh24:"00"')   end_time
    ,ss.snap_id
@@ -29,18 +25,18 @@ from dba_segments s
           and s.segment_name = o.OBJECT_NAME
           and o.OBJECT_TYPE in ('TABLE','INDEX')
      join dba_hist_seg_stat ss
-          on  ss.dbid    = &dbid -- (select d.dbid from v$database d) -- 473009168
+          on  ss.dbid       = &db_id -- (select d.dbid from v$database d)
           and ss.obj#       = o.OBJECT_ID
           and ss.dataobj#   = o.DATA_OBJECT_ID
-          and ss.ts#        = 5
+          and ss.ts#        = s.ts#
           and ss.instance_number = 1
      join dba_hist_snapshot sn
           on  ss.snap_id    = sn.snap_id
-          and sn.dbid       = &dbid
+          and sn.dbid       = &db_id
           and sn.instance_number = sys_context('USERENV','INSTANCE')
 where 
-      s.owner        		like nvl('&owner','%')
-  and s.segment_name 		like nvl('&name','%')
+      s.owner        		= upper('&owner')
+  and s.segment_name 		= upper('&name')
   and s.segment_type 		in ('TABLE','INDEX')
 order by ss.snap_id desc
 /

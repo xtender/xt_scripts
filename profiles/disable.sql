@@ -1,0 +1,1 @@
+exec DBMS_SQLTUNE.ALTER_SQL_PROFILE('&prof_name','STATUS','DISABLED');

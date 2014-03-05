@@ -19,8 +19,13 @@ select distinct
       ,bc.last_captured
       ,bc.position
       ,bc.name
-      ,bc.value_string
       ,bc.datatype_string
+&_IF_LOWER_THAN_ORA11       ,decode(bc.datatype_string
+&_IF_LOWER_THAN_ORA11              ,'TIMESTAMP',to_char(anydata.accesstimestamp(value_anydata))
+&_IF_LOWER_THAN_ORA11              ,bc.value_string /*  Bug 6156624 */
+&_IF_LOWER_THAN_ORA11       ) 
+&_IF_ORA112_OR_HIGHER       ,bc.value_string
+                            as value_string
 from v$sql_bind_capture bc
 where bc.sql_id       = '&_SQL_ID'
   and bc.dup_position is null

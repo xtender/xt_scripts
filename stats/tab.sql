@@ -103,11 +103,11 @@ declare
    is
      res varchar2(4000);
    begin
-      res := case p_datatype
-           when 'VARCHAR2' then raw_to_varchar2(p_value)
-           when 'DATE'     then to_char(raw_to_date(p_value),'yyyy-mm-dd hh24:mi:ss')
-           when 'NUMBER'   then raw_to_num(p_value)
-           when 'FLOAT'    then raw_to_num(p_value)
+      res := case 
+           when p_datatype in ('CHAR','VARCHAR2')                       then raw_to_varchar2(p_value)
+           when p_datatype = 'DATE' or p_datatype like 'TIMESTAMP%'     then to_char(raw_to_date(p_value),'yyyy-mm-dd hh24:mi:ss')
+           when p_datatype = 'NUMBER'                                   then raw_to_num(p_value)
+           when p_datatype = 'FLOAT'                                    then raw_to_num(p_value)
            else 'tp='||p_datatype
         end;
       return nvl(res,'NULL');

@@ -33,3 +33,14 @@ create or replace force view vx$kspvld_values
        as select * from x$kspvld_values;
 create public synonym vx$kspvld_values  for sys.vx$kspvld_values;
 grant select on vx$kspvld_values to DEVELOPER_AWR;
+
+/* latchprofx */
+create or replace force view vx$ksllw 
+       as select * from x$ksllw;
+create public synonym vx$ksllw  for sys.vx$ksllw;
+grant select on vx$ksllw to DEVELOPER_AWR;
+
+create or replace force view vx$ksuprlat
+       as select * from x$ksuprlat;
+create public synonym vx$ksuprlat  for sys.vx$ksuprlat;
+grant select on vx$ksuprlat to DEVELOPER_AWR;

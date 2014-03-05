@@ -4,6 +4,7 @@ column sql_id   format a13      ;
 column program  format a20      ;
 column sql      format a80      ;
 column event    format a40      ;
+column action   format a30      ;
 column ospid    format a9       ;
 column obj_name format a40      ;
 select
@@ -13,6 +14,7 @@ select
   ,p.spid as ospid
   ,ss.program
   ,event
+  ,action
   ,sql_id
   ,(select substr(sql_text,1,60) from v$sql s where s.sql_id=ss.sql_id and rownum=1) sql
   ,ss.row_wait_obj#
@@ -32,5 +34,6 @@ column serial#  clear;
 column program  clear;
 column sql      clear;
 column event    clear;
+column action   clear;
 column ospid    clear;
 column obj_name clear;

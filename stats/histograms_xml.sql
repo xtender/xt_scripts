@@ -4,7 +4,8 @@ prompt Syntax 2: @histograms table column
 @inc/input_vars_init
 col tab                    format a35
 col col                    format a30
---col endpoint_value         format a39
+col endpoint_value         format a39
+col ep1                    format a39
 col endpoint_actual_value  format a50
 col data_type              format a20
 var cur_out refcursor;
@@ -326,7 +327,8 @@ end;
 print cur_out;
 col tab                    clear;
 col col                    clear;
---col endpoint_value         clear;
+col endpoint_value         clear;
+col ep1                    clear;
 col endpoint_actual_value  clear;
 col data_type              clear;
 

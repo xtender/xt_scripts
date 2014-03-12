@@ -26,7 +26,10 @@
 -- Init:
 @inc/input_vars_init;
 set feedback off ver off timing off
-prompt Show SQL profile hints:
+prompt &_C_RED *** Show SQL profile hints: &_C_RESET
+prompt * Usage: @profiles/show_hints [prof_name] [+q|-q]
+prompt * +q - show hints only
+
 ---------------------------------------------------------------------------------------
 -- extra params:
 set termout off

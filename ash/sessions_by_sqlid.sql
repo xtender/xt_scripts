@@ -18,7 +18,7 @@ with ash_pre as (
             ,h.blocking_session
             ,h.user_id
             ,h.sql_id
-            ,h.top_level_sql_id
+&_IF_ORA112_OR_HIGHER            ,h.top_level_sql_id
             ,h.plsql_entry_object_id ple
             ,h.plsql_object_id       plo
             ,h.event
@@ -44,7 +44,7 @@ from
          ,h.user_id
          ,(select username from dba_users u where u.user_id=h.user_id) username
          ,h.sql_id
-         ,h.top_level_sql_id
+&_IF_ORA112_OR_HIGHER         ,h.top_level_sql_id
          ,h.module
          ,h.program
          ,h.action
@@ -55,7 +55,8 @@ from
          ,(select object_name from dba_objects o where o.object_id=h.ple) ple
          ,(select object_name from dba_objects o where o.object_id=h.plo) plo
    from ash_pre h
-   where (h.sql_id='&1' or h.top_level_sql_id='&1')
+   where h.sql_id='&1' 
+&_IF_ORA112_OR_HIGHER       or h.top_level_sql_id='&1'
    order by sample_id desc
 )
 where rownum<=20

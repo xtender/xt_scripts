@@ -25,16 +25,10 @@ select
    , USERNAME
    , PROGRAM
 
---   , PLSQL_ENTRY_OBJECT_ID      as PLE_OBJ
---   , PLSQL_ENTRY_SUBPROGRAM_ID  as PLE_SUB
-   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_ENTRY_OBJECT_ID and p.subprogram_id=PLSQL_ENTRY_SUBPROGRAM_ID) PLE
---   , PLSQL_OBJECT_ID            as PL_OBJ
---   , PLSQL_SUBPROGRAM_ID        as PL_SUB
-   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_OBJECT_ID and p.subprogram_id=PLSQL_SUBPROGRAM_ID) PLO
-
    , ELAPSED_TIME               as ELA_TIME
    , CPU_TIME
    , FETCHES
+   , (select pm.output_rows from gv$sql_plan_monitor pm where pm.sql_id=m.sql_id and pm.SQL_EXEC_ID=m.SQL_EXEC_ID and pm.inst_id=m.inst_id and pm.key=m.key and pm.PLAN_LINE_ID=0) "ROWS"
 
    , BUFFER_GETS                as BUF_GETS
    , DISK_READS                 as DISK_READS
@@ -56,6 +50,13 @@ select
    , PHYSICAL_READ_BYTES
    , PHYSICAL_WRITE_REQUESTS
    , PHYSICAL_WRITE_BYTES
+
+--   , PLSQL_ENTRY_OBJECT_ID      as PLE_OBJ
+--   , PLSQL_ENTRY_SUBPROGRAM_ID  as PLE_SUB
+   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_ENTRY_OBJECT_ID and p.subprogram_id=PLSQL_ENTRY_SUBPROGRAM_ID) PLE
+--   , PLSQL_OBJECT_ID            as PL_OBJ
+--   , PLSQL_SUBPROGRAM_ID        as PL_SUB
+   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_OBJECT_ID and p.subprogram_id=PLSQL_SUBPROGRAM_ID) PLO
 
 from gv$sql_monitor m
 where 

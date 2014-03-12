@@ -30,9 +30,9 @@ select
           else 'unsupporteed'
      end as ep_value
    , h.endpoint_value
-   , h.endpoint_value  - lag(h.endpoint_value) over(partition by h.owner,h.table_name,h.column_name order by h.endpoint_value) as delta_values
+   , h.endpoint_value  - lag(h.endpoint_value ,1,0) over(partition by h.owner,h.table_name,h.column_name order by h.endpoint_value) as delta_values
    , h.endpoint_number
-   , h.endpoint_number - lag(h.endpoint_number)over(partition by h.owner,h.table_name,h.column_name order by h.endpoint_value) as delta_numbers
+   , h.endpoint_number - lag(h.endpoint_number,1,0) over(partition by h.owner,h.table_name,h.column_name order by h.endpoint_value) as delta_numbers
    , h.endpoint_actual_value
 from 
      dba_tab_histograms h
@@ -44,7 +44,11 @@ where
  and h.owner       = c.owner(+)
  and h.table_name  = c.table_name(+)
  and h.column_name = c.column_name(+)
-order by 1,2,3,4
+order by  h.owner
+        , h.table_name
+        , h.column_name
+        , c.data_type
+        , h.endpoint_number
 /
 col owner                   clear;
 col table_name              clear;

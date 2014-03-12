@@ -52,8 +52,8 @@ declare
    
    l_column_name    constant number := 30;
    l_num_distinct   constant number := 12;
-   l_low_value      constant number := 18;
-   l_high_value     constant number := 18;
+   l_low_value      constant number := 30;
+   l_high_value     constant number := 30;
    --l_density        constant number := 10;
    l_num_nulls      constant number := 10;
    l_num_buckets    constant number := 10;
@@ -116,8 +116,13 @@ declare
    function xrpad(str1 in varchar2,len int,pad varchar2)
    return varchar2
    is
+      str2 varchar2(32676):=nvl(replace(str1,chr(10),' '),' ');
    begin
-      return rpad(nvl(str1,' '),len,pad);
+      --str2:=regexp_replace(str2,'[[:cntrl:]]','~');
+      if regexp_like(str2,'[[:cntrl:]]') then 
+         select 'DUMP:'||dump(str2,17) into str2 from dual;
+      end if;
+      return rpad(str2,len,pad);
    end;
 begin
    dbms_output.put_line( rpad('-',full_len,'-'));

@@ -19,82 +19,30 @@ break  on owner skip 3 on table_name on index_name on VISIBLE on UNIQ on BLEVEL 
 
 with i as (
         SELECT
-                IND_OBJECT.NAME                                      as INDEX_NAME
-               ,IND_OWNER.NAME                                       as OWNER
-               ,TAB_OWNER.NAME                                       as TABLE_OWNER
-               ,TAB_OBJECT.NAME                                      as TABLE_NAME
-               ,DECODE(BITAND(IND$.PROPERTY, 1)
-                      ,0 ,'No'
-                      ,1 ,'Yes'
-                      ,'Err')                                        as UNIQ
-               ,IND$.BLEVEL                                          as BLEVEL
-               ,IND$.LEAFCNT                                         as LEAF_BLOCKS
-               ,IND$.DISTKEY                                         as DISTINCT_KEYS
-               ,IND$.CLUFAC                                          as CLUSTERING_FACTOR
-               ,IND$.ROWCNT                                          as NUM_ROWS
-               ,IND$.ANALYZETIME                                     as LAST_ANALYZED
-               ,DECODE(BITAND(IND$."PROPERTY", 2), 2, 'YES', 'NO')   as PARTITIONED
-               ,DECODE(BITAND(IND$."FLAGS", 2097152)
-                      ,2097152
-                      ,'NO'
-                      ,'Yes')                                        as VISIBLE
-               , IND_OBJECT.CTIME                                    as CREATED
-               , IND_OBJECT.MTIME                                    as LAST_DDL_TIME
-               ,IND_SEG.BLOCKSIZE                                    as blocksize
-               ,IND_SEG.blocks                                       as seg_blocks
+                ix.*
+              ,(select sum(bytes) from dba_segments s where s.owner=ix.owner and s.segment_name=ix.index_name) seg_size 
+              ,o.last_ddl_time
+              ,o.created
         FROM    
-                SYS.IND$          IND$
-               ,SYS.USER$         TAB_OWNER
-               ,SYS.OBJ$          TAB_OBJECT
-               ,SYS.USER$         IND_OWNER
-               ,SYS.OBJ$          IND_OBJECT
-               ,(SELECT 
-                    op.name
-                   ,op.owner#
-                   ,min(stsI.BLOCKSIZE)  BLOCKSIZE
-                   ,sum(segI.BLOCKS)     blocks
-                 FROM SYS.obj$     op
-                    ,(select 1  TYPE#, OBJ#, FILE#, BLOCK#, TS# from SYS.IND$
-                      union all
-                      select 20 TYPE#, OBJ#, FILE#, BLOCK#, TS# from SYS.INDPART$
-                      union all
-                      select 34 TYPE#, OBJ#, FILE#, BLOCK#, TS# from SYS.INDSUBPART$
-                     ) VI
-                    ,SYS.SEG$        segI
-                    ,SYS.TS$         stsI
-                WHERE  
-                      VI.OBJ#      = op.OBJ#
-                  and VI.TYPE#     = op.TYPE#
-                  and segI.FILE#   = VI.FILE# 
-                  AND segI.BLOCK#  = VI.BLOCK# 
-                  AND segI.TS#     = VI.TS# 
-                  AND segI.TYPE#   = 6
-                  AND segI.TS#     = stsI.TS#
-                 group by op.name, op.owner#
-                ) IND_SEG
-        WHERE  
-               IND_OWNER.USER#               = IND_OBJECT.OWNER#
-           AND IND_OBJECT.OBJ#               = IND$.OBJ#
-           AND IND$.BO#                      = TAB_OBJECT.OBJ#
-           AND TAB_OBJECT.OWNER#             = TAB_OWNER.USER#
-           AND IND_SEG.name                  = IND_OBJECT.name
-           and IND_SEG.owner#                = IND_OBJECT.OWNER#
-           AND BITAND(IND$.FLAGS, 4096)      = 0
-           AND BITAND(IND_OBJECT.FLAGS, 128) = 0
+                dba_indexes ix
+               ,dba_objects o
+        WHERE  1=1
         --
-        and TAB_OWNER.NAME  like nvl(upper('&2'),'%')
-        and TAB_OBJECT.NAME like upper('&1')
+        and ix.table_owner like nvl(upper('&2'),'%')
+        and ix.table_name  like upper('&1')
+        and o.owner        = ix.owner 
+        and o.object_name  = ix.index_name
+        and o.SUBOBJECT_NAME is null
 )
 select--+ leading(i ic o) use_nl(i ic o)
          i.owner
         ,i.table_name
         ,i.index_name
-        ,i.VISIBLE
-        ,i.UNIQ
+        ,decode(i.VISIBILITY,'INVISIBLE'  ,'N','Y') as VISIBLE
+        ,decode(i.UNIQUENESS,'NONUNIQUE','N','Y')  as UNIQ
         ,i.BLEVEL
         ,i.NUM_ROWS
-        ,i.seg_blocks
-        ,round(i.seg_blocks*i.blocksize/1024/1024,1) seg_size
+        ,round(i.seg_size/1024/1024,1) seg_size
         ,i.LEAF_BLOCKS
         ,i.DISTINCT_KEYS
         ,i.CLUSTERING_FACTOR as CL_FACTOR

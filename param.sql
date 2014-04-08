@@ -28,7 +28,7 @@ select
                                   ||decode(p.ISSES_MODIFIABLE     , 'TRUE', ',SES' )
                                 , ','
                               )                                                                     as MODIFIABLE
-                        ,p.ISMODIFIED
+                        ,decode(p.ISMODIFIED,'MODIFIED','TRUE','FALSE')                             as ISMODIFIED
                         ,p.ISADJUSTED
                         ,p.ISDEPRECATED
 &_IF_ORA11_OR_HIGHER    ,p.ISBASIC

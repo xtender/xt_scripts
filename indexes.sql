@@ -38,7 +38,7 @@ select--+ leading(i ic o) use_nl(i ic o)
          i.owner
         ,i.table_name
         ,i.index_name
-        ,decode(i.VISIBILITY,'INVISIBLE'  ,'N','Y') as VISIBLE
+&_IF_ORA11_OR_HIGHER        ,decode(i.VISIBILITY,'INVISIBLE'  ,'N','Y') as VISIBLE
         ,decode(i.UNIQUENESS,'NONUNIQUE','N','Y')  as UNIQ
         ,i.BLEVEL
         ,i.NUM_ROWS

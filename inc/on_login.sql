@@ -45,7 +45,7 @@ select 'inc/null' x from dual;
 
 set termout on
 
-@inc/title "&db_name / &my_user / &db_host_name   SID=&my_sid    SERIAL#=&my_serial#     SPID=&my_spid     IS_DBA=&my_is_dba / INST_ID = &DB_INST_ID / DB_VERSION = &DB_VERSION"
+@inc/title "&db_name / &my_user / &db_host_name   SID=&my_sid    SERIAL#=&my_serial     SPID=&my_spid     IS_DBA=&my_is_dba / INST_ID = &DB_INST_ID / DB_VERSION = &DB_VERSION"
 
 -- set sqlprompt "[ _USER'@'_CONNECT_IDENTIFIER _PRIVILEGE] >> "
 -- set sqlprompt "[ &my_user@&db_name ] >> "

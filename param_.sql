@@ -1,3 +1,4 @@
+@inc/input_vars_init;
 col name	format a40
 col value	format a12
 col deflt	format a12
@@ -21,7 +22,17 @@ from
 	,sys.vx$ksppcv b
 where
 	a.indx = b.indx
-and a.ksppinm like '%&1%' escape '\'
+and (
+	   a.ksppinm like nullif('%&1%','%%') escape '\'
+	or a.ksppinm like nullif('%&2%','%%') escape '\'
+	or a.ksppinm like nullif('%&3%','%%') escape '\'
+	or a.ksppinm like nullif('%&4%','%%') escape '\'
+	or a.ksppinm like nullif('%&5%','%%') escape '\'
+	or a.ksppinm like nullif('%&6%','%%') escape '\'
+	or a.ksppinm like nullif('%&7%','%%') escape '\'
+	or a.ksppinm like nullif('%&8%','%%') escape '\'
+	or a.ksppinm like nullif('%&9%','%%') escape '\'
+)
 order by name
 /
-undef 1
+@inc/input_vars_undef;

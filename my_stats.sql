@@ -1,14 +1,15 @@
 prompt ***************************************
 prompt *****   Usage: @my_stats mask    *****
 def mask = %&&1.% 
-col value format 999999999999999
-select * 
-from v$sesstat st
+col name  format a50;
+col value format 999999999999999;
+select name,value 
+from v$mystat st
     ,v$statname sn
-where sid=sys_context('USERENV','SID')
-and st.statistic#=sn.STATISTIC#
-and sn.name like '%&mask%'
+where st.statistic#=sn.STATISTIC#
+  and sn.name like '&mask'
 /
-undef mask
-undef 1
-col value clear
+col name  clear;
+col value clear;
+undef mask;
+undef 1;

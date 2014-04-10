@@ -83,7 +83,7 @@ with u_info as (
     and po.OBJECT_ID    (+)    = s.PLSQL_OBJECT_ID
     and po.SUBPROGRAM_ID(+)    = s.PLSQL_SUBPROGRAM_ID
     &_by_sid.  and sid=&1
-    &_by_mask. and (upper(osuser) like upper('%&1%') or username like upper('%&1%'))
+    &_by_mask. and (upper(osuser) like upper('%&1%') or s.username like upper('%&1%'))
 )
 select--+ gather_plan_statistics
     username

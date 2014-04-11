@@ -9,11 +9,11 @@ xt_scripts
 Для удобной и корректной работы скриптов нужно:
 
 1. Скопировать папку к себе в любую директорию. При этом очень удобно подмонтировать эту папку как отдельный диск. Например, я обычно создаю и добавляю в автозагрузку файл mount_disc.bat в котором эта директория монтируется как диск S
-```sh
+
     @echo off
     cd c:\oracle\11.2.0\client_1\scripts\
     subst s: .
-```
+
 
 2. Затем путь к ней(или к диску) прописываем в реестре в ветке клиента оракла или в переменных средах.(Этот пункт не обязательный, если запускать SQL*Plus из директории скриптов.)
     - Если в реестре, то это будет ветка вроде HKLM\SOFTWARE\ORACLE\KEY_OraClient11g_home1
@@ -21,39 +21,33 @@ xt_scripts
     - Если через "переменные среды", то нужно будет создать переменную с таким же именем(SQLPATH) и путем.
 
 3. Создать папки:
-```sh
+
     c:\temp\sqlplus-tmp\
     c:\temp\spools\
-```
+
 
 4. Добавить в конец файла c:\oracle\11.2.0\client_1\sqlplus\admin\glogin.sql строчки
-```sh
+
     @inc/on_login_win.sql;
     @inc/on_login.sql;
     -- путь к любимому текстовому редактору:
     DEFINE _EDITOR  ="c:\Program Files\SciTE\SciTE.exe"
-```
+
 5. Скопировать к себе директорию O:\DIT\software development\AnsiCon\ и установить программку запуском с параметром -i
-```sh
-ansicon.exe -i
-```
+
+    ansicon.exe -i
+
 Если этот пункт не выполнять, то тогда нужно будет заменить в glogin.sql строчку:
-```sh
-@inc/on_login.sql;
-```
-на 
-```sh
-@inc/on_login_colors_off.sql;
-```
+`@inc/on_login.sql;` на `@inc/on_login_colors_off.sql;`
+
 
 6. Перед запуском SQL*Plus нужно настроить cmd: выполнить chcp 1251 и установить шрифт Lucida console.
 Шрифт можно установить однократно для всех окон cmd. Можно написать .bat-файл для запуска sql*plus такого вида:
-```sh
-@echo off
-set NLS_LANG=AMERICAN_AMERICA.CL8MSWIN1251
-S:
-start /B chcp 1251 > nul && sqlplus /NOLOG
-```
+
+    @echo off
+    set NLS_LANG=AMERICAN_AMERICA.CL8MSWIN1251
+    S:
+    start /B chcp 1251 > nul && sqlplus /NOLOG
 
 7. Если вы хотите пользоваться автодополнением в консоли, то можно установить Cygwin с утилитой rlwrap. Этот пункт я описывать не буду, т.к. он необязателен. 
 

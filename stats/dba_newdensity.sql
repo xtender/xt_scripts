@@ -37,7 +37,8 @@ with
       ,max(ep_num) as BktCnt -- should be equal to sum(bkt)
       ,sum(decode(popularity, 1, bkt,0))  as PopBktCnt
       ,sum(decode(popularity, 1, 1  ,0))  as PopValCnt
-      ,min(decode(popularity,1,bkt)) as bkt_least_popular_value
+      --,min(decode(popularity,1,bkt)) as bkt_least_popular_value
+      ,min(bkt) as bkt_least_popular_value
    from histgrm2
    group by owner,table_name,column_name
 )

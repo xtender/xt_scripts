@@ -11,6 +11,7 @@ col error_message   format a40
 col a1 format a5 head"";
 col a2 format a6 head "";
 
+with v as (
 select 
      STATUS
    , SID
@@ -66,7 +67,11 @@ where
   &4
   &5
   &6
-order by SQL_EXEC_START;
+order by SQL_EXEC_START desc
+)
+select *
+from v
+where rownum<=20;
 
 col status          clear;
 col m_elaexe        clear;

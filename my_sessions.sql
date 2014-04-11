@@ -24,7 +24,8 @@ select
 from gv$session ss
     ,gv$process p
 where 
-      ss.osuser  = sys_context('USERENV','OS_USER')
+      ss.osuser   = sys_context('USERENV','OS_USER')
+  and ss.terminal = userenv('terminal') 
   and ss.paddr   = p.addr
   and ss.inst_id = p.inst_id
 order by ss.status;

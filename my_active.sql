@@ -22,11 +22,19 @@ select
 from gv$session ss
     ,gv$process p
 where 
-      ss.osuser  = sys_context('USERENV','OS_USER')
+      ss.osuser   = sys_context('USERENV','OS_USER')
+  and ss.terminal = userenv('terminal') 
   and ss.paddr   = p.addr
-  and ss.status  = 'ACTIVE'
-  and ss.SID    != USERENV('SID')
   and ss.inst_id = p.inst_id
+  and ss.status  = 'ACTIVE'
+  and not (ss.SID = USERENV('SID') and ss.inst_id = USERENV('INSTANCE'))
+  and not exists(select 1 
+                  from gv$px_session ps 
+                  where ps.qcinst_id = &DB_INST_ID 
+                    and ps.qcsid     = &MY_SID 
+                    and ps.inst_id   = ss.inst_id 
+                    and ps.sid       = ss.sid
+                )
 order by ss.status;
 
 column sid      clear;

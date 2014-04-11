@@ -15,6 +15,7 @@ SELECT/*+NOTME*/
      , sa.executions                                                as execs
      , sa.elapsed_time/1e6/decode(sa.executions,0,1,sa.executions)  as elaexe
      , substr(sql_text,1,300)                                       as sql_text_trunc
+     , sa.sql_profile
 FROM gv$sql sa
 where
               upper(sa.sql_text) like upper('%&1%')

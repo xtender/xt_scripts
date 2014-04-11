@@ -11,7 +11,7 @@ with p as (
             ,subprogram_id
       from dba_procedures
       where
-            owner like nvl('&2','%')
+            owner like nvl(upper('&2'),'%')
        and (
             object_name    like upper('&1') 
             or 
@@ -21,30 +21,43 @@ with p as (
       select distinct
            h.sql_id
           ,h.sql_child_number
-          ,h.top_level_sql_id
+&_IF_ORA112_OR_HIGHER          ,h.top_level_sql_id
       from p
           ,v$active_session_history h
       where 
          (
            (h.plsql_entry_object_id = p.object_id and h.plsql_entry_subprogram_id = p.subprogram_id)
            or
-           (h.plsql_object_id       = p.object_id and h.plsql_subprogram_id = p.subprogram_id)
+           (h.plsql_object_id       = p.object_id and h.plsql_subprogram_id       = p.subprogram_id)
          )
 )
-select s.sql_id
+select '...'                                                           as type
+&_IF_ORA112_OR_HIGHER      ,s.top_level_sql_id                                              as top_sqlid
+      ,s.sql_id
       ,s.sql_child_number
+      ,ch.sql_id                                                       as curr_sqlid
       ,ch.sql_text
-      ,decode(ch.executions ,0,0,  ch.elapsed_time/1e6/ch.executions) as elaexe
-      ,ch.executions                                                  as cnt
-      ,s.top_level_sql_id                                             as top_sqlid
-      ,top.sql_text                                                   as top_sql_text
-      ,decode(top.executions,0,0, top.elapsed_time/1e6/ch.executions) as top_elaexe
-      ,top.executions                                                 as top_cnt
+      ,decode(ch.executions ,0,0,  ch.elapsed_time/1e6/ch.executions)  as elaexe
+      ,ch.executions                                                   as cnt
+      ,ch.elapsed_time                                                 as overall_ela
 from s
     ,v$sqlarea ch
-    ,v$sqlarea top
 where ch.sql_id  = s.sql_id 
-  and top.sql_id = s.top_level_sql_id;
+&_IF_ORA112_OR_HIGHER union all
+&_IF_ORA112_OR_HIGHER select 'top'                                                           as type
+&_IF_ORA112_OR_HIGHER      ,s.top_level_sql_id                                              as top_sqlid
+&_IF_ORA112_OR_HIGHER      ,s.sql_id
+&_IF_ORA112_OR_HIGHER      ,s.sql_child_number
+&_IF_ORA112_OR_HIGHER      ,ch.sql_id                                                       as curr_sqlid
+&_IF_ORA112_OR_HIGHER      ,ch.sql_text
+&_IF_ORA112_OR_HIGHER      ,decode(ch.executions ,0,0,  ch.elapsed_time/1e6/ch.executions)  as elaexe
+&_IF_ORA112_OR_HIGHER      ,ch.executions                                                   as cnt
+&_IF_ORA112_OR_HIGHER      ,ch.elapsed_time                                                 as overall_ela
+&_IF_ORA112_OR_HIGHER from s
+&_IF_ORA112_OR_HIGHER     ,v$sqlarea ch
+&_IF_ORA112_OR_HIGHER where ch.sql_id  = s.top_level_sql_id
+&_IF_ORA112_OR_HIGHER order by overall_ela desc
+;
 
 col sql_text     clear;
 col top_sql_text clear;

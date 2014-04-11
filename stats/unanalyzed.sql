@@ -28,6 +28,7 @@ set termout on
 col owner         format a12
 col table_name    format a30
 col stats_status  format a15
+col seg_size      format 999G999G990D9 head "Size(Mb)"
 col user_stats    format a9
 col part          format a4
 col tmp           format a3
@@ -41,7 +42,7 @@ set colsep " | "
                     ,tt.table_name
                     ,case when tt.LAST_ANALYZED is null then 'not analyzed' else 'stale' end stats_status
                     ,tt.SEGMENT_CREATED  as seg
-                    ,(select sum(bytes) from dba_segments s where s.owner=tt.owner and s.segment_name=tt.table_name and s.segment_type like 'TABLE%') seg_size
+                    ,(select round(sum(bytes)/1024/1024,1) from dba_segments s where s.owner=tt.owner and s.segment_name=tt.table_name and s.segment_type like 'TABLE%') seg_size
                     ,ts.user_stats       as user_stats
                     ,tt.PARTITIONED      as part
                     ,tt.TEMPORARY        as tmp
@@ -71,15 +72,16 @@ order by
    ,tt.table_name
 /
 @inc/input_vars_undef;
-col owner        clear
-col table_name   clear
-col stats_status clear
-col user_stats   clear
-col part         clear
-col tmp          clear
-col sec          clear
-col nest         clear
-col s_locked     clear
+col owner        clear;
+col table_name   clear;
+col stats_status clear;
+col seg_size     clear;
+col user_stats   clear;
+col part         clear;
+col tmp          clear;
+col sec          clear;
+col nest         clear;
+col s_locked     clear;
 undef _owner
 undef _if_wo_temp
 undef _if_w_stale

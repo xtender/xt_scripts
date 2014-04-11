@@ -1,5 +1,4 @@
---show parameter &1
---undef 1
+@inc/input_vars_init;
 col name            format a40;
 col value           format a25;
 col display_value   format a20;
@@ -28,17 +27,23 @@ select
                                   ||decode(p.ISSES_MODIFIABLE     , 'TRUE', ',SES' )
                                 , ','
                               )                                                                     as MODIFIABLE
-                        ,p.ISMODIFIED
+                        ,decode(p.ISMODIFIED,'MODIFIED','TRUE','FALSE')                             as ISMODIFIED
                         ,p.ISADJUSTED
                         ,p.ISDEPRECATED
 &_IF_ORA11_OR_HIGHER    ,p.ISBASIC
 from
    v$parameter p
 where
-   p.name like '%&1%' escape '\'
+   p.name like nullif('%&1%','%%') escape '\'
+or p.name like nullif('%&2%','%%') escape '\'
+or p.name like nullif('%&3%','%%') escape '\'
+or p.name like nullif('%&4%','%%') escape '\'
+or p.name like nullif('%&5%','%%') escape '\'
+or p.name like nullif('%&6%','%%') escape '\'
+or p.name like nullif('%&7%','%%') escape '\'
+or p.name like nullif('%&8%','%%') escape '\'
 order by name
 /
-undef 1;
 col name            clear;
 col value           clear;
 col display_value   clear;
@@ -50,3 +55,4 @@ col modifiable      clear;
 col ISMODIFIED      clear;
 col ISADJUSTED      clear;
 col ISDEPRECATED    clear;
+@inc/input_vars_undef;

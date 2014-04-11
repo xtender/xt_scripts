@@ -11,7 +11,6 @@ from
                           }
              '
             passing dbms_xmlgen.getxmltype(q'[&1 ]')
-                    --xmltype(cursor(select * from doctype where rownum=1))
             columns 
                 i for ordinality
             ,   p_rownum  int path 'i'

@@ -16,13 +16,22 @@ select
   ,(select substr(sql_text,1,60) from v$sql s where s.sql_id=ss.sql_id and rownum=1) sql
   ,ss.row_wait_obj#
   ,(select nvl(subobject_name,object_name) from dba_objects o where object_id=row_wait_obj#) obj_name
-from v$session ss
-    ,v$process p
+from gv$session ss
+    ,gv$process p
 where 
-      ss.osuser = sys_context('USERENV','OS_USER')
-  and ss.paddr  = p.addr
-  and ss.status = 'ACTIVE'
-  and ss.SID   != USERENV('SID')
+      ss.osuser   = sys_context('USERENV','OS_USER')
+  and ss.terminal = userenv('terminal') 
+  and ss.paddr   = p.addr
+  and ss.inst_id = p.inst_id
+  and ss.status  = 'ACTIVE'
+  and not (ss.SID = USERENV('SID') and ss.inst_id = USERENV('INSTANCE'))
+  and not exists(select 1 
+                  from gv$px_session ps 
+                  where ps.qcinst_id = &DB_INST_ID 
+                    and ps.qcsid     = &MY_SID 
+                    and ps.inst_id   = ss.inst_id 
+                    and ps.sid       = ss.sid
+                )
 order by ss.status;
 
 column sid      clear;

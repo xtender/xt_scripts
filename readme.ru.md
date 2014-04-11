@@ -33,13 +33,7 @@ xt_scripts
     -- путь к любимому текстовому редактору:
     DEFINE _EDITOR  ="c:\Program Files\SciTE\SciTE.exe"
 
-5. Скопировать к себе директорию O:\DIT\software development\AnsiCon\ и установить программку запуском с параметром -i
-
-    ansicon.exe -i
-
-Если этот пункт не выполнять, то тогда нужно будет заменить в glogin.sql строчку:
-`@inc/on_login.sql;` на `@inc/on_login_colors_off.sql;`
-
+5. Скопировать к себе директорию O:\DIT\software development\AnsiCon\ и установить программку запуском с параметром -i: `ansicon.exe -i`. Если этот пункт не выполнять, то тогда нужно будет заменить в glogin.sql строчку `@inc/on_login.sql;` на `@inc/on_login_colors_off.sql;`
 
 6. Перед запуском SQL*Plus нужно настроить cmd: выполнить chcp 1251 и установить шрифт Lucida console.
 Шрифт можно установить однократно для всех окон cmd. Можно написать .bat-файл для запуска sql*plus такого вида:

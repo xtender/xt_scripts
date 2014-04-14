@@ -34,7 +34,12 @@ col object_name format a30
 @inc/version_info
 @inc/colors
 
-alter session set nls_numeric_characters=q'[.']';
+alter session set nls_numeric_characters  =q'[.`]';
+alter session set nls_date_format         ='yyyy-mm-dd';
+alter session set nls_time_format         ='hh24:mi:ssxff';
+alter session set nls_time_tz_format      ='hh24:mi:ssxff TZR';
+alter session set nls_timestamp_format    ='yyyy-mm-dd hh24:mi:ssxff';
+alter session set nls_timestamp_tz_format ='yyyy-mm-dd hh24:mi:ssxff TZR';
 set sqlprompt "SQL> "
 def x=inc/comment_on
 col x new_value x noprint

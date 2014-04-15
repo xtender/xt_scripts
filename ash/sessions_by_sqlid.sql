@@ -18,6 +18,7 @@ with ash_pre as (
             ,h.blocking_session
             ,h.user_id
             ,h.sql_id
+&_IF_ORA112_OR_HIGHER            ,h.sql_exec_id
 &_IF_ORA112_OR_HIGHER            ,h.top_level_sql_id
             ,h.plsql_entry_object_id ple
             ,h.plsql_object_id       plo
@@ -44,6 +45,7 @@ from
          ,h.user_id
          ,(select username from dba_users u where u.user_id=h.user_id) username
          ,h.sql_id
+&_IF_ORA112_OR_HIGHER            ,h.sql_exec_id
 &_IF_ORA112_OR_HIGHER         ,h.top_level_sql_id
          ,h.module
          ,h.program

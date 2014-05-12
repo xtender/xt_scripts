@@ -1,2 +1,2 @@
-exec DBMS_RESULT_CACHE.BYPASS (true);
+exec DBMS_RESULT_CACHE.BYPASS (false);
 select DBMS_RESULT_CACHE.STATUS from dual;

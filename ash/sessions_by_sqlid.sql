@@ -8,6 +8,8 @@ col wait_class       format a30;
 col curobj           format a30;
 col module           format a30;
 col program          format a15;
+col ple              format a45;
+col plo              format a45;
 with ash_pre as (
          select
              h.inst_id
@@ -73,3 +75,5 @@ col wait_class       clear;
 col curobj           clear;
 col module           clear;
 col program          clear;
+col ple              clear;
+col plo              clear;

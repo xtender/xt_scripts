@@ -22,7 +22,7 @@ select
     ,substr(s.program,1,20) program
     ,s.module
     ,s.terminal,s.type
-&_IF_ORA11_OR_HIGHER    ,s.SQL_EXEC_START
+&_IF_ORA11_OR_HIGHER    ,to_char(s.SQL_EXEC_START,'dd/mm hh24:mi:ss') sql_exec_start
     ,s.sql_id
     ,s.action
     ,s.event

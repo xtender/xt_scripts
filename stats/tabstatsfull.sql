@@ -99,7 +99,7 @@ break  on owner skip 3 on table_name on index_name on VISIBLE on UNIQ on BLEVEL 
 with i as (
         SELECT
                 ix.*
-              ,(select sum(bytes) from dba_segments s where s.owner=ix.owner and s.segment_name=ix.index_name) seg_size 
+              ,(select sum(bytes) from dba_segments s where s.owner=ix.owner and s.segment_name=ix.index_name and s.segment_type like 'INDEX%') seg_size 
               ,o.last_ddl_time
               ,o.created
         FROM    
@@ -292,4 +292,4 @@ begin
    dbms_output.put_line( rpad('-',full_len,'-'));
 end;
 /
-exit;
+--exit;

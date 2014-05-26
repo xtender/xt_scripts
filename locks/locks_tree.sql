@@ -31,6 +31,8 @@ col usern           format a12
 col osuser          format a12
 col waited          format a15
 col event           format a30
+col sql_id          format a13
+col module          format a30
 col ple             format a35 word
 col plo             format a35 word
 -----------------------------------------------------------------------
@@ -42,6 +44,7 @@ with
          ,ss.inst_id
          ,ss.username
          ,ss.terminal
+         ,ss.module
          ,ss.osuser
          ,ss.sql_id
          ,ss.sql_child_number
@@ -72,6 +75,7 @@ with
          ,s.serial#
          ,s.username
    --      ,terminal
+         ,substr(s.module,1,30) as module
          ,s.osuser
          ,(select o.object_name from dba_objects o where o.OBJECT_ID=s.ROW_WAIT_OBJ#) b_obj
          ,s.ROW_WAIT_OBJ#,s.ROW_WAIT_FILE#,s.ROW_WAIT_BLOCK#,s.ROW_WAIT_ROW#
@@ -104,6 +108,7 @@ select --+ no_merge(lt)
             ,lt.EVENT            event
             ,lt.waittime         waittime
             ,lt.sql_id           sql_id
+            ,lt.module           module
 &_if_pl     ,(select p.OBJECT_TYPE||' '|| p.owner||'.'||p.object_name||'.'||p.procedure_name 
 &_if_pl       from dba_procedures p 
 &_if_pl       where p.object_id     = lt.plsql_entry_object_id 
@@ -146,6 +151,8 @@ col usern   clear;
 col osuser  clear;
 col waited  clear;
 col event   clear;
+col sql_id  clear;
+col module  clear;
 col srowid  clear;
 col ple     clear;
 col plo     clear;

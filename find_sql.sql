@@ -5,6 +5,7 @@ select case when '&2 &3 &4 &5' like '%all%' then '--'
             else '  '
        end if_all
 from dual;
+col sql_id          format a13;
 col sql_text_trunc  format a100 word;
 col to_purge        format a30;
 SELECT/*+NOTME*/ 
@@ -25,5 +26,7 @@ where
 order by elapsed_time desc,executions desc
 /
 undef _if_all;
+col if_all              clear;
+col sql_id              clear;
 col sql_text_trunc      clear;
 col to_purge            clear;

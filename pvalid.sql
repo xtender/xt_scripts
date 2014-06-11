@@ -24,3 +24,5 @@ order by
            ,'0+(\d{3})'
            ,'\1'
            );
+clear col;
+clear break;

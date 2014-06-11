@@ -1,5 +1,6 @@
 set termout         off 
 set echo            off
+set timing          off
 set tab             off
 set ver             off
 set pagesize        999
@@ -35,7 +36,7 @@ col object_name format a30
 @inc/colors
 
 alter session set nls_numeric_characters  =q'[.`]';
-alter session set nls_date_format         ='yyyy-mm-dd';
+alter session set nls_date_format         ='yyyy-mm-dd hh24:mi:ss';
 alter session set nls_time_format         ='hh24:mi:ssxff';
 alter session set nls_time_tz_format      ='hh24:mi:ssxff TZR';
 alter session set nls_timestamp_format    ='yyyy-mm-dd hh24:mi:ssxff';
@@ -45,7 +46,7 @@ def x=inc/comment_on
 col x new_value x noprint
 select 'inc/null' x from dual;
 ------------------------------------------------
--- Show connect info and set sqlprompt
+prompt Show connect info and set sqlprompt
 @&x
 
 set termout on
@@ -69,9 +70,12 @@ prompt =======  DB_VERSION    &DB_VERSION
 PROMPT ======================================================================
 
 /* end_if */
-set termout on
 
 ------------------------------------------------
-@inc/params_undef
+--@inc/params_undef
 --set timing on
 --set serveroutput on
+
+------------------------------------------------
+col x clear;
+set termout on

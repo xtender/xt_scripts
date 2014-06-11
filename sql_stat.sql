@@ -37,7 +37,7 @@ select
    ,decode(s.executions,0,0, s.USER_IO_WAIT_TIME    /1e6/s.executions)  io_wait
    ,decode(s.executions,0,0, s.PLSQL_EXEC_TIME      /1e6/s.executions)  plsql_t
    ,decode(s.executions,0,0, s.java_exec_time       /1e6/s.executions)  java_exec_t
-   ,s.ROWS_PROCESSED                                                    row_processed
+   ,decode(s.executions,0,0, s.ROWS_PROCESSED           /s.executions)  rows_per_exec
    ,s.OPTIMIZER_MODE                                                    opt_mode
    ,s.OPTIMIZER_COST                                                    cost
    ,s.OPTIMIZER_ENV_HASH_VALUE                                          env_hash

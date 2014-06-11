@@ -1,5 +1,7 @@
+set termout off;
 alter session set nls_territory=RUSSIA;
 alter session set nls_language=RUSSIAN;
+set termout on;
 col s format a200
 with t as (select trunc(sysdate,'yyyy') d from dual)
    ,t0 as (select d ,rpad(max(sys_connect_by_path(to_char(level,'fm00'),'--')),42*4) s
@@ -51,4 +53,12 @@ with t as (select trunc(sysdate,'yyyy') d from dual)
       and t32.n (+) = nn
       and t33.n (+) = nn
 order by nn;
+set termout off;
 alter session set nls_language=AMERICAN;
+alter session set nls_numeric_characters  =q'[.`]';
+alter session set nls_date_format         ='yyyy-mm-dd hh24:mi:ss';
+alter session set nls_time_format         ='hh24:mi:ssxff';
+alter session set nls_time_tz_format      ='hh24:mi:ssxff TZR';
+alter session set nls_timestamp_format    ='yyyy-mm-dd hh24:mi:ssxff';
+alter session set nls_timestamp_tz_format ='yyyy-mm-dd hh24:mi:ssxff TZR';
+set termout on;

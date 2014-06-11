@@ -125,3 +125,4 @@ col os_pid      clear;
 col ora_pid     clear;
 col pe_object   clear;
 col po_object   clear;
+col sql_exec_start  clear;

@@ -1,4 +1,5 @@
 @inc/input_vars_init
+col SQL_EXEC_START  format a19
 col sid             format 999999
 col status          format a30
 col m_elaexe        format a15 heading "Elapsed(MIN:SS)"
@@ -18,7 +19,7 @@ select
    , SESSION_SERIAL#                                as serial#
    , SQL_PLAN_HASH_VALUE                            as plan_hv
    , SQL_EXEC_ID
-   , SQL_EXEC_START
+   , to_char(SQL_EXEC_START,'yyyy-mm-dd hh24:mi:ss') as SQL_EXEC_START
 
    , to_char(trunc(ELAPSED_TIME/1e6/60))
      ||':'||
@@ -73,6 +74,7 @@ select *
 from v
 where rownum<=20;
 
+col SQL_EXEC_START  clear;
 col status          clear;
 col m_elaexe        clear;
 col username        clear;

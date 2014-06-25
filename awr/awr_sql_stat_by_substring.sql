@@ -4,7 +4,7 @@ with awr_hist_sql as (
                         select--+ materialize
                             * 
                         from sys.WRH$_SQLTEXT s
-                        where upper(s.sql_text) like upper('%&1%')
+                        where upper(s.sql_text) like upper('&1')
 --                        and rownum>0
                      )
 ,awr_hist_sqlstat as (

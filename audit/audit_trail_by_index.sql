@@ -1,3 +1,5 @@
+accept dt prompt "Enter min date[yyyy-mm-dd]: ";
+
 with dba_audit_trail(ntimestamp#,os_username, username, userhost, terminal, timestamp, owner, obj_name, action, action_name, new_owner, new_name, obj_privilege
                     , sys_privilege, admin_option, grantee, audit_option, ses_actions, logoff_time, logoff_lread, logoff_pread, logoff_lwrite
                     , logoff_dlock, comment_text, sessionid, entryid, statementid, returncode, priv_used, client_id, econtext_id, session_cpu
@@ -86,10 +88,10 @@ where   aud.action#     = act.action    (+)
   and   aud.logoff$dead = aom.option#   (+)
   and - aud.priv$used   = spx.privilege (+)
   and aud.action# not in (100,101,102 -- logons/logoffs
-                         ,85 -- truncate table
-                         ,9  -- create index
-                         ,59 -- CREATE TRIGGER
-                         ,43 -- ALTER USER
+                         --,85 -- truncate table
+                         --,9  -- create index
+                         --,59 -- CREATE TRIGGER
+                         --,43 -- ALTER USER
                          )
 )
 select * from dba_audit_trail where ntimestamp#>timestamp'&dt 00:00:00' and logoff_time>date'&dt'

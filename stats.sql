@@ -4,12 +4,8 @@ prompt *****   Usage: @stats sid mask    *****
 col value   format 999999999999999
 col name    format a40
 
-accept _sid -
-         default &1 -
-         prompt "Enter sid[&1]: ";
-accept _mask -
-         default "%&2%" -
-         prompt "Statname mask[%&2%]: ";
+accept _sid  prompt "Enter sid: ";
+accept _mask prompt "Statname mask: ";
 select * 
 from v$sesstat st
     ,v$statname sn

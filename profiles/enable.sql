@@ -1,5 +1,5 @@
 @inc/input_vars_init;
-exec if '&1' is not null then DBMS_SQLTUNE.ALTER_SQL_PROFILE('&1','STATUS','DISABLED'); end if;
+exec if '&1' is not null then DBMS_SQLTUNE.ALTER_SQL_PROFILE('&1','STATUS','ENABLED'); end if;
 
 col prof_name  format a30;
 col category   format a10;

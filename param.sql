@@ -34,14 +34,14 @@ select
 from
    v$parameter p
 where
-   p.name like nullif('%&1%','%%') escape '\'
-or p.name like nullif('%&2%','%%') escape '\'
-or p.name like nullif('%&3%','%%') escape '\'
-or p.name like nullif('%&4%','%%') escape '\'
-or p.name like nullif('%&5%','%%') escape '\'
-or p.name like nullif('%&6%','%%') escape '\'
-or p.name like nullif('%&7%','%%') escape '\'
-or p.name like nullif('%&8%','%%') escape '\'
+   lower(p.name) like lower(nullif('%&1%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&2%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&3%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&4%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&5%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&6%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&7%','%%')) escape '\'
+or lower(p.name) like lower(nullif('%&8%','%%')) escape '\'
 order by name
 /
 col name            clear;

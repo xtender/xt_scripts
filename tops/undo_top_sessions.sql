@@ -6,11 +6,7 @@ col osuser           format a25;
 col process          format a13;
 col object           format a40;
 col subobject_name   format a30;
-col l_mode           format a12;
 col object_type      format a20;
-
-break on sid on serial# on username on osuser on recs on blocks on xidusn on xidslot on xidsqn on process skip 1;
-
 with t as (
    select *
    from (select *
@@ -26,25 +22,15 @@ with t as (
      ,s.osuser
      ,t.used_urec   as recs
      ,t.used_ublk   as blocks
+     ,o.owner||'.'||o.object_name object
+     ,o.subobject_name
+     ,o.data_object_id
+     ,o.object_type
+     ,l.object_id
      ,l.xidusn
      ,l.xidslot
      ,l.xidsqn
      ,l.process
-     ,l.object_id
-     ,o.owner||'.'||o.object_name object
-     ,o.subobject_name
-     ,Decode(l.locked_mode, 
-               0, 'None',
-               1, 'Null (NULL)',
-               2, 'Row-S (SS)',
-               3, 'Row-X (SX)',
-               4, 'Share (S)',
-               5, 'S/Row-X (SSX)',
-               6, 'Exclusive (X)',
-               'Unknown:'||l.locked_mode)
-              as l_mode
-     ,o.data_object_id
-     ,o.object_type
    from t
       , v$session s
       , v$locked_object l
@@ -60,7 +46,5 @@ col osuser           clear;
 col process          clear;
 col object           clear;
 col subobject_name   clear;
-col l_mode           clear;
 col object_type      clear;
-clear break;
 @inc/input_vars_undef;

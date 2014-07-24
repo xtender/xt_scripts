@@ -1,5 +1,11 @@
+prompt ===========================================================
 prompt &_C_REVERSE *** ASH by last N minutes by sid &_C_RESET
 prompt * Usage @ash sid N
+prompt ===========================================================
+
+@inc/input_vars_init;
+
+@inc/main_with_params_only;
 
 col min_s_time format a25   ;
 col max_s_time format a25   ;
@@ -100,3 +106,5 @@ col action     clear;
 col min_s_time clear;
 col max_s_time clear;
 col username   clear;
+/* end main */
+@inc/input_vars_undef;

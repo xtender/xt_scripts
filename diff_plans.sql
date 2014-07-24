@@ -1,4 +1,4 @@
-prompt &_C_REVERSE *** Diff plans by sql_id. Version with package XT_PLANS. &_C_RESET
+prompt &_C_REVERSE *** Diff plans by sql_id. &_C_RESET
 prompt Usage: @plans/diff_plans2 sqlid [+awr] [-v$sql]
 
 @inc/input_vars_init;

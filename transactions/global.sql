@@ -1,6 +1,6 @@
-prompt "Enter filters: "
-accept _sid         prompt "Sid: ";
-accept _globalid    prompt "Globalid mask: ";
+prompt "Enter filters(empty for any)..."
+accept _sid         prompt "Sid           : ";
+accept _globalid    prompt "Globalid mask : ";
 accept _remote_db   prompt "Remote_db mask: ";
 
 col remote_db               for a20;
@@ -8,8 +8,8 @@ col remote_db               for a20;
 col trans_id                for a16;
 col direction               for a11;
 col globalid                for a80;
-col globalid_ora            for a40;
-col branchid                for a80;
+col globalid_ora            for a40 noprint;
+col branchid                for a80 noprint;
 col state                   for a40;
 col coupling                for a15;
 col username                for a30;

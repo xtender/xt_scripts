@@ -15,16 +15,26 @@ col object_type      format a20;
      ,s.osuser
      ,t.used_urec   as recs
      ,t.used_ublk   as blocks
-     ,o.owner||'.'||o.object_name object
-     ,o.subobject_name
-     ,o.data_object_id
-     ,o.object_type
-     ,l.object_id
      ,l.xidusn
      ,l.xidslot
      ,l.xidsqn
      ,l.process
-   from v$transaction t
+     ,l.object_id
+     ,o.owner||'.'||o.object_name object
+     ,o.subobject_name
+     ,Decode(l.locked_mode,
+               0, 'None',
+               1, 'Null (NULL)',
+               2, 'Row-S (SS)',
+               3, 'Row-X (SX)',
+               4, 'Share (S)',
+               5, 'S/Row-X (SSX)',
+               6, 'Exclusive (X)',
+               'Unknown:'||l.locked_mode)
+              as l_mode
+     ,o.data_object_id
+     ,o.object_type
+from v$transaction t
       , v$session s
       , v$locked_object l
       , dba_objects o

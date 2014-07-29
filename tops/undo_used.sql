@@ -1,15 +1,14 @@
 @inc/input_vars_init;
 prompt *** Show top session by undo used:
 prompt;
-col username         format a25;
-col osuser           format a25;
+col "Username/Osuser"         format a45;
 col process          format a13;
 col object           format a40;
 col subobject_name   format a30;
 col l_mode           format a12;
 col object_type      format a20;
 
-break on sid on serial# on username on osuser on recs on blocks on xidusn on xidslot on xidsqn on process skip 1;
+break on sid on serial# on "Username/Osuser" on recs on blocks on xidusn on xidslot on xidsqn on process skip 1;
 
 with t as (
    select *
@@ -22,8 +21,7 @@ with t as (
    select
       s.sid
      ,s.serial#
-     ,s.username
-     ,s.osuser
+     ,s.username ||' / '|| s.osuser as "Username/Osuser"
      ,t.used_urec   as recs
      ,t.used_ublk   as blocks
      ,l.xidusn
@@ -55,8 +53,7 @@ with t as (
       and l.object_id = o.object_id(+)
    order by blocks desc,sid
 /
-col username         clear;
-col osuser           clear;
+col "Username/Osuser"         clear;
 col process          clear;
 col object           clear;
 col subobject_name   clear;

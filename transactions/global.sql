@@ -1,6 +1,6 @@
-prompt "Enter filters: "
-accept _sid         prompt "Sid: ";
-accept _globalid    prompt "Globalid mask: ";
+prompt Enter filters(empty for any)...
+accept _sid         prompt "Sid           : ";
+accept _globalid    prompt "Globalid mask : ";
 accept _remote_db   prompt "Remote_db mask: ";
 
 col remote_db               for a20;
@@ -8,8 +8,13 @@ col remote_db               for a20;
 col trans_id                for a16;
 col direction               for a11;
 col globalid                for a80;
-col globalid_ora            for a40;
-col branchid                for a80;
+col globalid_ora            for a40 noprint;
+col branchid                for a80 noprint;
+col branches                noprint;
+col refcount                noprint;
+col preparecount            noprint;
+col flags                   noprint;
+col formatid                noprint;
 col state                   for a40;
 col coupling                for a15;
 col username                for a30;
@@ -60,6 +65,9 @@ with v$xt_global_transaction as (
 )
 select
      tr.inst_id
+    ,s.sid
+    ,s.serial#
+    ,s.username
 --    ,tr.saddr
     ,tr.remote_db
 --    ,tr.remote_dbid_reversed
@@ -68,6 +76,8 @@ select
     ,tr.direction
     ,tr.globalid
     ,tr.globalid_ora
+    ,s.event
+    ,s.wait_class
     ,tr.branchid
     ,tr.branches
     ,tr.refcount
@@ -76,12 +86,6 @@ select
     ,tr.state
     ,tr.flags
     ,tr.coupling
-    ,s.sid
-    ,s.serial#
-    ,s.username
-    ,s.event
-    ,s.wait_class
-    ,s.event
 from v$xt_global_transaction tr
     ,v$session s
 where tr.saddr=s.saddr

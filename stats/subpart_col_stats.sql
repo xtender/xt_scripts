@@ -45,6 +45,21 @@ accept _col_mask  prompt "Columns mask[%]    : " default %;
    col part_name  clear;
    col high_value clear;
 accept _part_mask prompt "Partition mask[%]  : " default %;
+       prompt _part_mask = &_part_mask;
+       prompt _tab_owner = &_tab_owner;
+       prompt _tab_name  = &_tab_name;
+       
+   select 
+      sp.partition_name         as part_name
+     ,sp.subpartition_position  as N
+     ,sp.subpartition_name      as subpart_name
+   from dba_tab_subpartitions sp
+   where sp.table_owner = upper('&_tab_owner') 
+     and sp.table_name  = '&_tab_name'
+     and sp.partition_name like upper('&_part_mask')
+   order by 1,2;
+accept _subpart_mask prompt "Subpartition mask[%]  : " default %;
+
 prompt ------------- col stats   -----------------;
 set serverout on;
 
@@ -52,6 +67,7 @@ declare
    
    l_column_name    constant number := 30;
    l_part_name      constant number := 20;
+   l_subpart_name   constant number := 30;
    l_num_distinct   constant number := 12;
    l_low_value      constant number := 30;
    l_high_value     constant number := 30;
@@ -65,8 +81,8 @@ declare
    l_avg_col_len    constant number := 5 ;
    l_histogram      constant number := 20;
    
-   full_len         constant number := 25
-                                       + l_column_name + l_part_name + l_num_distinct + l_low_value + l_high_value 
+   full_len         constant number := 29
+                                       + l_column_name + l_part_name + l_subpart_name + l_num_distinct + l_low_value + l_high_value 
                                        -- + l_density
                                        + l_num_nulls + l_num_buckets + l_last_analyzed + l_sample_size 
                                        + l_global_stats + l_user_stats + l_avg_col_len + l_histogram
@@ -130,6 +146,7 @@ begin
    dbms_output.put_line( '| '
       ||rpad('column_name'                                 ,l_column_name   ,' ') ||'| '
       ||rpad('part_name'                                   ,l_part_name     ,' ') ||'| '
+      ||rpad('subpart_name'                                ,l_subpart_name  ,' ') ||'| '
       ||rpad('num_distinct'                                ,l_num_distinct  ,' ') ||'| '
       ||rpad('low_value'                                   ,l_low_value     ,' ') ||'| '
       ||rpad('high_value'                                  ,l_high_value    ,' ') ||'| '
@@ -148,7 +165,8 @@ begin
    for r in (
          select 
              tc.column_name
-            ,cs.partition_name as part_name
+            ,sp.partition_name    as part_name
+            ,cs.subpartition_name as subpart_name
             ,cs.num_distinct
             ,tc.DATA_TYPE
             ,cs.low_value
@@ -162,31 +180,31 @@ begin
             ,cs.user_stats
             ,cs.avg_col_len
             ,cs.HISTOGRAM
-         from dba_part_col_statistics cs 
+         from dba_subpart_col_statistics cs 
              ,dba_tab_columns tc
-             ,dba_tab_partitions p
+             ,dba_tab_subpartitions sp
          where 
-                tc.owner          = upper('&_tab_owner')
-            and tc.table_name     = '&_tab_name'
-            and tc.column_name    like upper('&_col_mask')
-            
-            and p.table_owner     = upper('&_tab_owner')
-            and p.table_name      = '&_tab_name'
-            and p.partition_name  like upper('&_part_mask')
-            
-            and p.table_owner     = cs.owner
-            and p.table_name      = cs.table_name
-            and p.partition_name  = cs.partition_name
-
-            and tc.OWNER          = cs.owner
-            and tc.TABLE_NAME     = cs.table_name
-            and tc.COLUMN_NAME    = cs.column_name
-         order by tc.column_id, p.partition_position
+                tc.owner             = upper('&_tab_owner')
+            and tc.table_name        = '&_tab_name'
+            and tc.column_name       like upper('&_col_mask')
+            and sp.table_owner       = upper('&_tab_owner')
+            and sp.table_name        = '&_tab_name'
+            and sp.partition_name    like upper('&_part_mask')
+            and sp.subpartition_name like upper('&_subpart_mask')
+            and cs.owner             = sp.table_owner
+            and cs.table_name        = sp.table_name
+            and cs.subpartition_name = sp.subpartition_name
+            and tc.OWNER             = cs.owner
+            and tc.TABLE_NAME        = cs.table_name
+            and tc.COLUMN_NAME       = cs.column_name
+         order by tc.owner,tc.table_name,tc.COLUMN_ID
+                 ,sp.table_owner,sp.table_name,sp.partition_name,sp.subpartition_position
    )
    loop
       dbms_output.put_line( '| '
          ||xrpad(r.column_name                                 ,l_column_name   ,' ') ||'| '
          ||xrpad(r.part_name                                   ,l_part_name     ,' ') ||'| '
+         ||xrpad(r.subpart_name                                ,l_subpart_name  ,' ') ||'| '
          ||xrpad(r.num_distinct                                ,l_num_distinct  ,' ') ||'| '
          ||xrpad(val_to_output(r.data_type,r.low_value)        ,l_low_value     ,' ') ||'| '
          ||xrpad(val_to_output(r.data_type,r.high_value)       ,l_high_value    ,' ') ||'| '

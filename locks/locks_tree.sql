@@ -31,6 +31,8 @@ col usern           format a12
 col osuser          format a12
 col waited          format a15
 col event           format a30
+col state           format a10
+col status          noprint
 col sql_id          format a13
 col module          format a30
 col ple             format a35 word
@@ -58,6 +60,8 @@ with
        ,ss.ROW_WAIT_ROW#
        ,ss.wait_class
        ,ss.event
+       ,ss.state
+       ,ss.status
        ,ss.wait_time
        ,ss.seconds_in_wait
        ,ss.blocking_session
@@ -81,6 +85,8 @@ with
          ,s.ROW_WAIT_OBJ#,s.ROW_WAIT_FILE#,s.ROW_WAIT_BLOCK#,s.ROW_WAIT_ROW#
          ,s.wait_class
          ,s.EVENT
+         ,s.state
+         ,s.status
          ,s.WAIT_TIME+s.SECONDS_IN_WAIT waittime
          ,s.sql_id
          ,s.sql_child_number
@@ -120,6 +126,8 @@ select --+ no_merge(lt)
             ,lt.osuser           osuser
             ,lt.wait_class       waited
             ,lt.EVENT            event
+            ,lt.state
+            ,lt.status
             ,lt.waittime         waittime
             ,lt.sql_id           sql_id
             ,lt.module           module
@@ -165,6 +173,8 @@ col usern   clear;
 col osuser  clear;
 col waited  clear;
 col event   clear;
+col state   clear;
+col status  clear;
 col sql_id  clear;
 col module  clear;
 col srowid  clear;

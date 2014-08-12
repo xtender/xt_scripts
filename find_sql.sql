@@ -19,7 +19,7 @@ SELECT/*+NOTME*/
      , sa.sql_profile
 FROM gv$sql sa
 where
-              upper(sa.sql_text) like upper('%&1%')
+              upper(sa.sql_text) like upper(q'[%&1%]')
           and sql_text not like 'SELECT/*+NOTME*/%'
 &_if_all  and sa.COMMAND_TYPE=3
           and rownum<=30

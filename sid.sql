@@ -35,6 +35,9 @@ col ora_pid     format  a10
 col pe_object   format  a35
 col po_object   format  a35
 col sql_exec_start  format a14 heading sql_started
+col p1          format  a16;
+col p2          format  a16;
+col p3          format  a16;
 with u_info as (
    select--+ leading(s p pe po) no_merge(s)
       s.USERNAME                                   as username
@@ -70,6 +73,12 @@ with u_info as (
             ||nvl2(po.PROCEDURE_NAME,'.'||po.PROCEDURE_NAME,'')
            ,null
           )                                        as po_object
+     ,s.p1text
+     ,s.p1
+     ,s.p2text
+     ,s.p2
+     ,s.p3text
+     ,s.p3
    from 
         gv$session s
        ,gv$process  p
@@ -103,6 +112,12 @@ select--+ gather_plan_statistics
     ,os_pid
     ,ora_pid||'' as ora_pid
     ,sql_id
+    ,p1text
+    ,to_char(p1,'tm9')  as p1
+    ,p2text             as p2text
+    ,to_char(p2,'tm9') as p2
+    ,p3text             as p3text
+    ,to_char(p3,'tm9') as p3
 &_IF_ORA11_OR_HIGHER    ,sql_exec_start
     ,pe_object
     ,po_object
@@ -126,3 +141,6 @@ col ora_pid     clear;
 col pe_object   clear;
 col po_object   clear;
 col sql_exec_start  clear;
+col p1          clear;
+col p2          clear;
+col p3          clear;

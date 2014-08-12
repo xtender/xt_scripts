@@ -44,6 +44,7 @@ where
            or upper(osuser)   like upper('%'||'&1'||'%')
            or upper(module)   like upper('%'||'&1'||'%')
            or upper(terminal) like upper('%'||'&1'||'%')
+           or upper(action) like upper('%'||'&1'||'%')
            or sql_id          like      ('%'||'&1'||'%')
            )
       and ('&2' is null or (s.status='ACTIVE'  and s.wait_class!='Idle'))

@@ -1,1 +1,1 @@
-select 'ping' ping from dual;
+select 'pong' ping from dual;

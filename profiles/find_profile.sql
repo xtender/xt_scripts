@@ -11,8 +11,8 @@ col modified   format a19;
 col sql_text_trunc format a50;
 
 select
-    p.name                 prof_name
-   ,p.description prof_descr
+    p.name                  as prof_name
+   ,p.description           as prof_descr
    ,to_char(p.created       ,'yyyy-mm-dd hh24:mi:ss') as created
    ,to_char(p.last_modified ,'yyyy-mm-dd hh24:mi:ss') as modified
    ,p.category
@@ -22,7 +22,9 @@ select
 from 
     dba_sql_profiles p
 where 
-   upper(sql_text) like '&1' or name like '&1'
+      upper(sql_text)    like upper('%&1%')
+   or upper(name)        like upper('%&1%')
+   or upper(description) like upper('%&1%')
 order by greatest(p.created,p.last_modified) desc
 /
 col prof_name  clear;

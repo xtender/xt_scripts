@@ -12,7 +12,7 @@ select
 from v$sql s
 where s.sql_id='&sqlid'
 order by elaexe desc;
-accept plan_hv prompt "Plan hash value[&plan_hv]: " default &plan_hv;
+accept plan_hv prompt "Plan hash value[&plan_hv]: " default "&plan_hv";
 col sql_id          clear;
 col plan_hash_value clear;
 
@@ -24,7 +24,7 @@ accept category    prompt "Category[DEFAULT]: " default "DEFAULT";
 declare
    -- params:
     p_sql_id          varchar2(13):= '&sqlid';
-    p_plan_hash_value number:=&plan_hv;
+    p_plan_hash_value number:=&plan_hv+0;
     p_force_match     int:= nvl(&force_match+0,1);
     p_description     varchar2(50):=nvl('&description','profile for &sqlid');
     p_category        varchar2(30):=nvl('&category','DEFAULT');
@@ -88,6 +88,9 @@ begin
             "HINT" varchar2(4000) PATH '/hint'
     ) d;
     --*/
+    if ar_profile_hints is null or ar_profile_hints.count() = 0 then 
+        raise_application_error(-20000,'Hints was not captured from gv$sql_plan!');
+    end if;
     hr;
     dbms_output.put_line('*  Profile Hints:');
     br;
@@ -125,7 +128,7 @@ exception
       br;
    when NO_DATA_FOUND then
      br;
-     dbms_output.put_line('ERROR: sql_id: '||p_sql_id||' not found in AWR.');
+     dbms_output.put_line('ERROR: sql_id: '||p_sql_id||' not found in LC.');
      br;
 
 end;

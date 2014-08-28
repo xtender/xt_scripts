@@ -38,6 +38,10 @@ col sql_exec_start  format a14 heading sql_started
 col p1          format  a16;
 col p2          format  a16;
 col p3          format  a16;
+col p1text      format  a16;
+col p2text      format  a16;
+col p3text      format  a16;
+
 with u_info as (
    select--+ leading(s p pe po) no_merge(s)
       s.USERNAME                                   as username
@@ -144,3 +148,6 @@ col sql_exec_start  clear;
 col p1          clear;
 col p2          clear;
 col p3          clear;
+col p1text      clear;
+col p2text      clear;
+col p3text      clear;

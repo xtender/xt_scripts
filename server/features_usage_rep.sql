@@ -1,0 +1,1 @@
+select * from table(sys.dbms_feature_usage_report.display_text);

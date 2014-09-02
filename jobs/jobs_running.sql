@@ -1,4 +1,8 @@
+prompt &_C_RED  *** Show current running jobs. &_C_RESET
+prompt &_C_REVERSE * Usage: @jobs/jobs_running [filter] &_C_RESET
+prompt ;
 @inc/input_vars_init;
+
 col "log_user/priv_user/schema_user" format a50;
 col WHAT            format a40 word;
 col USERNAME        format a22;

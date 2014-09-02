@@ -1,6 +1,6 @@
 prompt ===========================================================
 prompt &_C_REVERSE *** ASH by last N minutes by sid &_C_RESET
-prompt * Usage @ash sid N
+prompt * Usage @ash sid N [serial]
 prompt ===========================================================
 
 @inc/input_vars_init;
@@ -45,8 +45,15 @@ with ash_pre as (
 &&_IF_ORA112_OR_HIGHER      ,h.TOP_LEVEL_SQL_ID
                             --,h.*
                          from gv$active_session_history h
-                         where h.SAMPLE_TIME >sysdate-&2/24/60
-                         and session_id=&1
+                         where h.sample_time     > sysdate-&2/24/60
+                           and (h.session_id      = decode(translate('&1','x0132456789','x'),null,to_number('&1'))
+                                or 
+                                h.user_id in (select/*+ precompute_subquery */ u.user_id 
+                                              from dba_users u 
+                                              where lower(u.username) like decode(translate('&1','x0132456789','x'),null,null,lower('%&1%'))
+                                             )
+                                )
+                           and ('&3' is null or h.session_serial# = to_number(&3))
 )
 select
                             min(h.SAMPLE_TIME) min_s_time

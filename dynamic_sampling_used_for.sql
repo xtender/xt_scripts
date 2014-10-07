@@ -16,7 +16,6 @@ with tabs as (
         ,max(sql_id) keep(dense_rank first order by elapsed_time desc)               top_sql_id
       from v$sqlarea a
       where a.sql_text like 'SELECT /* OPT_DYN_SAMP */%'
-        and sql_fulltext like '%FROM "OD".%'
       group by
          to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,1))
         ,to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,2))

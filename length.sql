@@ -1,2 +1,2 @@
-select length(q'{&text}') from dual
+select length(q'{&text}') len from dual
 /

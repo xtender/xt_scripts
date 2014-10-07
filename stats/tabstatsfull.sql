@@ -71,7 +71,7 @@ select
     segment_name
    ,partition_name
    ,segment_type
-   ,segment_subtype
+&_IF_ORA11_OR_HIGHER   ,segment_subtype
    ,round(bytes/1024/1024,1) mbytes
    ,blocks 
 from dba_segments s
@@ -222,8 +222,13 @@ declare
       --str2:=regexp_replace(str2,'[[:cntrl:]]','~');
       if regexp_like(str2,'[[:cntrl:]]') then 
          select 'DUMP:'||dump(str2,17) into str2 from dual;
+      else
+         null;
+         &_IF_ORA10_OR_HIGHER  str2:=regexp_replace(str2,'[^[:print:]]','~');
       end if;
-      return rpad(str2,len,pad);
+      -- avoiding problem with rpad and unicode:
+      str2:=rpad(str2,4000,pad);
+      return substr(str2,1,len);
    end;
 begin
    dbms_output.put_line( rpad('-',full_len,'-'));
@@ -292,4 +297,5 @@ begin
    dbms_output.put_line( rpad('-',full_len,'-'));
 end;
 /
+undef tab_owner tab_name;
 --exit;

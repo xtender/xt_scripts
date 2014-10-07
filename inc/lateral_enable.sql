@@ -1,0 +1,1 @@
+alter session set events '22829 trace name context forever';

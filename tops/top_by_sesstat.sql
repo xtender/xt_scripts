@@ -30,7 +30,7 @@ col class       clear;
 accept _stat_id  prompt "Enter statistic#: ";
 accept _interval prompt "Enter snap interval:" default 3
 
-set serverout on feed off timing off;
+var c refcursor;
 
 declare
    v_stat1 sys.ku$_objnumpairlist;
@@ -48,7 +48,24 @@ declare
       from v$sesstat st
       where st.STATISTIC#=p_statistic#;
 
-   cursor c_top is 
+begin
+   if q'[&_stat_id]' is null then
+      return;
+   end if;
+   p_stat := to_number('&_stat_id');
+                      
+   open c_stats(p_stat);
+   fetch c_stats bulk collect into v_stat1;
+   close c_stats;
+   
+   -- Sleep:
+   dbms_lock.sleep(p_interval);
+   -- Repeating:
+   open c_stats(p_stat);
+   fetch c_stats bulk collect into v_stat2;
+   close c_stats;
+   
+   open :c for 
       with s_top(sid,delta) as
            (
             select *
@@ -75,56 +92,9 @@ declare
           ,v$session s
       where s.sid=t.sid
       order by 2 desc;
-
-begin
-   if q'[&_stat_id]' is null then
-      return;
-   end if;
-   p_stat := to_number('&_stat_id');
-                      
-   open c_stats(p_stat);
-   fetch c_stats bulk collect into v_stat1;
-   close c_stats;
-   
-   -- Sleep:
-   dbms_lock.sleep(p_interval);
-   -- Repeating:
-   open c_stats(p_stat);
-   fetch c_stats bulk collect into v_stat2;
-   close c_stats;
-   
-   dbms_output.put_line(lpad('-',152,'-'));
-   
-   dbms_output.put_line(
-       utl_lms.format_message(
-        '| %s | %s | %s | %s | %s | %s | %s | %s | %s'
-        , lpad('SID     ' ||' ', 5,' ')
-        , lpad('DELTA   ' ||' ',15,' ')
-        , rpad('USERNAME' ||' ',25,' ')
-        , rpad('PROGRAM ' ||' ',22,' ')
-        , lpad('SQL_ID  ' ||' ',15,' ')
-        , rpad('OSUSER  ' ||' ',15,' ')
-        , lpad('EVENT   ' ||' ',15,' ')
-        , lpad('STATUS  ' ||' ',15,' ')
-        ));
-   
-   dbms_output.put_line(lpad('-',152,'-'));
-   
-   for r in c_top
-   loop
-      dbms_output.put_line(
-         utl_lms.format_message(
-           '| %s | %s | %s | %s | %s | %s | %s | %s | %s'
-           , lpad(r.sid      ||' ', 5,' ')
-           , lpad(r.delta    ||' ',15,' ')
-           , rpad(r.username ||' ',25,' ')
-           , rpad(r.program  ||' ',22,' ')
-           , lpad(r.sql_id   ||' ',15,' ')
-           , rpad(r.osuser   ||' ',15,' ')
-           , lpad(r.event    ||' ',15,' ')
-           , lpad(r.status   ||' ',15,' ')
-         ));
-   end loop;
-   dbms_output.put_line(lpad('-',152,'-'));
 end;
 /
+print c;
+undef _stat_id;
+undef _param;
+undef _interval;

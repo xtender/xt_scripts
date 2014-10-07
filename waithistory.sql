@@ -4,6 +4,7 @@ col P2TEXT format a20
 col P3TEXT format a20
 select 
                         swh.EVENT
+                       ,swh.seq#
                        ,swh.P1TEXT,swh.p1
                        ,swh.P2TEXT,swh.p2
                        ,swh.P3TEXT,swh.p3

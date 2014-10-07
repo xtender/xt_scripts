@@ -42,6 +42,13 @@ declare
                  and a.INST_ID     = x.min_inst
                  and a.sql_profile is null
                union all
+               select sql_id
+                     ,'' as prof_name
+                     ,to_char(substr(sql_text,1,2000)) as sql_text
+                     ,sql_text as sql_fulltext
+               from dba_hist_sqltext t
+               where t.sql_id = l_dest_sqlid
+               union all
                select 
                   l_dest_sqlid
                  ,null

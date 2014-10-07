@@ -35,4 +35,9 @@ and (
 )
 order by name
 /
+col name	clear;
+col value	clear;
+col deflt	clear;
+col type 	clear;
+col description	clear;
 @inc/input_vars_undef;

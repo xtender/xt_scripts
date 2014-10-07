@@ -11,7 +11,22 @@ col opt_mode            for a12
 col P_schema            for a20
 col proc_name           for a30
 
-
+with sqlids as (
+   select distinct sql_id 
+   from (
+       select '&1'  sql_id from dual union all
+       select '&2'  sql_id from dual union all
+       select '&3'  sql_id from dual union all
+       select '&4'  sql_id from dual union all
+       select '&5'  sql_id from dual union all
+       select '&6'  sql_id from dual union all
+       select '&7'  sql_id from dual union all
+       select '&8'  sql_id from dual union all
+       select '&9'  sql_id from dual union all
+       select '&10' sql_id from dual
+    )
+   where sql_id is not null
+)
 select 
     s.inst_id                                                           inst
    ,s.sql_id                                                            sql_id
@@ -37,7 +52,7 @@ select
    ,decode(s.executions,0,0, s.USER_IO_WAIT_TIME    /1e6/s.executions)  io_wait
    ,decode(s.executions,0,0, s.PLSQL_EXEC_TIME      /1e6/s.executions)  plsql_t
    ,decode(s.executions,0,0, s.java_exec_time       /1e6/s.executions)  java_exec_t
-   ,s.ROWS_PROCESSED                                                    row_processed
+   ,decode(s.executions,0,0, s.ROWS_PROCESSED           /s.executions)  rows_per_exec
    ,s.OPTIMIZER_MODE                                                    opt_mode
    ,s.OPTIMIZER_COST                                                    cost
    ,s.OPTIMIZER_ENV_HASH_VALUE                                          env_hash
@@ -46,10 +61,9 @@ select
    ,s.PROGRAM_ID
    ,(select object_name from dba_objects o where o.object_id=s.PROGRAM_ID) proc_name
    ,s.PROGRAM_LINE#                                                        proc_line
-from gv$sql s 
+from sqlids,gv$sql s 
 where 
-    sql_id like '&1'
-and child_number like decode(translate('&2','x0123456789','x'),null,nvl('&2','%'),'%')
+    sqlids.sql_id = s.sql_id
 order by
     inst,
     sql_id,

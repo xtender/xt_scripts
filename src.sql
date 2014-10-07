@@ -13,7 +13,7 @@ begin
                      ,max(length(type))over()  len_type
                      ,max(length(text))over()  len_text
                from dba_source src
-               where src.owner like nvl('&2','%')
+               where src.owner like nvl(upper('&2'),'%')
                  and src.name like upper('&1')
             )
    loop

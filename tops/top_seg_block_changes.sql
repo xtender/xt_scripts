@@ -1,6 +1,8 @@
 @inc/input_vars_init;
 prompt &_C_REVERSE Print top segments by db block changes &_C_RESET
 prompt Syntax:  @top_seg_block_changes [cnt [sleep]]
+prompt Default: cnt = 1, sleep = 3.
+
 set serverout on
 
 declare

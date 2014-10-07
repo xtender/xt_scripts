@@ -6,7 +6,7 @@ from dual;
 set termout on
 col object_name format a30
 col object_type format a12
-
+col event       format a40;
 break on sql_id skip 1 on sql_child skip 1 on plan_hv skip 1 on obj on object_type on object_name on cnt_by_obj skip 1
 
 WITH  
@@ -59,6 +59,7 @@ order by
      ,cnt desc
 /
 clear BREAKs
-col object_name clear
-col object_type clear
+col object_name clear;
+col object_type clear;
+col event       clear;
 @inc/input_vars_undef.sql;

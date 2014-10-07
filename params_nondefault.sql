@@ -19,7 +19,7 @@ select  name as parameter
        ,ISMODIFIED
        ,ISADJUSTED
        ,ISDEPRECATED
-       ,ISBASIC
+&_IF_ORA11_OR_HIGHER       ,ISBASIC
        ,ISSES_MODIFIABLE
        ,ISSYS_MODIFIABLE
        ,ISINSTANCE_MODIFIABLE

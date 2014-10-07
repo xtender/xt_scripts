@@ -1,4 +1,11 @@
+prompt ===========================================================
+prompt * Info from dba_constraints
+prompt * Usage: @cons table [owner]
+prompt ===========================================================
+
 @inc/input_vars_init;
+
+@inc/main_with_params_only;
 
 col tab           format a40;
 col name          format a30;
@@ -50,3 +57,5 @@ col r_constraint  clear;
 col index_owner   clear;
 col index_name    clear;
 col status        clear;
+/* end main_with_params_only */
+@inc/input_vars_undef;

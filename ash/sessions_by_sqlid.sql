@@ -8,6 +8,8 @@ col wait_class       format a30;
 col curobj           format a30;
 col module           format a30;
 col program          format a15;
+col ple              format a45;
+col plo              format a45;
 with ash_pre as (
          select
              h.inst_id
@@ -18,6 +20,7 @@ with ash_pre as (
             ,h.blocking_session
             ,h.user_id
             ,h.sql_id
+&_IF_ORA112_OR_HIGHER            ,h.sql_exec_id
 &_IF_ORA112_OR_HIGHER            ,h.top_level_sql_id
             ,h.plsql_entry_object_id ple
             ,h.plsql_object_id       plo
@@ -44,6 +47,7 @@ from
          ,h.user_id
          ,(select username from dba_users u where u.user_id=h.user_id) username
          ,h.sql_id
+&_IF_ORA112_OR_HIGHER            ,h.sql_exec_id
 &_IF_ORA112_OR_HIGHER         ,h.top_level_sql_id
          ,h.module
          ,h.program
@@ -71,3 +75,5 @@ col wait_class       clear;
 col curobj           clear;
 col module           clear;
 col program          clear;
+col ple              clear;
+col plo              clear;

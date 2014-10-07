@@ -3,13 +3,13 @@
 define tab_owner="nvl(upper('&2'),'%')"
 define tab_name="&1"
 
-col owner           for a15
-col table_name      for a30
+col owner           for a15 new_val _tab_owner
+col table_name      for a30 new_val _tab_name
 col partition_name  for a20
 col index_name      for a30
 col st_lock         for a7
 col #               for 999
-------------- table stats -------------------
+prompt ------------- tab stats -------------------;
 select
     t.owner
    ,t.table_name
@@ -29,7 +29,8 @@ from dba_tab_statistics t
 where  
       t.owner      like &tab_owner
   and t.table_name = upper('&tab_name');
------------- indexes stats ------------------
+prompt ;
+prompt ------------- ind stats ------------------;
 select 
     ix.owner
    ,ix.index_name
@@ -43,9 +44,10 @@ select
    ,ix.user_stats
 from dba_indexes ix 
 where 
-      ix.table_owner like &tab_owner
-  and ix.table_name  = upper('&tab_name');
-------------- col statistics -----------------
+      ix.table_owner = '&_tab_owner'
+  and ix.table_name  = '&_tab_name';
+prompt ;
+prompt ------------- col stats   -----------------;
 set serverout on;
 
 declare
@@ -145,7 +147,7 @@ begin
    
    for r in (
          select 
-             cs.column_name
+             tc.column_name
             ,cs.num_distinct
             ,tc.DATA_TYPE
             ,cs.low_value
@@ -162,11 +164,12 @@ begin
          from dba_tab_col_statistics cs 
              ,dba_tab_columns tc
          where 
-                cs.owner      like &tab_owner
-            and cs.table_name = upper('&tab_name')
-            and tc.OWNER=cs.owner
-            and tc.TABLE_NAME=cs.table_name
-            and tc.COLUMN_NAME=cs.column_name
+                tc.owner       = '&_tab_owner'
+            and tc.table_name  = '&_tab_name'
+            and tc.OWNER       = cs.owner(+)
+            and tc.TABLE_NAME  = cs.table_name(+)
+            and tc.COLUMN_NAME = cs.column_name(+)
+         order by tc.COLUMN_ID
    )
    loop
       dbms_output.put_line( '| '
@@ -188,5 +191,5 @@ begin
    dbms_output.put_line( rpad('-',full_len,'-'));
 end;
 /
-
+undef tab_name tab_owner _tab_name _tab_owner;
 @inc/input_vars_undef.sql

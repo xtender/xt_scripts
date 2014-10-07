@@ -31,52 +31,62 @@ col usern           format a12
 col osuser          format a12
 col waited          format a15
 col event           format a30
+col state           format a10
+col status          noprint
+col sql_id          format a13
+col module          format a30
 col ple             format a35 word
 col plo             format a35 word
 -----------------------------------------------------------------------
 with 
  v#session as (
-   select--+ materialize no_merge use_hash(ss.w ss.e ss.s)
-          ss.sid
-         ,ss.serial#
-         ,ss.inst_id
-         ,ss.username
-         ,ss.terminal
-         ,ss.osuser
-         ,ss.sql_id
-         ,ss.sql_child_number
-         ,ss.plsql_entry_object_id
-         ,ss.plsql_entry_subprogram_id
-         ,ss.plsql_object_id
-         ,ss.plsql_subprogram_id
-         ,ss.ROW_WAIT_OBJ#
-         ,ss.ROW_WAIT_FILE#
-         ,ss.ROW_WAIT_BLOCK#
-         ,ss.ROW_WAIT_ROW#
-         ,ss.wait_class
-         ,ss.event
-         ,ss.wait_time
-         ,ss.seconds_in_wait
-         ,ss.blocking_session
-         ,ss.blocking_instance
-         ,ss.blocking_session_status
-         ,rownum rn
-   from gv$session ss
-   where 1=1
+    select--+ materialize no_merge use_hash(ss.w ss.e ss.s)
+        ss.sid
+       ,ss.serial#
+       ,ss.inst_id
+       ,ss.username
+       ,ss.terminal
+       ,ss.module
+       ,ss.osuser
+       ,ss.sql_id
+       ,ss.sql_child_number
+       ,ss.plsql_entry_object_id
+       ,ss.plsql_entry_subprogram_id
+       ,ss.plsql_object_id
+       ,ss.plsql_subprogram_id
+       ,ss.ROW_WAIT_OBJ#
+       ,ss.ROW_WAIT_FILE#
+       ,ss.ROW_WAIT_BLOCK#
+       ,ss.ROW_WAIT_ROW#
+       ,ss.wait_class
+       ,ss.event
+       ,ss.state
+       ,ss.status
+       ,ss.wait_time
+       ,ss.seconds_in_wait
+       ,ss.blocking_session
+       ,ss.blocking_instance
+       ,ss.blocking_session_status
+       ,rownum rn
+    from gv$session ss
+    where rownum>0
  )
 ,lock_tree as (
-   select--+ materialize
+    select--+ materialize
         distinct
           s.BLOCKING_SESSION
          ,s.sid
          ,s.serial#
          ,s.username
-   --      ,terminal
+         ,s.terminal
+         ,substr(s.module,1,30) as module
          ,s.osuser
          ,(select o.object_name from dba_objects o where o.OBJECT_ID=s.ROW_WAIT_OBJ#) b_obj
          ,s.ROW_WAIT_OBJ#,s.ROW_WAIT_FILE#,s.ROW_WAIT_BLOCK#,s.ROW_WAIT_ROW#
          ,s.wait_class
          ,s.EVENT
+         ,s.state
+         ,s.status
          ,s.WAIT_TIME+s.SECONDS_IN_WAIT waittime
          ,s.sql_id
          ,s.sql_child_number
@@ -84,10 +94,24 @@ with
          ,s.plsql_entry_subprogram_id
          ,s.plsql_object_id
          ,s.plsql_subprogram_id
-         ,max(length(sid))over() max_len
-         ,CONNECT_BY_ISLEAF leaf
-   from   v#session s
-   start with s.blocking_session_status = 'VALID'
+         ,max(length(sid))over()        max_len
+         ,CONNECT_BY_ISLEAF             leaf
+    from   v#session s
+    where rownum>0
+    start with 
+          (
+             nvl('&1','%') = '%' and s.blocking_session_status = 'VALID'
+              or 
+             ('&1' !='%'
+              and (
+                     s.username      like upper('%'||'&1'||'%') 
+                  or upper(osuser)   like upper('%'||'&1'||'%')
+                  or upper(module)   like upper('%'||'&1'||'%')
+                  or upper(terminal) like upper('%'||'&1'||'%')
+                  or sql_id          like      ('%'||'&1'||'%')
+                  )
+             )
+          )
    connect by nocycle prior s.BLOCKING_SESSION = s.sid and prior s.BLOCKING_INSTANCE = s.INST_ID
 )
 select --+ no_merge(lt)
@@ -102,8 +126,13 @@ select --+ no_merge(lt)
             ,lt.osuser           osuser
             ,lt.wait_class       waited
             ,lt.EVENT            event
+            ,lt.state
+            ,lt.status
             ,lt.waittime         waittime
             ,lt.sql_id           sql_id
+            ,lt.module           module
+            ,lt.terminal         terminal
+            ,'&1' test
 &_if_pl     ,(select p.OBJECT_TYPE||' '|| p.owner||'.'||p.object_name||'.'||p.procedure_name 
 &_if_pl       from dba_procedures p 
 &_if_pl       where p.object_id     = lt.plsql_entry_object_id 
@@ -114,7 +143,6 @@ select --+ no_merge(lt)
 &_if_pl       where p.object_id     = lt.plsql_object_id
 &_if_pl         and p.subprogram_id = lt.plsql_subprogram_id
 &_if_pl      ) plo
-
             ,(select substr(v$sql.sql_text,1,70)||'...' from v$sql where v$sql.sql_id=lt.sql_id and rownum=1) sqlsubstring
           --,(select sql_text from v$sql st where st.SQL_ID=lt.sql_id and st.child_number=sql_child_number) sqltext
 &_if_data
@@ -132,7 +160,6 @@ select --+ no_merge(lt)
 &_if_data                                           ||''''
 &_if_data           )
 &_if_data        ) as obj_data
-
 from lock_tree lt
 start with leaf=1
 connect by nocycle prior lt.sid = lt.BLOCKING_SESSION
@@ -146,6 +173,10 @@ col usern   clear;
 col osuser  clear;
 col waited  clear;
 col event   clear;
+col state   clear;
+col status  clear;
+col sql_id  clear;
+col module  clear;
 col srowid  clear;
 col ple     clear;
 col plo     clear;

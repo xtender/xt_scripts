@@ -51,8 +51,11 @@ set termout on
 ---------------------------------------------------------------------------------------
 -- formatting:
 col name            format a30
+col type            format a8
+col plan            format a5
+col n               format 999
 col outline_hints   format a200
-break on name skip 1
+break on name on type on plan on plan_id skip 1
 
 @switch "substr('&_O_RELEASE',1,2)" 
 
@@ -60,6 +63,8 @@ break on name skip 1
       select--+ NO_XML_QUERY_REWRITE
          &_if_nq    p.name  as name
          &_if_nq   ,decode(p.obj_type,1,'Profile',2,'Baseline',3,'Patch') type
+         &_if_nq   ,case when p.plan_id = sd.plan_id then 'Main' else 'Other' end plan
+         &_if_nq   ,sd.plan_id
          &_if_nq   ,x.n
          &_if_nq   ,x.hints as outline_hints 
          &_if_q    ',q''['||x.hints||']''' as outline_hints 
@@ -76,7 +81,10 @@ break on name skip 1
        and p.signature = sd.signature 
        and p.category  = sd.category
        and p.obj_type  = sd.obj_type
-      order by    p.name,x.n
+       &_if_q and p.plan_id = sd.plan_id
+      order by
+        &_if_nq p.name,plan,sd.plan_id,
+           x.n
    ;
    /* end when */
 
@@ -102,5 +110,14 @@ break on name skip 1
 ---------------------------------------------------------------------------------------
 -- reset all
 undef profile_name _if_nq _if_q
+col if_q            clear
+col if_nq           clear
+col _profile_name   clear
+col name            clear
+col type            clear
+col plan            clear
+col n               clear
+col outline_hints   clear
+clear break;
 set feedback on
 @inc/input_vars_undef;

@@ -24,6 +24,6 @@ FROM dual
 set termout off;
 alter session set nls_numeric_characters='&nls_num_chars';
 col sqlmon clear;
-undef nls_num_chars;
+--undef nls_num_chars;
 
 set termout on;

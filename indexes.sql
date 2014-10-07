@@ -33,6 +33,7 @@ with i as (
         and o.owner        = ix.owner 
         and o.object_name  = ix.index_name
         and o.SUBOBJECT_NAME is null
+        and o.object_type = 'INDEX'
 )
 select--+ leading(i ic o) use_nl(i ic o)
          i.owner

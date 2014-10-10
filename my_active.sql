@@ -2,7 +2,7 @@ column sid      format 999999   ;
 column serial#  format 999999   ;
 column sql_id   format a13      ;
 column program  format a20      ;
-column sql      format a80      ;
+column sql      format a80 word ;
 column event    format a40      ;
 column action   format a30      ;
 column ospid    format a9       ;
@@ -16,7 +16,7 @@ select
   ,event
   ,action
   ,sql_id
-  ,(select substr(sql_text,1,60) from v$sql s where s.sql_id=ss.sql_id and rownum=1) sql
+  ,(select substr(sql_text,1,8000) from v$sql s where s.sql_id=ss.sql_id and rownum=1) sql
   ,ss.row_wait_obj#
   ,(select nvl(subobject_name,object_name) from dba_objects o where object_id=row_wait_obj#) obj_name
 from gv$session ss

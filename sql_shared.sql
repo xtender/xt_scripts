@@ -61,13 +61,38 @@ with sql_shared as (
 select 
    s.cur_n
   ,s.sql_id       
-  ,s.ADDRESS      
-  ,s.CHILD_ADDRESS
-  ,s.CHILD_NUMBER
+--  ,s.ADDRESS      
+--  ,s.CHILD_ADDRESS
+--  ,s.CHILD_NUMBER
   ,r.reasons
   ,s.REASON
+   ,x.child_node_n      as reason_n
+   ,x.child_node_id     as reason#
+   ,x.child_node_reason as reason
+   ,x2.n2               as param#
+   ,x2.name
+   ,x2.val
 from sql_shared s
     ,reasons r
+    ,xmltable( 
+               '/XMLDATA/ChildNode'
+               passing xmltype('<XMLDATA>'||reason||'</XMLDATA>')
+               columns 
+                   child_node_n      for ordinality
+                  ,child_node_Child  number        path 'ChildNumber'
+                  ,child_node_id     number        path './ID'
+                  ,child_node_reason varchar2(400) path 'reason'
+                  ,child_node        xmltype       path '.'
+    )(+)  x
+   ,xmltable(
+               '/ChildNode/*[not(name(.)=("ChildNumber","reason", "ID"))]'
+               passing child_node
+               columns 
+                   n2   for ordinality
+                  ,name varchar2(100) path 'name()'
+                  ,val  varchar2(400) path '.'
+
+            )(+) x2
 where 
       r.cur_n (+) = s.cur_n
 /

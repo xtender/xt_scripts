@@ -16,7 +16,7 @@ use constant EXCEPTIONS => qw(  nzddri_init nacomin nas_gusl nnflctxmap
                                 nzupgew_get_environ_wrl nnfloidinfocache
                                 nzumrealloc nzumalloc );
 use constant MASK_EXCEPTIONS => '^('.join('|',EXCEPTIONS).')$';
-my $pathlen=70;
+my $pathlen=60;
 
 # coloring:
 use constant COLORED    => 1;

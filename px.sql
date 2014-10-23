@@ -5,6 +5,7 @@ col terminal    format a20;
 col osuser      format a20;
 col wait_class  format a20;
 col event       format a60;
+col SADDR       noprint;
 select 
      decode(px.sid,px.qcsid,'QC','  ') F
     ,px.*
@@ -21,3 +22,4 @@ order by px.qcsid,f nulls last
 ;
 col username clear;
 col terminal clear;
+col SADDR       clear;

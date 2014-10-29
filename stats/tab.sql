@@ -9,6 +9,7 @@ col partition_name  for a20
 col index_name      for a30
 col st_lock         for a7
 col #               for 999
+col cols            for a150;
 prompt ------------- tab stats -------------------;
 select
     t.owner
@@ -42,6 +43,15 @@ select
    ,ix.last_analyzed
    ,ix.global_stats
    ,ix.user_stats
+   ,(select ltrim(max(sys_connect_by_path(ic.column_name,',')),',')
+     from dba_ind_columns ic 
+     start with ic.INDEX_OWNER=ix.owner
+            and ic.INDEX_NAME = ix.index_name
+            and ic.COLUMN_POSITION=1
+     connect by ic.INDEX_OWNER=ix.owner
+            and ic.INDEX_NAME = ix.index_name
+            and ic.COLUMN_POSITION= prior ic.COLUMN_POSITION+1
+     ) cols
 from dba_indexes ix 
 where 
       ix.table_owner = '&_tab_owner'
@@ -192,4 +202,11 @@ begin
 end;
 /
 undef tab_name tab_owner _tab_name _tab_owner;
+col owner           clear;
+col table_name      clear;
+col partition_name  clear;
+col index_name      clear;
+col st_lock         clear;
+col #               clear;
+col cols            clear;
 @inc/input_vars_undef.sql

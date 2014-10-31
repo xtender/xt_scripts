@@ -1,15 +1,18 @@
 #!/usr/bin/perl
+
 use Time::Local;
 use Term::ANSIColor qw(:constants colored);
 
 use strict;
 
 # my modules:
+use FindBin;               # locate this script
+use lib "$FindBin::Bin/";  # use the parent directory
 use TreeNode;
 
 ##################################################################
 #           configuration:
-use constant MASK_REC   => '^(\[[^]]+\]) ([_a-zA-Z]+):(.*)$';
+use constant MASK_REC   => '(\[[^]]+\]) ([_a-zA-Z]+):(.*)$';
 use constant MASK_DATE  => '(\d\d):(\d\d):(\d\d):(\d{3})(?=])';
 use constant EXCEPTIONS => qw(  nzddri_init nacomin nas_gusl nnflctxmap 
                                 nnfgiinit nnfggav nnfgsrsp nnfgsrdp nttctl

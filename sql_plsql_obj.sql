@@ -18,7 +18,7 @@ from
               and o.OBJECT_NAME=s.name
               and s.line between a.PROGRAM_LINE#-5 and a.PROGRAM_LINE#+5
 where a.SQL_ID='&1'
-order by 1,2,3,4,5
+order by 1,2,3,4,5,6
 /
 col owner           clear;
 col object_name     clear;

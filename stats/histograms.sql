@@ -26,7 +26,13 @@ select
           when c.data_type in ('FLOAT','NUMBER')
                then to_char(endpoint_value,'tm9')
           when c.data_type in ('CHAR','VARCHAR2','NVARCHAR2')
-               then 'use histograms_xml instead'
+               then --'use histograms_xml instead'
+                    chr(to_number(substr(ltrim(to_char(endpoint_value,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), 1,2),'XX'))
+                 || chr(to_number(substr(ltrim(to_char(endpoint_value,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), 3,2),'XX'))
+                 || chr(to_number(substr(ltrim(to_char(endpoint_value,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), 5,2),'XX'))
+                 || chr(to_number(substr(ltrim(to_char(endpoint_value,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), 7,2),'XX'))
+                 || chr(to_number(substr(ltrim(to_char(endpoint_value,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), 9,2),'XX'))
+                 || chr(to_number(substr(ltrim(to_char(endpoint_value,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),11,2),'XX'))
           else 'unsupporteed'
      end as ep_value
    , h.endpoint_value

@@ -1,7 +1,8 @@
 prompt &_C_REVERSE *** Show stats delta through specified interval &_C_RESET
-accept _statmask  prompt 'Enter statmask: '
-accept _tinterval prompt 'Enter interval(sec): '
-accept _delta prompt 'Enter delta miniminum: '
+accept _statmask    prompt "Enter statmask (RegExp)[.*]: " default '.*'
+accept _tinterval   prompt "Enter interval (sec)   [10]: " default 10
+accept _delta       prompt "Enter delta miniminum  [ 1]: " default 1
+
 set serverout on;
 declare
    a ku$_ErrorLines;

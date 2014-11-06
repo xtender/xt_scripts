@@ -8,8 +8,10 @@ col nested        for a6;
 col IOT_TYPE      for a15;
 with tabs as (
       select 
-         to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,1))  owner
-        ,to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,2))  tab_name
+&_IF_ORA11_OR_HIGHER          to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,1))  owner
+&_IF_ORA11_OR_HIGHER         ,to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,2))  tab_name
+&_IF_LOWER_THAN_ORA11         regexp_substr(to_char(regexp_substr(sql_fulltext,'FROM "([^"]+"."[^"]+)"',1,1,null)),'"[^"]+"')  owner
+&_IF_LOWER_THAN_ORA11        ,regexp_substr(to_char(regexp_substr(sql_fulltext,'FROM "([^"]+"."[^"]+)"',1,1,null)),'"[^"]+"$')  tab_name
         ,count(*)                                                                    cnt
         ,sum(executions)                                                             execs
         ,round(sum(elapsed_time/1e6),3)                                              elapsed
@@ -17,8 +19,10 @@ with tabs as (
       from v$sqlarea a
       where a.sql_text like 'SELECT /* OPT_DYN_SAMP */%'
       group by
-         to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,1))
-        ,to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,2))
+&_IF_ORA11_OR_HIGHER          to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,1))
+&_IF_ORA11_OR_HIGHER         ,to_char(regexp_substr(sql_fulltext,'FROM "([^"]+)"."([^"]+)"',1,1,null,2))
+&_IF_LOWER_THAN_ORA11         regexp_substr(to_char(regexp_substr(sql_fulltext,'FROM "([^"]+"."[^"]+)"',1,1,null)),'"[^"]+"')
+&_IF_LOWER_THAN_ORA11        ,regexp_substr(to_char(regexp_substr(sql_fulltext,'FROM "([^"]+"."[^"]+)"',1,1,null)),'"[^"]+"$')
 )
 select tabs.* 
       ,t.temporary

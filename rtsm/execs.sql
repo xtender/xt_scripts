@@ -4,9 +4,13 @@ col sid             format 999999
 col status          format a30
 col m_elaexe        format a15 heading "Elapsed(MIN:SS)"
 col username        format a25
-col program         format a20
+col program         format a20 trunc
 col PLE             format a35
 col PLO             format a35
+col PLE_OBJ         noprint
+col PLE_SUB         noprint
+col PL_OBJ          noprint
+col PL_SUB          noprint
 col ERROR_NUMBER    format a20
 col error_message   format a40
 col a1 format a5 head"";
@@ -53,12 +57,12 @@ select
    , PHYSICAL_WRITE_REQUESTS
    , PHYSICAL_WRITE_BYTES
 
---   , PLSQL_ENTRY_OBJECT_ID      as PLE_OBJ
---   , PLSQL_ENTRY_SUBPROGRAM_ID  as PLE_SUB
-   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_ENTRY_OBJECT_ID and p.subprogram_id=PLSQL_ENTRY_SUBPROGRAM_ID) PLE
---   , PLSQL_OBJECT_ID            as PL_OBJ
---   , PLSQL_SUBPROGRAM_ID        as PL_SUB
-   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_OBJECT_ID and p.subprogram_id=PLSQL_SUBPROGRAM_ID) PLO
+   , PLSQL_ENTRY_OBJECT_ID      as PLE_OBJ
+   , PLSQL_ENTRY_SUBPROGRAM_ID  as PLE_SUB
+--   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_ENTRY_OBJECT_ID and p.subprogram_id=PLSQL_ENTRY_SUBPROGRAM_ID) PLE
+   , PLSQL_OBJECT_ID            as PL_OBJ
+   , PLSQL_SUBPROGRAM_ID        as PL_SUB
+--   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_OBJECT_ID and p.subprogram_id=PLSQL_SUBPROGRAM_ID) PLO
 
 from gv$sql_monitor m
 where 
@@ -70,7 +74,13 @@ where
   &6
 order by SQL_EXEC_START desc
 )
-select *
+select/*+ gather_plan_statistics */ 
+    v.*
+   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLE_OBJ and p.subprogram_id=PLE_SUB) PLE
+--   , PLSQL_OBJECT_ID            as PL_OBJ
+--   , PLSQL_SUBPROGRAM_ID        as PL_SUB
+   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PL_OBJ and p.subprogram_id=PL_SUB) PLO
+
 from v
 where rownum<=20;
 
@@ -81,4 +91,11 @@ col username        clear;
 col program         clear;
 col ERROR_NUMBER    clear;
 col error_message   clear;
+col PLE             clear;
+col PLO             clear;
+col PLE_OBJ         clear;
+col PLE_SUB         clear;
+col PL_OBJ          clear;
+col PL_SUB          clear;
+
 @inc/input_vars_undef;

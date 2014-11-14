@@ -1,4 +1,5 @@
 @inc/input_vars_init;
+col owner            format a30;
 col TABLE_NAME       format a30;
 col PREFERENCE_NAME  format a25;
 col PREFERENCE_VALUE format a100 word;

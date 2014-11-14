@@ -76,7 +76,6 @@ select/*+ SQLSTAT */
 &_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_READ_BYTES_DELTA     /  st.executions_delta),'99999999999')  as PH_READ_BYTES_D
 &_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_REQUESTS_DELTA /  st.executions_delta),'99999999999')  as PH_WRITE_REQS_D
 &_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_BYTES_DELTA    /  st.executions_delta),'99999999999')  as PH_WRITE_BYTES_D
-
 from v$database db
     ,dba_hist_sqlstat st
     ,dba_hist_snapshot snaps

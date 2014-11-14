@@ -42,19 +42,19 @@ accept sql_id -
 accept plan_hash_value -
        prompt 'Enter value for plan_hash_value: ' 
 accept profile_name -
-       prompt 'Enter value for profile_name (PROF_sqlid): ' -
+       prompt 'Enter value for profile_name [PROF_&SQL_ID]: ' -
        default 'PROF_&SQL_ID'
 accept category -
        prompt 'Enter value for category (DEFAULT): ' -
        default 'DEFAULT'
 accept force_matching -
-       prompt 'Enter value for force_matching (FALSE): ' -
-       default 'false'
+       prompt 'Enter value for force_matching (TRUE): ' -
+       default 'true'
 
 declare
     ar_profile_hints sys.sqlprof_attr;
     cl_sql_text clob;
-    l_profile_name varchar2(30);
+    l_profile_name varchar2(30):='&profile_name';
 begin
     select
         extractvalue(value(d), '/hint') as outline_hints

@@ -31,7 +31,6 @@
 -- @rg_sqlprof1 '&&sql_id' &&child_no '&&category' '&force_matching'
 
 set feedback off
-set sqlblanklines on
 
 accept sql_id -
        prompt 'Enter value for sql_id: ' -
@@ -110,5 +109,4 @@ undef profile_name
 undef category
 undef force_matching
 
-set sqlblanklines off
 set feedback on

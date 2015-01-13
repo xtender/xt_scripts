@@ -47,9 +47,10 @@ select
    ,decode(s.executions,0,0, s.DISK_READS    /s.executions)             disk_reads
    ,decode(s.executions,0,0, s.BUFFER_GETS   /s.executions)             buffer_gets
    ,decode(s.executions,0,0, s.DIRECT_WRITES /s.executions)             direct_writes
+   ,decode(s.executions,0,0, s.CPU_TIME             /1e6/s.executions)  cpu_time
+   ,decode(s.executions,0,0, s.USER_IO_WAIT_TIME    /1e6/s.executions)  io_wait
    ,decode(s.executions,0,0, s.APPLICATION_WAIT_TIME/1e6/s.executions)  app_wait
    ,decode(s.executions,0,0, s.CONCURRENCY_WAIT_TIME/1e6/s.executions)  concurrency
-   ,decode(s.executions,0,0, s.USER_IO_WAIT_TIME    /1e6/s.executions)  io_wait
    ,decode(s.executions,0,0, s.PLSQL_EXEC_TIME      /1e6/s.executions)  plsql_t
    ,decode(s.executions,0,0, s.java_exec_time       /1e6/s.executions)  java_exec_t
    ,decode(s.executions,0,0, s.ROWS_PROCESSED           /s.executions)  rows_per_exec
@@ -57,7 +58,6 @@ select
    ,s.OPTIMIZER_COST                                                    cost
    ,s.OPTIMIZER_ENV_HASH_VALUE                                          env_hash
    ,s.PARSING_SCHEMA_NAME                                               P_schema
-   ,decode(s.executions,0,0, s.CPU_TIME/1e6/s.executions)               CPU_TIME
    ,s.PROGRAM_ID
    ,(select object_name from dba_objects o where o.object_id=s.PROGRAM_ID) proc_name
    ,s.PROGRAM_LINE#                                                        proc_line

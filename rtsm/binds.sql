@@ -4,10 +4,14 @@ PROMPT * Usage @rtsm/binds sql_id [sql_exec_id] [status_mask]
 
 col USERNAME    format a25;
 col status      format a15;
-col binds       format a100;
+col binds       format a120;
+col m_elaexe    format a12;
 with agg as (
       select distinct
              sm.username,sm.sid,sm.session_serial# serial#
+            , to_char(trunc(ELAPSED_TIME/1e6/60))
+             ||':'||
+             to_char(mod(ELAPSED_TIME,60e6)/1e6,'fm00.000')  as m_elaexe
             ,sm.sql_exec_id exec_id,sm.SQL_EXEC_START exec_start,sm.SQL_PLAN_HASH_VALUE plan_hv
             ,dat.name  
             ,dat.pos   
@@ -37,12 +41,14 @@ select username
       ,exec_id
       ,exec_start
       ,plan_hv
+      ,m_elaexe
       ,listagg(agg.name||'('||agg.dtystr||')='||agg.val,', ') within group(order by agg.pos)binds
 from agg
-group by username,sid,serial#,exec_id,exec_start,plan_hv
+group by username,sid,serial#,exec_id,exec_start,plan_hv,m_elaexe
 order by exec_start
 /
 col USERNAME    clear
 col status      clear
 col binds       clear
+col m_elaexe    clear
 @inc/input_vars_undef;

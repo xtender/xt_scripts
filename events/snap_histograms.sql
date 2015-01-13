@@ -1,11 +1,12 @@
 prompt &_C_RED *** Snapper for event histograms &_C_RESET;
-prompt * Usage: @events/snap_histograms event_mask [period]
+accept _event_mask prompt "Event mask: "
+accept _period prompt "Interval[10 sec]: " default 10
 
 var cur refcursor;
 
 declare
-   l_event_mask varchar2(128):=q'[&1]';
-   l_period     int:=case &2+0 when 0 then 1 else &2+0 end;
+   l_event_mask varchar2(128):=q'[&_event_mask]';
+   l_period     int:=&_period;
    x_start      xmltype;
    x_end        xmltype;
    

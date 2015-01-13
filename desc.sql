@@ -51,6 +51,7 @@ col _show_seg       new_val _show_seg       noprint
 col _get_indexes    new_val _get_indexes    noprint
 select case '&_type'
         when 'INDEX' then 'desc_index'
+        when 'TABLE' then 'desc_table'
         else 'desc'
       end as "_EXEC"
       ,case when '&_type' in ('INDEX','TABLE') then 'seg'

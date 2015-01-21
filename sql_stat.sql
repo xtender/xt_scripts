@@ -2,7 +2,7 @@
 REM ############### COMMON FORMATTING #######################
 col SQL_ID                              for a13
 col sql_child_number    head CH#        for 999
-col SQL_PROFILE         head PROF/BSLN    for a30
+col SQL_PROFILE         head Profile/Baseline/Patch   for a30;
 col end_of_fetch_count  head "EO_FTCHS"
 REM ############### LOCAL FORMATTING #######################
 col elaexe              for 99999.99990
@@ -35,9 +35,10 @@ select
    ,s.child_address                                                     object_handle
    ,s.PLAN_HASH_VALUE                                                   plan_hv
    ,s.hash_value                                                        hv
-   ,s.SQL_PROFILE
-&_IF_ORA11_OR_HIGHER || s.sql_plan_baseline
-            as sql_profile
+   ,s.SQL_PROFILE                                           
+&_IF_ORA11_OR_HIGHER ||' / '||s.sql_plan_baseline
+&_IF_ORA11_OR_HIGHER ||' / '||s.sql_patch
+        as sql_profile
    ,decode(s.EXECUTIONS,0,0, s.ELAPSED_TIME/1e6/s.EXECUTIONS)           elaexe
    ,s.EXECUTIONS                                                        cnt
    ,s.FETCHES                                                           fetches

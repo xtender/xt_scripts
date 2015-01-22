@@ -24,6 +24,7 @@ from table(gv$(cursor(
 with v as (
 select 
      STATUS
+   , (select INSTANCE_NUMBER from v$instance)       as inst
    , SID
    , SESSION_SERIAL#                                as serial#
    , SQL_PLAN_HASH_VALUE                            as plan_hv

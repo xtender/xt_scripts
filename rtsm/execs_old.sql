@@ -16,11 +16,6 @@ col error_message   format a40
 col a1 format a5 head"";
 col a2 format a6 head "";
 
-select 
-   t.* 
-   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLE_OBJ and p.subprogram_id=PLE_SUB) PLE
-   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PL_OBJ and p.subprogram_id=PL_SUB) PLO
-from table(gv$(cursor(
 with v as (
 select 
      STATUS
@@ -39,7 +34,7 @@ select
    , ELAPSED_TIME               as ELA_TIME
    , CPU_TIME
    , FETCHES
-   , (select pm.output_rows from v$sql_plan_monitor pm where pm.sql_id=m.sql_id and pm.SQL_EXEC_ID=m.SQL_EXEC_ID and pm.key=m.key and pm.PLAN_LINE_ID=0) "ROWS"
+   , (select pm.output_rows from gv$sql_plan_monitor pm where pm.sql_id=m.sql_id and pm.SQL_EXEC_ID=m.SQL_EXEC_ID and pm.inst_id=m.inst_id and pm.key=m.key and pm.PLAN_LINE_ID=0) "ROWS"
 
    , BUFFER_GETS                as BUF_GETS
    , DISK_READS                 as DISK_READS
@@ -69,7 +64,7 @@ select
    , PLSQL_SUBPROGRAM_ID        as PL_SUB
 --   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_OBJECT_ID and p.subprogram_id=PLSQL_SUBPROGRAM_ID) PLO
 
-from v$sql_monitor m
+from gv$sql_monitor m
 where 
   m.sql_id like '&1'
   &2 
@@ -81,15 +76,13 @@ order by SQL_EXEC_START desc
 )
 select/*+ gather_plan_statistics */ 
     v.*
---   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLE_OBJ and p.subprogram_id=PLE_SUB) PLE
---   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PL_OBJ and p.subprogram_id=PL_SUB) PLO
+   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLE_OBJ and p.subprogram_id=PLE_SUB) PLE
 --   , PLSQL_OBJECT_ID            as PL_OBJ
 --   , PLSQL_SUBPROGRAM_ID        as PL_SUB
+   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PL_OBJ and p.subprogram_id=PL_SUB) PLO
 
 from v
-where rownum<=20
-))) t
-;
+where rownum<=20;
 
 col SQL_EXEC_START  clear;
 col status          clear;

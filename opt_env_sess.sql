@@ -13,7 +13,7 @@ select id,name,value,e.isdefault,sql_feature
 from v$ses_optimizer_env e
 where e.sid = to_number(nvl('&_sid',userenv('sid')))
   and e.name like lower('&_param')
-  and e.isdefault = decode(lower('&_defaults'),'n','NO',e.isdefault)
+  and ('&_param'!='%' or '&_param'='%' and e.isdefault = decode(lower('&_defaults'),'n','NO',e.isdefault))
 order by name
 /
 undef _sid _param _defaults

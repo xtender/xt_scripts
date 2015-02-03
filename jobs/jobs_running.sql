@@ -12,7 +12,8 @@ col STATUS          format a8;
 col SQL_ID          format a13;
 col SQL_EXEC_START  format a19;
 select--+ leading(r j s) use_nl(j) use_nl(s)
-        r.sid,r.job,r.this_date
+        row_number()over(order by what) "#"
+       ,r.sid,r.job,r.this_date
        ,log_user||'/'||priv_user||'/'||schema_user "log_user/priv_user/schema_user"
        ,total_time
        --,s.USERNAME

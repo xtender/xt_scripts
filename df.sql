@@ -8,7 +8,7 @@
 col "Tablespace"for a30
 col "Used(%)"   for a8
 col "Free(%)"   for a8
-col "Used"      for a22
+col "Used"      for a52
 
 select
     rpad(t.tablespace_name,30,'..')                                         as "Tablespace"
@@ -19,9 +19,9 @@ select
    ,to_char(nvl(f.mb, 0)*100 / decode(t.mb, 0, 1, t.mb),'990.0')||'%'       as "Free(%)"
    ,t.ext                                                                   as "Ext"
    ,'|' || rpad(lpad('#'
-                     ,ceil((1 - nvl(f.mb, 0) / decode(t.mb, 0, 1, t.mb)) * 20)
+                     ,ceil((1 - nvl(f.mb, 0) / decode(t.mb, 0, 1, t.mb)) * 50)
                      ,'#')
-                ,20
+                ,50
                 ,' ') || '|'                                             as "Used"
 from   (select tablespace_name, trunc(sum(bytes) / 1048576) MB
         from   dba_free_space

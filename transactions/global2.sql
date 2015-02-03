@@ -4,6 +4,7 @@ accept _globalid    prompt "Globalid mask : ";
 accept _remote_db   prompt "Remote_db mask: ";
 
 
+col sid                     for a7;
 col remote_db               for a20;
 --col remote_dbid_reversed    for a10;
 col trans_id                for a16;
@@ -57,7 +58,8 @@ select
    ,nvl2(replace(g.branchid,'0'),'FROM REMOTE','TO REMOTE') as direction
    ,g.trans_id
    ,t.start_time as trx_start_time
-   ,s.sid,s.serial#
+   ,nvl(to_char(s.sid),'Unknown') as sid
+   ,s.serial#
    ,s.username
    ,s.osuser
 --   ,s.sql_id
@@ -83,11 +85,12 @@ where
       g.xidusn  = t.xidusn(+)
   and g.xidslot = t.xidslot(+)
   and g.xidsqn  = t.xidsqn(+)
-  and t.SES_ADDR = s.saddr(+)
-  and ('&_sid'       is null or s.sid       ='&_sid')
   and ('&_globalid'  is null or g.globalid  like '&_globalid')
   and ('&_remote_db' is null or g.remote_db like '&_remote_db')
+  and t.SES_ADDR = s.saddr(+)
+  and ('&_sid'       is null or s.sid       ='&_sid' or s.sid is null)
 /
+col sid                     clear;
 col remote_db               clear;
 --col remote_dbid_reversed    clear;
 col trans_id                clear;

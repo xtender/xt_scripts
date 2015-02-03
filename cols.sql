@@ -1,4 +1,6 @@
 @inc/input_vars_init;
+set feed on;
+
 select 
     decode(tc.COLUMN_ID,1,' ',',')
   ||tc.column_name col

@@ -53,7 +53,7 @@ with ash_pre as (
                                               where lower(u.username) like decode(translate('&1','x0132456789','x'),null,null,lower('%&1%'))
                                              )
                                 )
-                           and ('&3' is null or h.session_serial# = to_number(&3))
+                           and ('&3' is null or h.session_serial# = to_number('&3'))
 )
 select
                             min(h.SAMPLE_TIME) min_s_time
@@ -99,7 +99,8 @@ group by
    ,h.program
    ,h.action
 &&_IF_ORA112_OR_HIGHER   ,h.TOP_LEVEL_SQL_ID
-order by sqlid_count desc,max_sql_exec_count desc
+order by sqlid_count desc
+&&_IF_ORA112_OR_HIGHER      ,max_sql_exec_count desc
 /
 col text       clear;
 col event      clear;

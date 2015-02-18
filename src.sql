@@ -1,6 +1,6 @@
 @inc/input_vars_init;
 prompt &_C_REVERSE *** Show text from dba_source by object name: &_C_RESET
-prompt *** Usage: @src object_mask [owner_mask]
+prompt *** Usage: @src object_mask [owner_mask [line_start] [line_end]]
 col owner format a30;
 col text  format a80;
 set serverout on;
@@ -15,6 +15,9 @@ begin
                from dba_source src
                where src.owner like nvl(upper('&2'),'%')
                  and src.name like upper('&1')
+                 and src.line >= to_number(nvl('&3',1))
+                 and src.line <= to_number(nvl('&4',1e5))
+               order by 1,2,3,4
             )
    loop
       dbms_output.put_line(

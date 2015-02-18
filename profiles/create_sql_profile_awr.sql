@@ -92,7 +92,7 @@ select
  ,sum(cnt)         as cnt
 from t2
 group by plan_hv
-order by elaexe_avg
+order by elaexe_avg desc
 ;
 col plan_hv clear;
 
@@ -127,6 +127,7 @@ begin
                     sql_id = '&&sql_id'
                     and plan_hash_value = &&plan_hash_value
                     and other_xml is not null
+                    and dbid = (select dbid from v$database)
             )
         ) d;
 

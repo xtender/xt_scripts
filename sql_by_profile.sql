@@ -17,7 +17,9 @@ select
   ,s.PROGRAM_ID
   ,s.PROGRAM_LINE#
 from v$sql s 
-where s.plan_hash_value = &1
+where                   upper(s.sql_profile)        like upper('%&1%')
+&_IF_ORA11_OR_HIGHER or upper(s.sql_plan_baseline)  like upper('%&1%')
+&_IF_ORA11_OR_HIGHER or upper(s.sql_patch)          like upper('%&1%')
 order by PROGRAM_LINE#
 /
 col sql_text clear;

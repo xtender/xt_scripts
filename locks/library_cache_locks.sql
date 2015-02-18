@@ -1,3 +1,5 @@
+@inc/input_vars_init.sql;
+
 ttitle center 'Library cache lock holders/waiters' skip 2
 
 column sid       format 999999
@@ -17,10 +19,10 @@ select
    , lk.kgllkcnt lck_cnt, lk.kgllkmod lock_mode, lk.kgllkreq lock_req
    , w.state, w.event, w.wait_Time wtime, w.seconds_in_Wait secs
  from
-    sys.x$kgllk lk
-  , sys.x$kglob ob,sys.x$ksuse ses
+    sys.&1.x$kgllk lk
+  , sys.&1.x$kglob ob,sys.&1.x$ksuse ses
   , v$session_wait w
-where lk.kgllkhdl in (select kgllkhdl from sys.x$kgllk where kgllkreq >0 )
+where lk.kgllkhdl in (select kgllkhdl from sys.&1.x$kgllk where kgllkreq >0 )
 and ob.kglhdadr = lk.kgllkhdl
 and lk.kgllkuse = ses.addr
 and w.sid = ses.indx

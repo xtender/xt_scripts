@@ -14,7 +14,7 @@ with agg as (
              to_char(mod(ELAPSED_TIME,60e6)/1e6,'fm00.000')  as m_elaexe
             ,sm.sql_exec_id exec_id,sm.SQL_EXEC_START exec_start,sm.SQL_PLAN_HASH_VALUE plan_hv
             ,dat.name  
-            ,dat.pos   
+            --,dat.pos   
             ,dat.dtystr
             ,dat.maxlen
             ,dat.len   
@@ -42,7 +42,7 @@ select username
       ,exec_start
       ,plan_hv
       ,m_elaexe
-      ,listagg(agg.name||'('||agg.dtystr||')='||agg.val,', ') within group(order by agg.pos)binds
+      ,listagg(agg.name||'('||agg.dtystr||')='||agg.val,', ') within group(order by agg.name)binds
 from agg
 group by username,sid,serial#,exec_id,exec_start,plan_hv,m_elaexe
 order by exec_start

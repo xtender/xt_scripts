@@ -11,8 +11,8 @@ col sql_text format a120;
 col stext30  format a30 ;
 col ple      format a40 ;
 col plo      format a40 ;
-col module   format a12 ;
-col program  format a20 ;
+col module   format a12 trunc;
+col program  format a20 trunc;
 col username format a25 ;
 with rtsm as (
             select 
@@ -25,12 +25,12 @@ with rtsm as (
               ,r.username
               ,r.module
 --              ,r.program
-              ,(select p.OBJECT_TYPE||' '|| p.owner||'.'||p.object_name||'.'||p.procedure_name 
+              ,(select substr(p.OBJECT_TYPE,1,4)||' '|| p.owner||'.'||p.object_name||'.'||p.procedure_name 
                 from dba_procedures p 
                 where p.object_id=r.plsql_entry_object_id 
                   and p.subprogram_id=r.plsql_entry_subprogram_id
                ) ple
-              ,(select p.OBJECT_TYPE||' '|| p.owner||'.'||p.object_name||'.'||p.procedure_name 
+              ,(select substr(p.OBJECT_TYPE,1,4)||' '|| p.owner||'.'||p.object_name||'.'||p.procedure_name 
                 from dba_procedures p 
                 where p.object_id=r.plsql_object_id
                   and p.subprogram_id=r.plsql_subprogram_id

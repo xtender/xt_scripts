@@ -1,4 +1,4 @@
-col owner           for a10;
+col owner           for a16;
 col object_name     for a30;
 col object_type     for a20;
 col text            for a120;

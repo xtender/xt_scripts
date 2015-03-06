@@ -14,6 +14,7 @@ col event         format a30;
 col wait_class    format a20;
 col sql_exec_start format a19;
 col objname       format a30;
+set feed on;
 select 
      s.sid,s.serial#
     ,s.inst_id

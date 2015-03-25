@@ -29,8 +29,8 @@ select fh.path
 from feature_hierarchy fh
     ,v$sql_hint hi
 where hi.sql_feature(+) = fh.sql_feature
-  and ('&_path_mask' is null or regexp_like(fh.path,'&_path_mask'))
-  and ('&_hint_mask' is null or regexp_like(hi.name,'&_hint_mask'))
+  and ('&_path_mask' is null or regexp_like(fh.path,'&_path_mask','i'))
+  and ('&_hint_mask' is null or regexp_like(hi.name,'&_hint_mask','i'))
   and ('&_min_ver'   is null or version is null or regexp_replace(regexp_replace(version,'(\d+)','0000\1'),'\d*(\d{2})','\1')>= regexp_replace(regexp_replace('&_min_ver','(\d+)','0000\1'),'\d*(\d{2})','\1'))
 order by n, hint_class, hint_name, version
 /

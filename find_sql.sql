@@ -1,16 +1,22 @@
 @inc/input_vars_init
 prompt Show only first 30 found:
+
 col if_all new_val _if_all noprint;
+
 select case when '&2 &3 &4 &5' like '%all%' then '--'
             else '  '
        end if_all
 from dual;
+
 col sql_id          format a13;
+col signature       format a21;
 col sql_text_trunc  format a100 word;
 col to_purge        format a30;
+
 SELECT/*+NOTME*/ 
        inst_id
      , sa.sql_id
+     , to_char(sa.force_matching_signature,'tm9')                   as signature
      , sa.ADDRESS || ',' || sa.HASH_VALUE                           as to_purge
      , sa.plan_hash_value                                           as phv
      , sa.executions                                                as execs

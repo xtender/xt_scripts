@@ -2,7 +2,7 @@ accept _path_mask prompt "Path mask[.*]: " default '.*';
 accept _hint_mask prompt "Hint mask[.*]: " default '.*';
 accept _min_ver   prompt "Min version: "   default '';
 
-col path        for a120;
+col path        for a100;
 col hint_class  for a30;
 col hint_name   for a30;
 col version     for a8;
@@ -12,7 +12,7 @@ WITH feature_hierarchy AS (
    select--+ no_merge
       rownum n
      ,f.sql_feature
-     ,substr(SYS_CONNECT_BY_PATH(REPLACE(f.sql_feature, 'QKSFM_'), ' -> '),6) path
+     ,substr(SYS_CONNECT_BY_PATH(REPLACE(f.sql_feature, 'QKSFM_'), ' -> '),5) path
    FROM 
        v$sql_feature f
      , v$sql_feature_hierarchy fh 

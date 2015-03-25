@@ -12,7 +12,7 @@ WITH feature_hierarchy AS (
    select--+ no_merge
       rownum n
      ,f.sql_feature
-     ,substr(SYS_CONNECT_BY_PATH(REPLACE(f.sql_feature, 'QKSFM_'), ' --> '),6) path
+     ,substr(SYS_CONNECT_BY_PATH(REPLACE(f.sql_feature, 'QKSFM_'), ' -> '),6) path
    FROM 
        v$sql_feature f
      , v$sql_feature_hierarchy fh 

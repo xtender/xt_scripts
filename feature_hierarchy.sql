@@ -1,3 +1,4 @@
+accept _mask prompt "Mask[.*]: "
 col feature for a35;
 col path    for a100;
 WITH feature_hierarchy AS (
@@ -17,8 +18,9 @@ select
    fh.path
   ,REPLACE(fh.sql_feature, 'QKSFM_') as feature
 from feature_hierarchy fh
-where '&1' is null or regexp_like(path,'&1')
+where '&_mask' is null or regexp_like(path,'&_mask','i')
 order by n
 /
 col feature clear;
 col path    clear;
+undef _mask;

@@ -33,15 +33,17 @@ CONNECT BY fh.parent_id = PRIOR f.sql_Feature
 START WITH fh.sql_feature = 'QKSFM_ALL'
 )
 SELECT
-    hi.name
-  , REGEXP_REPLACE(fh.path, '^ -> ', '') hinth_path
+    hi.name as sqlfh_feature
+  , REGEXP_REPLACE(fh.path, '^ -> ', '') as hinth_path
 FROM
     v$sql_hint hi
   , feature_hierarchy fh
 WHERE
     hi.sql_feature = fh.sql_feature
 --    hi.sql_feature = REGEXP_REPLACE(fh.sql_feature, '_[[:digit:]]+$')
-AND UPPER(hi.name) LIKE UPPER('%&1%')
+AND (UPPER(hi.name) LIKE UPPER('%&1%')
+        or fh.path LIKE UPPER('%&1%')
+    )
 ORDER BY
     path
   --name

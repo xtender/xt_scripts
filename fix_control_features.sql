@@ -37,6 +37,7 @@ where
           >= 
           regexp_replace(regexp_replace('&_min_ver'               ,'(\d+)','0000\1'),'\d*(\d{2})','\1')
       )
+order by n
 /
 col path            clear;
 col description     clear;

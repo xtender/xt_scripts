@@ -5,7 +5,7 @@ col deflt	format a12
 col type 	format a12
 col description	format a60
 
-select 
+select
 	a.ksppinm name
 	,b.ksppstvl value
 	,b.ksppstdf deflt
@@ -18,8 +18,8 @@ select
 		,a.ksppity) type
 	,a.ksppdesc description
 from
-	sys.vx$ksppi a
-	,sys.vx$ksppcv b
+	sys.x$ksppi a
+	,sys.x$ksppcv b
 where
 	a.indx = b.indx
 and (

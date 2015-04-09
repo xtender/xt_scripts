@@ -2,6 +2,8 @@ prompt #####################################################
 prompt #  DBMS_SQLTUNE.REPORT_SQL_DETAIL
 prompt #####################################################
 
+store set sqlplus_settings.sql replace;
+
 accept MONSQLID prompt "SQL_ID: ";
 
 set termout off timing off ver off feed off head off lines 10000000 pagesize 0
@@ -32,6 +34,7 @@ set termout off;
 alter session set nls_numeric_characters='&nls_num_chars';
 col sqlmon clear;
 undef nls_num_chars;
+@sqlplus_settings;
 set termout on;
 ----------------------
 prompt #####################################################

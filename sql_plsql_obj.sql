@@ -12,10 +12,11 @@ select
 from
     gv$sqlarea a
     left join dba_objects o
-              on a.PROGRAM_ID = o.OBJECT_ID
+              on a.PROGRAM_ID   = o.OBJECT_ID
     left join dba_source s
-              on o.owner=s.owner
-              and o.OBJECT_NAME=s.name
+              on o.owner        = s.owner
+              and o.OBJECT_NAME = s.name
+              and o.object_type = s.type
               and s.line between a.PROGRAM_LINE#-5 and a.PROGRAM_LINE#+5
 where a.SQL_ID='&1'
 order by 1,2,3,4,5,6

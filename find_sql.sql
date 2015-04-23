@@ -3,7 +3,7 @@ prompt Show only first 30 found:
 
 col if_all new_val _if_all noprint;
 
-select case when '&2 &3 &4 &5' like '%all%' then '--'
+select case when q'[&2 &3 &4 &5]' like '%all%' then '--'
             else '  '
        end if_all
 from dual;
@@ -36,3 +36,4 @@ col if_all              clear;
 col sql_id              clear;
 col sql_text_trunc      clear;
 col to_purge            clear;
+@inc/input_vars_undef;

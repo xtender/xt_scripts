@@ -1,5 +1,9 @@
 declare 
-   v_text       clob;
+   $IF dbms_db_version.ver_le_11_1 $THEN
+      v_text       clob;
+   $ELSE
+      v_text       varchar2(32767);
+   $END
    v_sql_id     varchar2(13):='&1';
    v_old_schema varchar2(30):=sys_context('userenv','current_schema');
    v_schema     varchar2(30);

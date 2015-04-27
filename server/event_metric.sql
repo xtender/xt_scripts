@@ -1,6 +1,7 @@
 col wait_class          format a20;
 col name                format a35;
 col period              format a17;
+col time_waited         format 999g999g999d0;
 col avg_wait_time       format 90.000000;
 col avg_fg_wait_time    format 90.000000;
 with v as (

@@ -8,9 +8,10 @@ col table_name         for a30;
 col partition_position for 999 heading "#";
 col partition_name     for a30;
 col subpartition_count for 999 heading SUBPARTS;
-col high_value         for a120;
+col high_value         for a70;
 col tablespace_name    for a12;
 col segment_created    for a3;
+col compress_for       for a12; 
 
 select
     p.table_owner
@@ -23,6 +24,7 @@ select
    ,p.blocks
    ,to_date(p.last_analyzed,'yyyy-mm-dd hh24:mi:ss') as last_analyzed
    ,p.segment_created
+   ,p.compress_for
    ,p.high_value
 from 
    xmltable(
@@ -41,6 +43,7 @@ from
                ,p.blocks
                ,to_char(p.last_analyzed,'yyyy-mm-dd hh24:mi:ss') as last_analyzed
                ,p.segment_created
+               ,p.compress_for
             from dba_tab_partitions p 
             where p.table_owner like upper(nvl('&2','%'))
               and p.table_name  like upper(nvl('&1','%'))
@@ -58,6 +61,7 @@ from
          ,blocks              int
          ,last_analyzed       
          ,segment_created
+         ,compress_for
     ) p
 order by 1,2,3
 /
@@ -69,3 +73,4 @@ col subpartition_count clear;
 col high_value         clear;
 col tablespace_name    clear;
 col segment_created    clear;
+col compress_for       clear;

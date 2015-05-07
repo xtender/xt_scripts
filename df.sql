@@ -12,6 +12,7 @@ col "Used"      for a52
 
 select
     rpad(t.tablespace_name,30,'..')                                         as "Tablespace"
+   ,t.type
    ,t.mb                                                                    as "TotalMB"
    ,t.mb - nvl(f.mb, 0)                                                     as "UsedMB"
    ,nvl(f.mb, 0)                                                            as "FreeMB"
@@ -31,12 +32,14 @@ from   (select tablespace_name, trunc(sum(bytes) / 1048576) MB
         from   v$temp_space_header
         group  by tablespace_name) f
       ,(select tablespace_name
+              ,'normal' type  
               ,trunc(sum(bytes) / 1048576) MB
               ,max(autoextensible) ext
         from   dba_data_files
         group  by tablespace_name
         union all
         select tablespace_name
+              ,'temp' type  
               ,trunc(sum(bytes) / 1048576) MB
               ,max(autoextensible) ext
         from   dba_temp_files

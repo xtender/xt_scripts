@@ -1,0 +1,23 @@
+col operation_type for a30;
+select 
+  sql_id
+, child_number
+, operation_type
+, operation_id
+, policy
+, ESTIMATED_OPTIMAL_SIZE
+, ESTIMATED_ONEPASS_SIZE
+, TOTAL_EXECUTIONS
+, OPTIMAL_EXECUTIONS
+, ONEPASS_EXECUTIONS
+, MULTIPASSES_EXECUTIONS
+, ACTIVE_TIME
+, MAX_TEMPSEG_SIZE
+, LAST_MEMORY_USED
+, LAST_EXECUTION
+, LAST_TEMPSEG_SIZE
+, LAST_DEGREE
+from V$SQL_WORKAREA sa
+where sa.OPTIMAL_EXECUTIONS<sa.TOTAL_EXECUTIONS
+/
+col operation_type clear;

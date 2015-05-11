@@ -17,12 +17,13 @@ set termout on
 prompt &_C_REVERSE.SQLSTAT by sqlid=&1 for last &_ROWNUM rows...&_C_RESET
 
 REM ############### COMMON FORMATTING #######################
+col db_name             for a10 trunc;
 col SQL_ID                              for a13
 col sql_child_number    head CH#        for 999
 col SQL_PROFILE         head PROFILE    for a19
 col time_start          for a24
 col time_end            for a24
-col module              for a30
+col module              for a30 trunc;
 col action              for a18
 col parsing_schema_name for a18
 col elaexe              for a13
@@ -46,7 +47,8 @@ col disk_reads_per_exec for a15
 
 with t as (
 select/*+ SQLSTAT */
-                        st.snap_id
+                        db.db_name
+                       ,st.snap_id
                        ,st.instance_number                                                                                        as inst_id
                        ,snaps.begin_interval_time                                                                                 as time_start
                        ,snaps.end_interval_time                                                                                   as time_end
@@ -76,7 +78,12 @@ select/*+ SQLSTAT */
 &_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_READ_BYTES_DELTA     /  st.executions_delta),'99999999999')  as PH_READ_BYTES_D
 &_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_REQUESTS_DELTA /  st.executions_delta),'99999999999')  as PH_WRITE_REQS_D
 &_IF_ORA11_OR_HIGHER   ,to_char(decode(st.executions_delta,0,0,st.PHYSICAL_WRITE_BYTES_DELTA    /  st.executions_delta),'99999999999')  as PH_WRITE_BYTES_D
-from v$database db
+from 
+    (
+    select dbid,db_name from dba_hist_database_instance
+    union 
+    select dbid,name from v$database
+    ) db
     ,dba_hist_sqlstat st
     ,dba_hist_snapshot snaps
 where 

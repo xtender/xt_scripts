@@ -59,3 +59,19 @@ from v$database db
 where 
       s.sid=userenv('SID')
   and s.paddr = p.addr;
+
+col db_id           clear;
+col db_name         clear;
+col db_inst_id      clear;
+col db_host_name    clear;
+col db_version      clear;
+col my_user         clear;
+col my_sid          clear;
+col my_host         clear;
+col my_ip           clear;
+col my_is_dba       clear;
+col my_serial       clear;
+col my_spid         clear;
+col my_os_pid       clear;
+col my_pid          clear;
+col my_ora_pid      clear;

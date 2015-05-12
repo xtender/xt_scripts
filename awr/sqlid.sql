@@ -17,7 +17,7 @@ set termout on
 prompt &_C_REVERSE.SQLSTAT by sqlid=&1 for last &_ROWNUM rows...&_C_RESET
 
 REM ############### COMMON FORMATTING #######################
-col db_name             for a10 trunc;
+col db_name             for a10 trunc print;
 col SQL_ID                              for a13
 col sql_child_number    head CH#        for 999
 col SQL_PROFILE         head PROFILE    for a19
@@ -94,7 +94,7 @@ where
   and st.snap_id            = snaps.snap_id
 --  and st.instance_number    = snaps.instance_number
   and st.executions_delta   > 0
-order by 1 desc
+order by 1, 2 desc
 )
 select *
 from t

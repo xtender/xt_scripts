@@ -11,6 +11,8 @@ col if_parallel clear;
 
 col sql_id                 for a13;
 col ch#                    for 999;
+col "***"                  for a3;
+col status                 for a13 trunc; 
 col id                     for 99;
 col operation              for a80;
 col io                     for a12;
@@ -24,7 +26,7 @@ col per_slave_read_bytes   for a50
 col per_slave_write_reqs   for a50
 col per_slave_write_bytes  for a50
 
-break on sql_id on ch# on plan_hv on exec_id on started skip 1
+break on sql_id on ch# on plan_hv on exec_id on started on status skip 1
 
 with 
 sql_mon_manual
@@ -32,6 +34,10 @@ sql_mon_manual
    select 
      sql_id,sql_exec_start,sql_exec_id, SQL_PLAN_HASH_VALUE, SQL_CHILD_ADDRESS
     ,status
+    ,case when dense_rank()over(partition by sql_id,sql_exec_start,sql_exec_id, SQL_PLAN_HASH_VALUE, SQL_CHILD_ADDRESS order by max(LAST_CHANGE_TIME) desc nulls last) = 1
+          then '-->'
+          else '   '
+      end "***"
     ,plan_line_id
     ,plan_operation
     ,plan_options
@@ -71,6 +77,8 @@ select
    ,p.plan_hash_value   as plan_hv
    ,mon.sql_exec_id     as exec_id
    ,mon.sql_exec_start  as started
+   ,mon.status          as status
+   ,"***"
    ,p.ID
    ,LPAD(' ', depth) || p.operation ||' '|| p.options || NVL2(p.object_name, ' ['||p.object_name ||']', null) as operation
 &_px   ,mon.proc_cnt

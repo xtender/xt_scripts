@@ -217,12 +217,6 @@ prompt
 
 set termout on;
 ---------------------------------------------------------------------------
--- Check DBID:
----------------------------------------------------------------------------
-set heading on;
-select distinct dbid, version,db_name,instance_name,host_name from dba_hist_database_instance;
-accept _dbid prompt "Enter AWR dbid if you want to change it before load: " default 0;
----------------------------------------------------------------------------
 whenever sqlerror continue;
 set heading off;
 set linesize 110 pagesize 50000;
@@ -240,6 +234,15 @@ end;
 prompt ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prompt AWR dump was succesfully loaded into stage schema;
 prompt ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+pause * Press Enter to continue (next step = move_to_awr)...
+
+-- Check DBID:
+---------------------------------------------------------------------------
+set heading on;
+select distinct dbid, version,db_name,instance_name,host_name from dba_hist_database_instance;
+accept _dbid prompt "Enter AWR dbid if you want to change it before load: " default 0;
+---------------------------------------------------------------------------
 
 begin
   /* call PL/SQL routine to move the data into AWR */

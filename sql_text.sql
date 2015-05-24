@@ -46,7 +46,7 @@ begin
    select
        coalesce(
            (select sql_fulltext from gv$sqlarea a where a.sql_id='&1' and rownum=1)
-       ,   (select sql_text from dba_hist_sqltext a where a.sql_id='&1' and dbid=(select dbid from v$database))
+       ,   (select sql_text from dba_hist_sqltext a where a.sql_id='&1' and a.dbid in (select d.dbid from v$database d union select i.dbid from dba_hist_database_instance i) and rownum=1)
        ) qtext
        into v_sql
    from dual;

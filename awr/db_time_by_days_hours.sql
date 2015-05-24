@@ -18,11 +18,10 @@ with
 )
 ,db_time as (
 select s.db_name,s.beg_time,s.snap_id
-      ,stm.value
-       -
-       case when s.snap_id - lag(s.snap_id)over(order by s.snap_id) = 1
-           then lag(stm.value)over(order by s.snap_id) 
-       end delta
+      ,round(stm.value - case when s.snap_id - lag(s.snap_id)over(order by s.snap_id) = 1
+                              then lag(stm.value)over(order by s.snap_id) 
+                         end
+            )/1e6 as delta
       ,stm.value
 from snaps s
     ,DBA_HIST_SYS_TIME_MODEL stm

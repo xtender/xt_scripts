@@ -24,7 +24,7 @@ col SQL_PROFILE         head PROFILE    for a19
 col time_start          for a24
 col time_end            for a24
 col module              for a30 trunc;
-col action              for a18
+col action              for a18 trunc;
 col parsing_schema_name for a18
 col elaexe              for a13
 col elacpu              for a13

@@ -1,1 +1,1 @@
-@tpt/snapper ash,ash1,ash2 5 1 "select s1.sid from v$session s1 where s1.osuser=sys_context('USERENV','OS_USER')"
+@tpt/snapper ash,ash1,ash2 5 1 osuser=&my_os_user

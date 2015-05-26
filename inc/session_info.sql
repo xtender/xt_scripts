@@ -13,22 +13,24 @@ define my_spid     =""
 define my_os_pid   =""
 define my_pid      =""
 define my_ora_pid  =""
+define my_os_user  =""
 
-col db_id           new_val     db_id           noprint
-col db_name         new_val     db_name         noprint
-col db_inst_id      new_val     db_inst_id      noprint
-col db_host_name    new_val     db_host_name    noprint
-col db_version      new_val     db_version      noprint
-col my_user         new_val     my_user         noprint
-col my_sid          new_val     my_sid          noprint
-col my_host         new_val     my_host         noprint
-col my_ip           new_val     my_ip           noprint
-col my_is_dba       new_val     my_is_dba       noprint
-col my_serial       new_val     my_serial       noprint
-col my_spid         new_val     my_spid         noprint
-col my_os_pid       new_val     my_os_pid       noprint
-col my_pid          new_val     my_pid          noprint
-col my_ora_pid      new_val     my_ora_pid      noprint
+col db_id           new_val     db_id           noprint;
+col db_name         new_val     db_name         noprint;
+col db_inst_id      new_val     db_inst_id      noprint;
+col db_host_name    new_val     db_host_name    noprint;
+col db_version      new_val     db_version      noprint;
+col my_user         new_val     my_user         noprint;
+col my_sid          new_val     my_sid          noprint;
+col my_host         new_val     my_host         noprint;
+col my_ip           new_val     my_ip           noprint;
+col my_is_dba       new_val     my_is_dba       noprint;
+col my_serial       new_val     my_serial       noprint;
+col my_spid         new_val     my_spid         noprint;
+col my_os_pid       new_val     my_os_pid       noprint;
+col my_pid          new_val     my_pid          noprint;
+col my_ora_pid      new_val     my_ora_pid      noprint;
+col my_os_user      new_val     my_os_user      noprint;
 
 select--+ rule ordered
    db.dbid                                      as db_id
@@ -47,6 +49,7 @@ select--+ rule ordered
   ,trim(sys_context('USERENV','HOST')         ) as my_host
   ,trim(sys_context('USERENV','IP_ADDRESS')   ) as my_ip
   ,trim(sys_context('USERENV','ISDBA')        ) as my_is_dba
+  ,trim(sys_context('USERENV','OS_USER')      ) as my_os_user
   ,trim(s.serial#                             ) as my_serial
   ,p.spid                                       as my_spid
   ,p.spid                                       as my_os_pid
@@ -75,3 +78,4 @@ col my_spid         clear;
 col my_os_pid       clear;
 col my_pid          clear;
 col my_ora_pid      clear;
+col my_os_user      clear;

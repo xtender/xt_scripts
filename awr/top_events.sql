@@ -40,6 +40,28 @@ snaps as (
      )
      --where rownum<=5
 )
+,dbtime as (
+     select * 
+     from (
+        select
+           m.dbid,m.snap_id,m.instance_number as inst_id
+          ,value - lag(value)over(partition by m.dbid,m.instance_number order by m.snap_id)  as dbtime
+          ,(select p.value 
+            from dba_hist_parameter p 
+            where parameter_name    = 'cpu_count'
+              and p.dbid            = m.dbid
+              and p.snap_id         = m.snap_id
+              and p.instance_number = m.instance_number
+           ) cpu_count
+        from snaps s
+            ,DBA_HIST_SYS_TIME_MODEL m
+        where m.stat_name =('DB time')
+          and m.dbid            = s.dbid
+          and m.snap_id         = s.snap_id
+          and m.instance_number = s.instance_number
+     )
+     where dbtime is not null
+)
 ,waits_and_cpu as (
     select
        dbid,snap_id,instance_number
@@ -86,8 +108,9 @@ snaps as (
 ,top_events as (
    select dbid
          ,snap_id
-         ,to_char(beg_time,'yyyy-mm-dd hh24:mi') beg_time
-         ,to_char(end_time,'yyyy-mm-dd hh24:mi') end_time
+         ,beg_time
+         ,end_time
+         ,abs(cast(end_time as date)-cast(beg_time as date))*24*60*60 as elapsed_secs
          ,instance_number inst_id
          , n, wait_class, event_name, time_waited_micro
    from (
@@ -100,11 +123,16 @@ snaps as (
 )
 select dbid
       ,snap_id
-      ,beg_time
-      ,end_time
+      ,to_char(beg_time,'yyyy-mm-dd hh24:mi') beg_time
+      ,to_char(end_time,'yyyy-mm-dd hh24:mi') end_time
+      ,cpu_count
       ,inst_id, n, wait_class, event_name
       ,to_char(round(time_waited_micro/1e6),'999g999g999g999') as time_waited
+      ,to_char(round(dbtime           /1e6),'999g999g999g999') as dbtime
+      ,to_char(round(time_waited_micro*100/dbtime,1),'99.0')||'%'    as dbtime_pct
+      ,to_char(round(time_waited_micro*100/1e6/cpu_count/elapsed_secs,1),'99.0')||'%'    as elapsed_pct
 from top_events
+     join dbtime using(dbid,snap_id,inst_id)
 order by dbid, snap_id desc, inst_id, n
 /
 clear break;

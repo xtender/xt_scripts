@@ -31,7 +31,7 @@ where
 and o.owner like nvl(upper('&2'),'%')
 and o.object_name like upper('&1')
 order by 
-      ,o.owner
+       o.owner
       ,o.object_name
       ,o.object_type
       ,h.SAVTIME desc

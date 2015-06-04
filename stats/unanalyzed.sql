@@ -38,22 +38,22 @@ col s_locked      format a8
 set colsep " | "
 
                  select
-                     tt.owner
-                    ,tt.table_name
-                    ,case when tt.LAST_ANALYZED is null then 'not analyzed' else 'stale' end stats_status
-                    ,tt.SEGMENT_CREATED  as seg
-                    ,(select round(sum(bytes)/1024/1024,1) from dba_segments s where s.owner=tt.owner and s.segment_name=tt.table_name and s.segment_type like 'TABLE%') seg_size
-                    ,ts.user_stats       as user_stats
-                    ,tt.PARTITIONED      as part
-                    ,tt.TEMPORARY        as tmp
-                    ,tt.secondary        as sec
-                    ,tt.nested           as nest
-                    ,ts.stattype_locked  as stat_lock
-                    ,ts.global_stats
-                    ,ts.num_rows
-                    ,ts.blocks
-                    ,ts.empty_blocks
-                    ,tt.last_analyzed 
+                         tt.owner
+                        ,tt.table_name
+                        ,case when tt.LAST_ANALYZED is null then 'not analyzed' else 'stale' end stats_status
+&_IF_ORA11_OR_HIGHER    ,tt.SEGMENT_CREATED  as seg
+                        ,(select round(sum(bytes)/1024/1024,1) from dba_segments s where s.owner=tt.owner and s.segment_name=tt.table_name and s.segment_type like 'TABLE%') seg_size
+                        ,ts.user_stats       as user_stats
+                        ,tt.PARTITIONED      as part
+                        ,tt.TEMPORARY        as tmp
+                        ,tt.secondary        as sec
+                        ,tt.nested           as nest
+                        ,ts.stattype_locked  as stat_lock
+                        ,ts.global_stats
+                        ,ts.num_rows
+                        ,ts.blocks
+                        ,ts.empty_blocks
+                        ,tt.last_analyzed 
                  from dba_tables tt
                      ,dba_tab_statistics ts
                  where 

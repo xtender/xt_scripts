@@ -50,8 +50,9 @@ from (
               (select ss.sid,ss.serial#
                from v$session ss
                where ss.osuser   = sys_context('USERENV','OS_USER')
-                 and ss.terminal = userenv('terminal') 
+                 and ss.terminal = userenv('terminal')
                )
+       and (sql_id,sql_exec_id) in (select r.sql_id,r.sql_exec_id from v$sql_monitor r where r.STATUS='EXECUTING')
     ) l
 where rn=1
 order by 

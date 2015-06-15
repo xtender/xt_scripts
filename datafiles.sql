@@ -27,7 +27,7 @@ with f as (
       union all
       select
           tf.file_name
-         ,tf.file_id
+         ,tf.file_id + (select value from v$parameter where name ='db_files') file_id
          ,tf.tablespace_name
          ,tf.bytes
          ,tf.blocks

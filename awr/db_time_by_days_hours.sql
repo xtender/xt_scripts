@@ -14,7 +14,9 @@ def _frm_len = 15;
 
 col cols new_val _cols noprint;
 
-select to_char(wm_concat(cols)) cols
+select 
+&_IF_LOWER_THAN_ORA11 to_char(wm_concat(cols)) cols
+&_IF_ORA11_OR_HIGHER listagg(cols,',') within group(order by 1) cols
  from (
       select  'd_'||to_char(hh,'fm00')
              ||

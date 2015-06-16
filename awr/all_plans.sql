@@ -24,11 +24,11 @@ select
    ,plan_hv
    ,snap_min
    ,snap_max
-   ,(select to_char(begin_interval_time,'yyyy-mm-dd hh24:mi')
+   ,(select to_char(min(begin_interval_time),'yyyy-mm-dd hh24:mi')
      from dba_hist_snapshot sn 
      where sn.snap_id = v.snap_min
        and sn.dbid    = v.dbid)                                    as snap_min_time
-   ,(select to_char(begin_interval_time,'yyyy-mm-dd hh24:mi') 
+   ,(select to_char(min(begin_interval_time),'yyyy-mm-dd hh24:mi') 
      from dba_hist_snapshot sn 
      where sn.snap_id = v.snap_max
        and sn.dbid    = v.dbid)                                    as snap_max_time

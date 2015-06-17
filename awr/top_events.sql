@@ -17,13 +17,14 @@ accept hh_end     prompt "Hours filter end  [23]: " default '23';
 accept top_n      prompt "Top N[5]: " default 5;
 accept inst_id    prompt "Instance_ID[empty for all]: ";
 
-
+col cpu_count   for 999;
+col dbtime_pct  for a10;
 col beg_time    for a16;
 col end_time    for a16;
 col wait_class  for a20;
 col event_name  for a40 trunc;
 col time_waited for a16;
-break on dbid on snap_id on beg_time on end_time on inst_id skip 1;
+break on dbid on snap_id on beg_time on end_time on cpu_count on inst_id skip 1;
 
 with 
 snaps as (
@@ -46,7 +47,7 @@ snaps as (
         select
            m.dbid,m.snap_id,m.instance_number as inst_id
           ,value - lag(value)over(partition by m.dbid,m.instance_number order by m.snap_id)  as dbtime
-          ,(select p.value 
+          ,(select to_number(p.value)
             from dba_hist_parameter p 
             where parameter_name    = 'cpu_count'
               and p.dbid            = m.dbid
@@ -136,6 +137,8 @@ from top_events
 order by dbid, snap_id desc, inst_id, n
 /
 clear break;
+col cpu_count   clear;
+col dbtime_pct  clear;
 col beg_time    clear;
 col end_time    clear;
 col wait_class  clear;

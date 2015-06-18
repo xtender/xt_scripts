@@ -3,15 +3,27 @@ prompt * Usage: @tab_parts tab_name_mask [tab_owner_mask]
 
 @inc/input_vars_init;
 
-col table_owner        for a30;
-col table_name         for a30;
+col table_owner        for a30 noprint;
+col table_name         for a30 noprint;
 col partition_position for 999 heading "#";
 col partition_name     for a30;
 col subpartition_count for 999 heading SUBPARTS;
-col high_value         for a70;
+col high_value         for a90;
 col tablespace_name    for a12;
 col segment_created    for a3;
 col compress_for       for a12; 
+
+
+col table_owner        new_val table_owner  noprint;
+col table_name         new_val table_name   noprint;
+set pages 999;
+break on table_owner on table_name skip page;
+ttitle col 30 '###################################################################' skip 1 -
+       col 50 -
+            table_owner -
+            '.'         -
+            table_name  -
+            skip 2;
 
 select
     p.table_owner
@@ -74,3 +86,5 @@ col high_value         clear;
 col tablespace_name    clear;
 col segment_created    clear;
 col compress_for       clear;
+ttitle off;
+clear break;

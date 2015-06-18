@@ -18,13 +18,14 @@ accept top_n      prompt "Top N[5]: " default 5;
 accept inst_id    prompt "Instance_ID[empty for all]: ";
 
 col cpu_count   for 999;
+col dbtime      for a16;
 col dbtime_pct  for a10;
 col beg_time    for a16;
 col end_time    for a16;
 col wait_class  for a20;
 col event_name  for a40 trunc;
 col time_waited for a16;
-break on dbid on snap_id on beg_time on end_time on cpu_count on inst_id skip 1;
+break on dbid on snap_id on beg_time on end_time on cpu_count on inst_id on dbtime skip 1;
 
 with 
 snaps as (
@@ -127,9 +128,10 @@ select dbid
       ,to_char(beg_time,'yyyy-mm-dd hh24:mi') beg_time
       ,to_char(end_time,'yyyy-mm-dd hh24:mi') end_time
       ,cpu_count
-      ,inst_id, n, wait_class, event_name
-      ,to_char(round(time_waited_micro/1e6),'999g999g999g999') as time_waited
+      ,inst_id
       ,to_char(round(dbtime           /1e6),'999g999g999g999') as dbtime
+      ,n, wait_class, event_name
+      ,to_char(round(time_waited_micro/1e6),'999g999g999g999') as time_waited
       ,to_char(round(time_waited_micro*100/dbtime,1),'99.0')||'%'    as dbtime_pct
       ,to_char(round(time_waited_micro*100/1e6/cpu_count/elapsed_secs,1),'99.0')||'%'    as elapsed_pct
 from top_events

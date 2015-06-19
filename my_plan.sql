@@ -1,3 +1,4 @@
+@inc/input_vars_init;
 column sid      format 999999   ;
 column serial#  format 999999   ;
 column sql_id   format a13      new_val _sqlid;
@@ -44,4 +45,5 @@ column obj_name clear;
 
 prompt Explain plan for sql_id='&_sqlid':
 
-@plan &_sqlid
+@plan &_sqlid &1 &2 &3 &4
+@inc/input_vars_undef;

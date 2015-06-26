@@ -17,8 +17,11 @@ WITH feature_hierarchy AS (
 select 
    fh.path_concatenated              as path
   ,REPLACE(fh.sql_feature, 'QKSFM_') as feature
+  ,f.description
 from feature_hierarchy fh
-where '&_mask' is null or regexp_like(path_concatenated,'&_mask','i')
+    ,v$sql_feature f
+where ('&_mask' is null or regexp_like(path_concatenated,'&_mask','i'))
+and f.SQL_FEATURE(+) = fh.sql_feature
 order by n
 /
 col feature clear;

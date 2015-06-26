@@ -6,17 +6,16 @@ spool _cur_path.remove
 @@notfound
 spool off;
 
-ho "grep -Po 'SP2-0310: unable to open file .\K.*(?=notfound.sql)' _cur_path.remove > cur_path.remove"
+ho "sed -i'' 's#SP2-0310: unable to open file .\(.*\)notfound.*#\1#' _cur_path.remove"
 
 var cur_path varchar2(100);
 begin :cur_path :=rtrim(ltrim( 
                         q'[
-                            @cur_path.remove
+                            @_cur_path.remove
                         ]',' '||chr(10)),' '||chr(10));
 end;
 /
 ho "rm _cur_path.remove"
-ho "rm cur_path.remove"
 col cur_path new_val cur_path noprint;
 select :cur_path cur_path from dual;
 set termout on;

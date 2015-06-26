@@ -11,11 +11,22 @@ select to_char(trunc(sysdate-5),'yyyy-mm-dd hh24:mi:ss') dt_beg
 from dual;
 set termout on;
 
+def _mask_1="(Average Active ses|Database( CPU)? time|(Buffer|Library) Cache Hit Ratio|Host CPU Utilization|Phy.*total bytes per sec|Redo Generated per sec|Executions Per Sec)";
+def _mask_2="phy.*(read|write).*sec";
+def _mask_3="(Average Active Sessions|Cache Hit Ratio|Database CPU Time Ratio|Host CPU Utilization|DB Block Changes Per Sec|Executions Per Sec|I/O Megabytes per Second|Total Bytes Per Sec|Redo Generated Per Sec|SQL Service Response Time)";
+
 accept dt_beg prompt "Date start[&dt_beg]: " default '&dt_beg';
 accept dt_end prompt "Date end  [&dt_end]: " default '&dt_end';
 accept hh_beg prompt "Hours start[10]: " default 10;
 accept hh_end prompt "Hours end  [18]: " default 18;
-accept _mask prompt "Metric mask[phy.*(read|write).*sec]: " default 'phy.*(read|write).*sec';
+
+prompt Standard masks:
+prompt 1. &_mask_1 [default]
+prompt 2. &_mask_2
+prompt 3. &_mask_3
+prompt * Choose mask number or enter own mask:;
+
+accept _mask prompt "Choose mask number or enter own mask: " default 1;
 
 accept _avg prompt "Show avg(y/n)[Y] :" default "y";
 accept _min prompt "Show min(y/n)[N] :" default "n";
@@ -79,7 +90,7 @@ with
         ,sm.metric_id
         ,sm.metric_name
         ,sm.metric_unit
-        ,dense_rank()over(partition by dbid,snap_id,instance_number order by metric_id) n
+        ,dense_rank()over(partition by dbid,snap_id,instance_number order by metric_name) n
         ,dense_rank()over(order by snap_id) snap#
 &_avg   ,'|'||to_char(round(sm.average ,3),'999g999g999g990d000') as averag
 &_min   ,'|'||to_char(round(sm.minval  ,3),'999g999g999g990d000') as minval 
@@ -101,7 +112,11 @@ with
                          extract(hour from   end_interval_time) between &hh_beg and &hh_end
                        )
                     )
-     and regexp_like(metric_name,q'[&_mask]','i')
+     and (    '&_mask' = '1' and regexp_like(metric_name,q'[&_mask_1]','i')
+           or '&_mask' = '2' and regexp_like(metric_name,q'[&_mask_2]','i')
+           or '&_mask' = '3' and regexp_like(metric_name,q'[&_mask_3]','i')
+           or '&_mask' not in ('1','2','3') and regexp_like(metric_name,q'[&_mask]','i')
+         )
  ) 
 ,header as (
    select 

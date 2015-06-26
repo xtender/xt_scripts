@@ -1,3 +1,5 @@
+def _statname='DB time';
+
 col db_name          new_val _awr_db_name;
 col awr_db_beg_date  new_val _awr_db_beg_date noprint;
 select distinct i.dbid, i.db_name
@@ -94,8 +96,7 @@ with
          and stm.dbid            = s.dbid
          and stm.snap_id         = s.snap_id
          and stm.instance_number = 1
-         and stm.stat_name       = 'DB time'
-                                 --'DB CPU'
+         and stm.stat_name       = '&_statname'
     order by s.snap_id desc
     ) v_db_time
     where end_hh >= &_awr_db_beg_hour

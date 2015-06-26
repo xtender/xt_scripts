@@ -1,5 +1,5 @@
-rem Simple example how to get path (@@) of the current script
-rem This script will set cur_path variable - &cur_path
+rem Simple example how to get path (@@) of the current script.
+rem This script will set "cur_path" variable, so we can use &cur_path later.
 
 set termout off
 spool _cur_path.remove

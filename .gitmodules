@@ -1,3 +1,6 @@
 [submodule "externals/my/xt_shell"]
 	path = externals/my/xt_shell
 	url = https://github.com/xtender/xt_shell.git
+[submodule "externals/sqld360"]
+	path = externals/sqld360
+	url = https://github.com/mauropagano/sqld360.git

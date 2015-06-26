@@ -1,6 +1,6 @@
 prompt ===========================================================
 prompt &_C_REVERSE *** ASH by last N minutes by sid &_C_RESET
-prompt * Usage @ash sid N [serial]
+prompt * Usage @ash sid/username/* N [serial]
 prompt ===========================================================
 
 @inc/input_vars_init;
@@ -52,6 +52,7 @@ with ash_pre as (
                                               from dba_users u 
                                               where lower(u.username) like decode(translate('&1','x0132456789','x'),null,null,lower('%&1%'))
                                              )
+                                or '&1'='*'
                                 )
                            and ('&3' is null or h.session_serial# = to_number('&3'))
 )

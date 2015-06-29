@@ -20,8 +20,8 @@ begin v :=rtrim(ltrim(
 end;
 /
 set scan off;
-ho "rm _cur_path.remove 2>&1  | echo ."
-ho "del _cur_path.remove 2>&1 | echo ."
+ho (rm _cur_path.remove 2>&1  | echo .)
+ho (del _cur_path.remove 2>&1 | echo .)
 col cur_path new_val cur_path noprint;
 select :cur_path cur_path from dual;
 set scan on;

@@ -1,9 +1,9 @@
 prompt Enter filters(empty for any)...
 accept _sid         prompt "Sid           : ";
 accept _globalid    prompt "Globalid mask : ";
-accept _remote_db   prompt "Remote_db mask: ";
+accept _remote_db   prompt "Coordinator DB_NAME mask: ";
 
-col remote_db               for a20;
+col coordinator_db_name     for a30 heading "Global coordinator";
 --col remote_dbid_reversed    for a10;
 col trans_id                for a16;
 col direction               for a11;
@@ -25,9 +25,9 @@ with v$xt_global_transaction as (
    select
        g.inst_id                                                                       as inst_id
       ,g.k2gtdses                                                                      as saddr
-      ,regexp_replace(g.k2gtitid_ora,'^(.*)\.(\w+)\.(\d+\.\d+\.\d+)$','\1')            as remote_db
+      ,regexp_replace(g.k2gtitid_ora,'^(.*)\.(\w+)\.(\d+\.\d+\.\d+)$','\1')            as coordinator_db_name
 --      ,regexp_replace(g.k2gtitid_ora,'^(.*)\.(\w+)\.(\d+\.\d+\.\d+)$','\2')            as remote_dbid_reversed
-      ,to_number(hextoraw(reverse(regexp_replace(g.k2gtitid_ora,'^(.*)\.(\w+)\.(\d+\.\d+\.\d+)$','\2'))),'XXXXXXXXXXXX') as remote_dbid
+      ,to_number(hextoraw(reverse(regexp_replace(g.k2gtitid_ora,'^(.*)\.(\w+)\.(\d+\.\d+\.\d+)$','\2'))),'XXXXXXXXXXXX') as coordinator_dbid
       ,regexp_replace(g.k2gtitid_ora,'^(.*)\.(\w+)\.(\d+\.\d+\.\d+)$','\3')            as trans_id
       ,nvl2(replace(g.k2gtibid,'0'),'FROM REMOTE','TO REMOTE')                         as direction
       ,g.k2gtitid_ext  /* utl_raw.cast_to_varchar2(k2gtitid_ext) = g.k2gtitid_ora */   as globalid    
@@ -69,9 +69,9 @@ select
     ,s.serial#
     ,s.username
 --    ,tr.saddr
-    ,tr.remote_db
+    ,tr.coordinator_db_name
 --    ,tr.remote_dbid_reversed
-    ,tr.remote_dbid
+    ,tr.coordinator_dbid
     ,tr.trans_id
     ,tr.direction
     ,tr.globalid
@@ -91,9 +91,9 @@ from v$xt_global_transaction tr
 where tr.saddr=s.saddr
   and ('&_sid'       is null or s.sid='&_sid')
   and ('&_globalid'  is null or tr.globalid like '&_globalid')
-  and ('&_remote_db' is null or tr.remote_db like '&_remote_db')
+  and ('&_remote_db' is null or tr.coordinator_db_name like '&_remote_db')
 /
-col remote_db               clear;
+col coordinator_db_name     clear;
 --col remote_dbid_reversed    clear;
 col trans_id                clear;
 col direction               clear;

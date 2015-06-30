@@ -16,7 +16,7 @@ select
                        ,to_char(sysdate  ,'yyyy-mm-dd')               as end_date
 from (
       select 
-        dense_rank()over(partition by dbid,db_name,instance_number order by startup_time desc) n
+        dense_rank()over(partition by dbid,db_name order by startup_time desc) n
        ,i.*
       from dba_hist_database_instance i
 )

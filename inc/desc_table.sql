@@ -11,3 +11,19 @@ from dba_col_comments c
 where 
      c.owner='&2' 
  and c.table_name='&1';
+
+select 
+   pt.partitioning_type
+  ,pt.partition_count
+  ,pt.subpartitioning_type
+  ,pc.column_position      key#
+  ,pc.column_name
+  ,pc.object_type
+from dba_part_tables pt
+    ,dba_part_key_columns pc
+where pt.owner='&2' 
+  and pt.table_name='&1'
+  and pc.owner = pt.owner
+  and pc.name = pt.table_name
+order by 1,2,3,4
+/

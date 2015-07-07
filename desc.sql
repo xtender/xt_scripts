@@ -27,6 +27,7 @@ where o.object_name like upper(regexp_substr('&1','[^.]+$'))
                          when '&2' is not null then upper('&2')
                          else '%'
                     end
+  and o.object_type  not like '%PARTITION'
   and o.owner         = syn.owner(+)
   and o.OBJECT_NAME   = syn.synonym_name(+)
   and syn.table_owner = o2.OWNER(+)

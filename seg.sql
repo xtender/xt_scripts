@@ -13,12 +13,12 @@ select
         )) "_SEG_NAME"
 from dual;
 
-COL owner           FOR A15
-COL segment_name    FOR A30
-COL partition_name  FOR A30
-COL size_mb         FOR A15
-COL segment_type    FOR A15
-COL segment_subtype FOR A10
+COL owner           FOR A15;
+COL segment_name    FOR A30;
+COL partition_name  FOR A30;
+COL size_mb         FOR A15;
+COL segment_type    FOR A19;
+COL segment_subtype FOR A10;
 set termout on
 promp &_C_REVERSE. *** Segments: segment_name like '&_SEG_NAME' and owner like '&_SEG_OWNER' &_C_RESET;
 

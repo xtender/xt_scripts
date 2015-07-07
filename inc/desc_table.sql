@@ -17,8 +17,8 @@ col subpartition_type for a17;
 select 
    pt.partitioning_type
   ,pt.partition_count
-  ,pt.subpartition_type
-  ,pc.column_position      key#
+  ,pt.subpartitioning_type as subpartition_type
+  ,pc.column_position      as key#
   ,pc.column_name
 from dba_part_tables pt
     ,dba_part_key_columns pc

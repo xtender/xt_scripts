@@ -1,8 +1,9 @@
 select * from table(dbms_xplan.display('','','TYPICAL'));
+col outlines for a120;
 select--+ CURSOR_SHARING_EXACT NO_XMLINDEX_REWRITE NO_XMLINDEX_REWRITE_IN_SELECT 
         q'{,q'[}'
         ||regexp_replace(d.hint,'\s{2,}',' ')||
-        q'{]'}'
+        q'{]'}' outlines
     from
         xmltable('/other_xml/outline_data/*'
             passing (
@@ -22,3 +23,5 @@ select--+ CURSOR_SHARING_EXACT NO_XMLINDEX_REWRITE NO_XMLINDEX_REWRITE_IN_SELECT
             "HINT" varchar2(4000) PATH '/hint'
     ) d
 /
+
+col outlines clear;

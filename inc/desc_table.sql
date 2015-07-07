@@ -12,13 +12,14 @@ where
      c.owner='&2' 
  and c.table_name='&1';
 
+col partitioning_type for a17;
+col subpartition_type for a17;
 select 
    pt.partitioning_type
   ,pt.partition_count
-  ,pt.subpartitioning_type
+  ,pt.subpartition_type
   ,pc.column_position      key#
   ,pc.column_name
-  ,pc.object_type
 from dba_part_tables pt
     ,dba_part_key_columns pc
 where pt.owner='&2' 
@@ -27,3 +28,5 @@ where pt.owner='&2'
   and pc.name = pt.table_name
 order by 1,2,3,4
 /
+col partitioning_type clear;
+col subpartition_type clear;

@@ -1,5 +1,5 @@
 set lines 80
-describe &2..&1
+describe "&2"."&1"
 
 set lines 1000;
 col owner           for a30;

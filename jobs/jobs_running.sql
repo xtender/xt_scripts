@@ -26,10 +26,10 @@ select--+ leading(r j s) use_nl(j) use_nl(s)
        ,s.SQL_EXEC_START
        ,what
 from dba_jobs_running r
-    ,dba_jobs j
     ,v$session s
-where r.job=j.JOB
-  and r.sid=s.sid
+    ,dba_jobs j
+where r.job=j.JOB(+)
+  and r.sid=s.sid(+)
   and ('&1' is null or s.SQL_ID like '&1' or lower(s.USERNAME) like lower('&1%') or lower(j.what) like lower('%&1%') or lower(log_user) like lower('&1%') or r.sid like '&1')
 order by what;
 

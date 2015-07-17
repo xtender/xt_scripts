@@ -30,6 +30,8 @@ col last_startup    clear;
 
 accept _awr_db_name     prompt "DB NAME [&_awr_db_name]: " default "&_awr_db_name";
 accept _awr_db_beg_date prompt "Begin date [&_awr_db_beg_date]: " default "&_awr_db_beg_date"
+accept _hh_beg          prompt "Begin hour [10]: " default 10;
+accept _hh_end          prompt "End   hour [18]: " default 18;
 
 col beg_time for a16;
 col end_time for a16;
@@ -59,11 +61,14 @@ with
        ,o.instance_number                         as instance
        ,to_char(sn.beg_time,'yyyy-mm-dd hh24:mi') as beg_time
        ,to_char(sn.end_time,'yyyy-mm-dd hh24:mi') as end_time
+       ,extract(hour from end_time)               as hh
        --,o.stat_id
        ,o.stat_name                               as stat_name
        ,case when o.stat_name in ('NUM_CPUS','LOAD','NUM_CPU_CORES','NUM_CPU_SOCKETS','NUM_VCPUS','NUM_LCPUS','PHYSICAL_MEMORY_BYTES') -- non-cumulative
                 then o.value
-             else o.value - lag(o.value) over(partition by o.dbid,o.instance_number,o.stat_name order by sn.snap_id,sn.beg_time) -- cumulative
+             when o.snap_id = 1+lag(o.snap_id) over(partition by o.dbid,o.instance_number,o.stat_name order by sn.snap_id,sn.beg_time) -- cumulative
+                then o.value 
+                     - lag(o.value) over(partition by o.dbid,o.instance_number,o.stat_name order by sn.snap_id,sn.beg_time)
         end as value
       from snaps sn
           ,dba_hist_osstat o
@@ -114,6 +119,7 @@ with
         ,max(decode(stat_name,'OS_CPU_WAIT_TIME'       ,value))  AS OS_CPU_WAIT_TIME
         ,max(decode(stat_name,'RSRC_MGR_CPU_WAIT_TIME' ,value))  AS RSRC_MGR_CPU_WAIT_TIME
       from osstats
+      where hh between &_hh_beg and &_hh_end
       group by 
          dbid
         ,snap_id

@@ -11,6 +11,7 @@ accept _awr_db_name     prompt "Enter db_name[&_awr_db_name]: "  default "&_awr_
 accept _awr_db_beg_date prompt "Start date[&_awr_db_beg_date]: " default "&_awr_db_beg_date";
 accept _awr_db_beg_hour prompt "Start hour[10]: " default 10;
 accept _awr_db_end_hour prompt "End hour[18]: "   default 18;
+accept _awr_except_wday prompt "Except week days[sunday,saturday]: " default "sunday,saturday";
 
 def _frm_len = 15;
 
@@ -101,6 +102,7 @@ with
     ) v_db_time
     where end_hh >= &_awr_db_beg_hour
       and beg_hh <= &_awr_db_end_hour
+      and (q'[&_awr_except_wday]' is null or q'[&_awr_except_wday]' not like to_char(beg_time,'"%"fmday"%"'))
 )
 ,db_time_hh as (
     select

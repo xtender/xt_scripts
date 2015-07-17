@@ -39,8 +39,8 @@ where
   and st.ts#             = o.ts#
   and st.obj#            = o.obj#
   and st.dataobj#        = o.dataobj#
-  and o.owner            like nvl(upper(&2),'%')
-  and o.object_name      like upper(&1)
-  and sn.end_interval_time > date'2014-01-01'
+  and o.owner            like nvl(upper('&2'),'%')
+  and o.object_name      like upper('&1')
+  and sn.end_interval_time > systimestamp - 15
 order by sn.snap_id,sn.begin_interval_time,sn.instance_number
 /

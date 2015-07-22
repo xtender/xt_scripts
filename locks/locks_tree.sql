@@ -20,25 +20,25 @@ from dual;
 set termout on;
 -- end input params init;
 -----------------------------------------------------------------------
-col lev             format 999
-col sid             format a20
-col serial#         format 99999999
-col b_obj           format a30
-col srowid          format a18
-col sqltext         format a73
-col sqlsubstring    format a73
-col usern           format a12
-col osuser          format a12
-col waited          format a15
-col event           format a30
-col state           format a10
-col status          noprint
-col sql_id          format a13
-col module          format a30
-col ple             format a35 word
-col plo             format a35 word
+col lev             format 999;
+col sid             format a20;
+col serial#         format 99999999;
+col b_obj           format a30;
+col srowid          format a18;
+col sqltext         format a73;
+col sqlsubstring    format a73;
+col usern           format a12;
+col osuser          format a12;
+col waited          format a15;
+col event           format a30;
+col state           format a10 trunc;
+col status          noprint;
+col sql_id          format a13;
+col module          format a30;
+col ple             format a35 word;
+col plo             format a35 word;
 -----------------------------------------------------------------------
-with 
+with
  v#session as (
     select--+ materialize no_merge use_hash(ss.w ss.e ss.s)
         ss.sid

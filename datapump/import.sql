@@ -21,7 +21,7 @@ end;
 col file_name new_val _dmpfile for a80;
 SELECT indx, FNAME_KRBMSFT AS file_name FROM X$KRBMSFT
 /
-accept _dmpfile    prompt "Enter filename[_dmpfile]: " default '&_dmpfile';
+accept _dmpfile    prompt "Enter filename without .dmp: " default '&_dmpfile';
 accept _remap_orig prompt "Enter remap original    schema: ";
 accept _remap_dest prompt "Enter remap destination schema: ";
 set serverout on;

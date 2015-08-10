@@ -16,6 +16,10 @@ where owner='SYS'
 /
 accept _dir_name prompt "Enter new directory name[empty to cancel]: ";
 accept _dir_path prompt "Enter new directory path[empty to cancel]: ";
+prompt Choose SHELL path:
+prompt * Default on WINDOWS: c:\WINDOWS\system32\cmd.exe /c
+prompt * Default on *NIX   : /bin/bash [default]
+accept _shell    prompt "SHELL path[/bin/bash]: " default '/bin/bash';
 set serverout on;
 
 declare
@@ -29,15 +33,15 @@ declare
    begin
 
       dbms_scheduler.create_job(
-         job_name => l_job_name
-        ,job_type => 'EXECUTABLE'
-        ,job_action => 'c:\WINDOWS\system32\cmd.exe /c' -- '/bin/bash'
+         job_name            => l_job_name
+        ,job_type            => 'EXECUTABLE'
+        ,job_action          => q'[&_shell]'
         ,number_of_arguments => 2
-        ,start_date => NULL
-        ,repeat_interval => NULL
-        ,end_date => NULL
-        ,enabled => false
-        ,auto_drop => TRUE
+        ,start_date          => NULL
+        ,repeat_interval     => NULL
+        ,end_date            => NULL
+        ,enabled             => false
+        ,auto_drop           => TRUE
       ); 
       dbms_scheduler.set_job_argument_value(l_job_name, 1, command);
       dbms_scheduler.set_job_argument_value(l_job_name, 2, arg);
@@ -45,7 +49,7 @@ declare
    end;
 begin
    if '&_dir_name' is not null then
-      p_os_exec('mkdir', '&_dir_path');
+      p_os_exec('mkdir', q'[&_dir_path]');
       execute immediate q'[CREATE DIRECTORY &_dir_name AS '&_dir_path'  ]';
       dbms_output.put_line(q'[created directory &_dir_name AS '&_dir_path'  ]');
    end if;

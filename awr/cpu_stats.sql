@@ -1,3 +1,13 @@
+col "DB time"               format 999999999999;
+col "SQL ela.time"          format 999999999999;
+col "DB CPU"                format 999999999999;
+col "Background ela.time"   format 999999999999;
+col "PL/SQL ela.time"       format 999999999999;
+col "Background cpu"        format 999999999999;
+
+
+
+
 with 
  awr_grp_stats as (
       select   
@@ -7,7 +17,7 @@ with
       from dba_hist_sys_time_model       dbtime1
           ,dba_hist_sys_time_model       dbtime2
       where
-            dbtime1.dbid            = 3126056015
+            dbtime1.dbid            = &DB_ID
         and dbtime1.instance_number = 1
         and dbtime1.stat_id        in (
                                        3649082374  --DB time
@@ -59,7 +69,7 @@ select trunc(sn.begin_interval_time,'hh') dt
 from dba_hist_snapshot sn
     ,awr_stats s
 where 
-      sn.dbid            = 3126056015
+      sn.dbid            = &DB_ID
   and sn.instance_number = 1
   and sn.snap_id         = s.snap_id
 --  and to_number(to_char(sn.begin_interval_time,'dd')) between 1 and 5
@@ -76,3 +86,9 @@ where
            )>40
 order by 1 desc,2 desc
 /
+col "DB time"               clear;
+col "SQL ela.time"          clear;
+col "DB CPU"                clear;
+col "Background ela.time"   clear;
+col "PL/SQL ela.time"       clear;
+col "Background cpu"        clear;

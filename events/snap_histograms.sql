@@ -74,6 +74,13 @@ begin
          ,nvl(v2.EVENT           , v1.EVENT          )  EVENT          
          ,nvl(v2.WAIT_TIME_MILLI , v1.WAIT_TIME_MILLI)  WAIT_TIME_MILLI
          ,nvl(v2.WAIT_COUNT,0)-nvl(v1.WAIT_COUNT,0)     WAIT_COUNT
+         ,round(
+          100*sum(nvl(v2.WAIT_COUNT,0)-nvl(v1.WAIT_COUNT,0))  
+                over(partition by nvl(v2.EVENT           , v1.EVENT          )
+                     order by nvl(v2.WAIT_TIME_MILLI , v1.WAIT_TIME_MILLI))
+             /sum(nvl(v2.WAIT_COUNT,0)-nvl(v1.WAIT_COUNT,0))  
+                over(partition by nvl(v2.EVENT           , v1.EVENT          )))
+                 as "running_total(%)"
          ,nvl(v2.LAST_UPDATE_TIME, v1.LAST_UPDATE_TIME) LAST_UPDATE_TIME
       from v1
            full join v2 on (v1.event_id=v2.event_id and v1.event=v2.event and v1.wait_time_milli=v2.wait_time_milli)

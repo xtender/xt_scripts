@@ -9,6 +9,9 @@ BEGIN
   );
 END;
 /
-accept _retention_days;
-accept _interval      ;
-accept _topn          ;
+undef _retention_days;
+undef _interval      ;
+undef _topn          ;
+prompt ============================================================
+prompt * New settings:
+@awr/settings

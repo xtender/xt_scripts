@@ -13,7 +13,7 @@ col constraint_name for a30;
 col table_name for a30;
 
 prompt &_C_RED **************************************************** &_C_RESET
-prompt * FK &_C_YELLOW&_C_BOLD FROM &_C_RESET the table &1: 
+prompt * FK &_C_YELLOW&_C_BOLD IN &_C_RESET the table &1: 
 
 select 
      cc.owner             as r_owner
@@ -30,7 +30,7 @@ where cc.owner            like upper(nvl('&2','%'))
   and cc.r_constraint_name = rc.constraint_name
 /
 prompt &_C_RED **************************************************** &_C_RESET
-prompt * FK &_C_YELLOW&_C_BOLD TO &_C_RESET the table &1: 
+prompt * FK &_C_YELLOW&_C_BOLD TO ==>&_C_RESET &1: 
 
 with
    r_cons as (

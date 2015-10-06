@@ -20,17 +20,21 @@ select distinct
  ,nvl(o2.temporary      ,o.temporary      ) temporary
  ,nvl(o2.generated      ,o.generated      ) generated
 from dba_objects o
-    ,dba_synonyms syn
-    ,dba_objects o2
+     left join dba_synonyms syn
+          on  o.object_type    = 'SYNONYM'
+          and syn.owner        = o.owner
+          and syn.synonym_name = o.object_name
+     left join dba_objects o2
+          on  o.object_type    = 'SYNONYM'
+          and o2.OWNER         = syn.table_owner
+          and o2.OBJECT_NAME   = syn.table_name 
 where o.object_name like upper(regexp_substr('&1','[^.]+$'))
   and o.owner  like case when instr('&1','.')>0 then upper(regexp_substr('&1','^[^.]*'))
                          when '&2' is not null then upper('&2')
                          else '%'
                     end
-  and o.owner         = syn.owner(+)
-  and o.OBJECT_NAME   = syn.synonym_name(+)
-  and syn.table_owner = o2.OWNER(+)
-  and syn.table_name  = o2.OBJECT_NAME(+)
+  and o.object_type   not in ('TABLE PARTITION','INDEX PARTITION')
+  and (o.object_type like nvl(upper('&3'),'%'))
 order by 
       decode(nvl(o2.owner          ,o.owner          )
                ,'SYS',1
@@ -47,11 +51,12 @@ order by
 prompt dbms_metadata.get_ddl for &_type  &_owner..&_object....
 def _filename="&_TEMPDIR\get_ddl_&_CONNECT_IDENTIFIER..&_OWNER..&_OBJECT..sql"
 
-set termout off timing off ver off feed off head off lines 10000000 pagesize 0 newpage none
-exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'PRETTY',false);
+set termout off timing off ver off feed off tab off head off lines 10000000 pagesize 0 newpage none
+--exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'PRETTY',false);
+exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'PRETTY',true);
 -------------- Spooling ------------------
 spool &_filename
-@inc/ddl.inc &_OWNER &_OBJECT
+@inc/ddl.inc "&_OWNER" "&_OBJECT" "&_TYPE"
 spool off
 -------------- End Spooling ------------------
 host &_filename

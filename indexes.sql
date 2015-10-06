@@ -3,6 +3,7 @@ col owner           format a12
 col table_owner     format a12
 col table_name      format a30
 col index_name      format a30
+col status          format a10 trunc;
 col index_type      format a10 trunc;
 col partition_name  format a20
 col column_name     format a30
@@ -41,6 +42,7 @@ select--+ leading(i ic o) use_nl(i ic o)
         ,i.table_name
         ,i.index_name
         ,i.index_type
+        ,i.status
 &_IF_ORA11_OR_HIGHER        ,decode(i.VISIBILITY,'INVISIBLE'  ,'N','Y') as VISIBLE
         ,decode(i.UNIQUENESS,'NONUNIQUE','N','Y')  as UNIQ
         ,i.BLEVEL
@@ -65,5 +67,6 @@ order by
 /
 clear break 
 col "#" clear 
-col index_type clear;
+col status          clear;
+col index_type      clear;
 @inc/input_vars_undef.sql

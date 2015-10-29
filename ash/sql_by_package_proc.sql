@@ -5,6 +5,9 @@ accept _owner  prompt "Owner                  : ";
 accept _object prompt "Procedure/Package      : ";
 accept _proc   prompt "Procedure(for packages): ";
 
+col TOP_SQLID    for a13;
+col SQL_ID       for a13;
+col CURR_SQLID   for a13;
 col sql_text     format a80;
 col top_sql_text format a80;
 with p as (
@@ -60,6 +63,9 @@ where ch.sql_id  = s.sql_id
 &_IF_ORA112_OR_HIGHER order by overall_ela desc
 ;
 
+col TOP_SQLID    clear;
+col SQL_ID       clear;
+col CURR_SQLID   clear;
 col sql_text     clear;
 col top_sql_text clear;
 @inc/input_vars_undef;

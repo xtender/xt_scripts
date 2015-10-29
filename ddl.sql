@@ -54,9 +54,12 @@ def _filename="&_TEMPDIR\get_ddl_&_CONNECT_IDENTIFIER..&_OWNER..&_OBJECT..sql"
 set termout off timing off ver off feed off tab off head off lines 10000000 pagesize 0 newpage none
 --exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'PRETTY',false);
 exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'PRETTY',true);
+exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'SQLTERMINATOR',true);
+var c clob;
+exec :c := ltrim(dbms_metadata.get_ddl('&_TYPE','&_OBJECT','&_OWNER'),' '||chr(10)||chr(13));
 -------------- Spooling ------------------
 spool &_filename
-@inc/ddl.inc "&_OWNER" "&_OBJECT" "&_TYPE"
+print c;
 spool off
 -------------- End Spooling ------------------
 host &_filename

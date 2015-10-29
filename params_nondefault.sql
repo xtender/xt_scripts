@@ -1,3 +1,7 @@
+prompt *** Show parameters with isdefault='FALSE'
+prompt * Usage: @params_nondefault [mask]
+@@inc/input_vars_init;
+prompt * Current mask: &1
 col parameter       format a40;
 col value           format a80;
 col type            format a12;
@@ -26,9 +30,12 @@ select  name as parameter
 from v$parameter p 
 where p.isdefault='FALSE'
 and p.name not like 'log_archive_dest%'
+and (q'[&1]' is null or p.name like q'[&1]')
+order by 1
 /
 col parameter       clear;
 col value           clear;
 col type            clear;
 col description     clear;
 col update_comment  clear;
+@@inc/input_vars_undef;

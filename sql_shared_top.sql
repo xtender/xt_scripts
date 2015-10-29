@@ -1,6 +1,6 @@
 @inc/input_vars_init;
 prompt &_C_RED* Show top N cursor by child count... &_C_RESET;
-prompt *** Usage: &sql_shared_top N [+reason]
+prompt *** Usage: @sql_shared_top N [+reason]
 
 col if_reason new_val _if_reason noprint;
 select case when lower('&2') like '+reason' then '' else '--' end if_reason from dual;

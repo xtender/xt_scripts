@@ -6,6 +6,12 @@ col USERNAME    format a25;
 col status      format a15;
 col binds       format a120;
 col m_elaexe    format a12;
+
+col name        for a10;
+col dtystr      for a12 trunc;
+col val         for a300 word;
+break on username on sid on serial# on exec_id on exec_start on plan_hv on m_elaexe skip 1;
+
 with agg as (
       select distinct
              sm.username,sm.sid,sm.session_serial# serial#
@@ -19,7 +25,14 @@ with agg as (
             ,dat.maxlen
             ,dat.len   
             ,nvl(dat.val,'NULL') val
-      from v$sql_monitor sm
+      from ( select sm.*
+                   ,row_number()over(order by decode(sm.status,'EXECUTING',1,2), SQL_EXEC_START desc) rn
+             from v$sql_monitor sm
+             where sm.status like nvl('&3','EXECUTING')
+               and sm.sql_id='&1'
+               and sm.sql_exec_id like case when regexp_like('&2','\d+') then '&2' else '%' end
+             
+           ) sm
           ,xmltable( '/data/binds/bind'
                      passing xmltype('<data>'||sm.binds_xml||'</data>')
                      columns 
@@ -31,9 +44,7 @@ with agg as (
                         ,val      varchar2(30) path '.'
           ) dat
       where 
-          sm.status like nvl('&3','EXECUTING')
-      and sm.sql_id='&1'
-      and sm.sql_exec_id like case when regexp_like('&2','\d+') then '&2' else '%' end
+          sm.rn<=10
 )
 select username
       ,sid
@@ -42,13 +53,22 @@ select username
       ,exec_start
       ,plan_hv
       ,m_elaexe
-      ,listagg(agg.name||'('||agg.dtystr||')='||agg.val,', ') within group(order by agg.name)binds
+      --,listagg(agg.name||'('||agg.dtystr||')='||agg.val,chr(10)) within group(order by agg.name)binds
+      ,agg.name
+      ,agg.dtystr
+      ,agg.val
 from agg
-group by username,sid,serial#,exec_id,exec_start,plan_hv,m_elaexe
-order by exec_start
+--group by username,sid,serial#,exec_id,exec_start,plan_hv,m_elaexe
+order by exec_start,exec_id
 /
+clear break;
 col USERNAME    clear
 col status      clear
 col binds       clear
 col m_elaexe    clear
+
+col name        clear
+col dtystr      clear
+col val         clear
+
 @inc/input_vars_undef;

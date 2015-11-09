@@ -1,5 +1,5 @@
-column component format a20
-column parameter format a30  
+column component format a25 trunc;
+column parameter format a30  ;
 
 column initial_size format 99,999,999,999
 column target_size format 99,999,999,999

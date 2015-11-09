@@ -1,3 +1,8 @@
+prompt *** Show tables analyzed though dynamic sampling.
+prompt * Usage: @dynamic_sampling_used_for [-temp]
+
+@inc/input_vars_init;
+
 col owner         for a30;
 col tab_name      for a30;
 col top_sql_id    for a13;
@@ -35,6 +40,7 @@ from tabs
 where 
      tabs.owner    = t.owner(+)
  and tabs.tab_name = t.table_name(+)
+ and (decode(upper('&1'),'-TEMP',t.temporary,'N')='N')
 order by elapsed desc
 /
 col owner         clear;
@@ -45,3 +51,5 @@ col last_analyzed clear;
 col partitioned   clear;
 col nested        clear;
 col IOT_TYPE      clear;
+
+@inc/input_vars_undef;

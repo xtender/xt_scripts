@@ -1,3 +1,4 @@
+col granted_role format a30;
 col admin_option format a15;
 col default_role format a15;
 col os_granted   format a15;
@@ -12,6 +13,7 @@ start with p.grantee in ('SCOTT','PUBLIC')
 connect by prior p.GRANTED_ROLE=p.grantee
 order siblings by p.granted_role;
 
+col granted_role clear;
 col admin_option clear;
 col default_role clear;
 col os_granted   clear;

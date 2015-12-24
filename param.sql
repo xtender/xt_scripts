@@ -2,8 +2,8 @@
 col name            format a40;
 col value           format a25;
 col display_value   format a20;
-col deflt           format a12;
-col type            format a12;
+col deflt           format a5 trunc;
+col type            format a8 trunc;
 col description     format a60 WORD_WRAPPED;
 col update_comment  format a20;
 col modifiable      format a10;

@@ -15,8 +15,8 @@ order by 1 nulls first, 2 desc;
 
 COLUMN pool    HEADING "Pool"
 COLUMN name    HEADING "Name"
-COLUMN sgasize HEADING "Allocated" FORMAT 999,999,999
-COLUMN bytes   HEADING "Free" FORMAT 999,999,999
+COLUMN sgasize HEADING "Allocated" FORMAT 999,999,999,999
+COLUMN bytes   HEADING "Free" FORMAT 999,999,999,999
 
 SELECT
     f.pool

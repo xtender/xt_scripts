@@ -14,19 +14,20 @@ accept _awr_db_end_hour prompt "End hour[18]: "   default 18;
 
 def _frm_len = 15;
 
+var cols varchar2(100);
+declare 
+   cols varchar2(100);
+begin
+   for hh in &_awr_db_beg_hour .. &_awr_db_end_hour loop
+      cols:=cols
+            ||',d_'||to_char(hh,'fm00')
+            ||',f_'||to_char(hh,'fm00');
+   end loop;
+   :cols  := substr(cols,2);
+end;
+/
 col cols new_val _cols noprint;
-
-select 
-&_IF_LOWER_THAN_ORA11 to_char(wm_concat(cols)) cols
-&_IF_ORA11_OR_HIGHER listagg(cols,',') within group(order by 1) cols
- from (
-      select  'd_'||to_char(hh,'fm00')
-             ||
-             ',f_'||to_char(hh,'fm00')
-              cols
-      from (select level-1 hh from dual connect by level<=24)
-      where hh between &_awr_db_beg_hour and &_awr_db_end_hour
-);
+print cols
 
 col f_00 for a&_frm_len;
 col f_01 for a&_frm_len;

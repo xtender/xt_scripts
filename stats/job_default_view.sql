@@ -3,14 +3,17 @@ col status          for a7;
 col window_group    for a40 trunc;
 col consumer_group  for a40 trunc;
 
-select client_name
-      ,status
-      ,window_group
-      ,consumer_group
- from dba_autotask_client 
-where client_name='auto optimizer stats collection'
+select atc.client_name
+      ,atc.status
+      ,atc.window_group
+      ,atc.consumer_group
+      ,atc.mean_job_duration
+      ,atc.max_duration_last_7_days
+      ,atc.max_duration_last_30_days
+ from dba_autotask_client  atc
+where atc.client_name='auto optimizer stats collection'
 /
-
+---------------
 col WINDOW_NAME     for a18;
 col OPTIMIZER_STATS for a15;
 select wc.WINDOW_NAME
@@ -19,7 +22,7 @@ select wc.WINDOW_NAME
       ,wc.OPTIMIZER_STATS
       ,wc.WINDOW_NEXT_TIME
 from dba_autotask_window_clients wc;
-
+---------------
 prompt Last 5 runs:;
 col window_start_time for a30;
 col job_start_time    for a30;
@@ -29,7 +32,7 @@ from (select client_name, window_name, window_start_time, job_status, job_start_
       order by window_start_time desc
      ) 
 where rownum<=10;
-
+---------------
 col OPTIMIZER_STATS clear;
 col WINDOW_NAME     clear;
 

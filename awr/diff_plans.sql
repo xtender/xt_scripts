@@ -81,15 +81,17 @@ declare
        else
           v_snaps:='disabled';
        end if;
-       return      'parsing_schema   : '||          p_info.parsing_schema
-        ||chr(10)||'plan_hash_value  : '|| to_char( p_info.plan_hv     ,'FMTM9')
-        ||chr(10)||'sum(elapsed),secs: '|| to_char( p_info.ela/1e6     ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
-        ||chr(10)||'executions       : '|| to_char( p_info.execs       ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
-        ||chr(10)||'first_begin      : '|| to_char( p_info.first_begin ,'yyyy-mm-dd hh24:mi:ss')
-        ||chr(10)||'last_end         : '|| to_char( p_info.last_end    ,'yyyy-mm-dd hh24:mi:ss')
-        ||chr(10)||'first_snap       : '|| to_char( p_info.first_snap  ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
-        ||chr(10)||'last_snap        : '|| to_char( p_info.last_snap   ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
-        ||chr(10)||'snaps_count      : '|| to_char( p_info.snaps_count ,'FM999G999G999G990'    ,q'[nls_numeric_characters=' .']')
+       return     to_clob('')
+                 ||'parsing_schema   : '||          p_info.parsing_schema
+        ||chr(10)||'plan_hash_value  : '|| to_char( p_info.plan_hv          ,'FMTM9')
+        ||chr(10)||'elapsed per exec : '|| to_char( p_info.ela_per_exec/1e6 ,'FM999G990d099999'     ,q'[nls_numeric_characters='.`']')
+        ||chr(10)||'sum(elapsed),secs: '|| to_char( p_info.ela/1e6          ,'FM999G999G999G990'    ,q'[nls_numeric_characters='.`']')
+        ||chr(10)||'executions       : '|| to_char( p_info.execs            ,'FM999G999G999G990'    ,q'[nls_numeric_characters='.`']')
+        ||chr(10)||'first_begin      : '|| to_char( p_info.first_begin      ,'yyyy-mm-dd hh24:mi:ss')                           
+        ||chr(10)||'last_end         : '|| to_char( p_info.last_end         ,'yyyy-mm-dd hh24:mi:ss')                           
+        ||chr(10)||'first_snap       : '|| to_char( p_info.first_snap       ,'FM999G999G999G990'    ,q'[nls_numeric_characters='.`']')
+        ||chr(10)||'last_snap        : '|| to_char( p_info.last_snap        ,'FM999G999G999G990'    ,q'[nls_numeric_characters='.`']')
+        ||chr(10)||'snaps_count      : '|| to_char( p_info.snaps_count      ,'FM999G999G999G990'    ,q'[nls_numeric_characters='.`']')
         ||chr(10)||'snaps            : '|| v_snaps;
     end format_info;
     /** function get_plan */

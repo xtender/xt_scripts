@@ -1,4 +1,5 @@
 *.~sql
+*.tmp
 archive/
 c/
 local/

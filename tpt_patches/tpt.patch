@@ -1,0 +1,11 @@
+--- tpt/snapper.sql	Fri Mar  7 08:35:18 2014
++++ tpt_patches/tpt_modified/snapper.sql	Fri Mar 11 14:18:14 2016
+@@ -2197,8 +2197,6 @@
+ undefine snapper_count
+ undefine snapper_sid
+ undefine ssid_begin
+-undefine _IF_ORA11_OR_HIGHER
+-undefine _IF_LOWER_THAN_ORA11
+ undefine _NO_BLK_INST
+ undefine _YES_BLK_INST
+ undefine _NO_PLSQL_OBJ_ID

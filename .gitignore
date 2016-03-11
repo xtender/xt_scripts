@@ -9,6 +9,7 @@ tests/
 tmp/
 tpt/
 troubles1/
+*backup*
 afiedt.sql
 sqlplus_settings.sql
 tmp.sql

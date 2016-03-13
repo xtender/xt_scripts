@@ -4,3 +4,6 @@
 [submodule "externals/sqld360"]
 	path = externals/sqld360
 	url = https://github.com/mauropagano/sqld360.git
+[submodule "externals/randolfgeist"]
+	path = externals/randolfgeist
+	url = https://github.com/randolfgeist/oracle_scripts.git

@@ -14,9 +14,9 @@ accept _awr_db_end_hour prompt "End hour[18]: "   default 18;
 
 def _frm_len = 15;
 
-var cols varchar2(100);
+var cols varchar2(1000);
 declare 
-   cols varchar2(100);
+   cols varchar2(1000);
 begin
    for hh in &_awr_db_beg_hour .. &_awr_db_end_hour loop
       cols:=cols

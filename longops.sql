@@ -26,9 +26,9 @@ select
  ,l.message
  ,l.username
  ,l.sql_id
- ,l.sql_plan_line_id
- ,l.sql_plan_operation
- ,l.sql_plan_options
+&_IF_ORA11_OR_HIGHER ,l.sql_plan_line_id
+&_IF_ORA11_OR_HIGHER ,l.sql_plan_operation
+&_IF_ORA11_OR_HIGHER ,l.sql_plan_options
 from v$session_longops l
 where last_update_time>sysdate - 0&_minutes/24/60;
 

@@ -28,9 +28,9 @@ select
  ,l.message
  ,l.username
  ,l.sql_id
- ,l.sql_plan_line_id
- ,l.sql_plan_operation
- ,l.sql_plan_options
+&_IF_ORA11_OR_HIGHER ,l.sql_plan_line_id
+&_IF_ORA11_OR_HIGHER ,l.sql_plan_operation
+&_IF_ORA11_OR_HIGHER ,l.sql_plan_options
 from v$session_longops l 
 where l.sid = &1
 order by l.start_time,l.last_update_time

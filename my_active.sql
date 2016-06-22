@@ -3,6 +3,7 @@ column serial#  format 999999   ;
 column sql_id   format a13      ;
 column program  format a20      ;
 column sql      format a80 word ;
+column wait_class format a10 trunc;
 column event    format a40      ;
 column action   format a30      ;
 column ospid    format a9       ;
@@ -13,7 +14,8 @@ select
   ,ss.serial#
   ,p.spid as ospid
   ,ss.program
-  ,event
+  ,decode(ss.state,'WAITING', ss.wait_class ,'ON CPU')                       as wait_class
+  ,decode(ss.state,'WAITING', ss.event      ,'ON CPU')                       as event
   ,action
   ,sql_id
   ,(select substr(sql_text,1,8000) from v$sql s where s.sql_id=ss.sql_id and rownum=1) sql

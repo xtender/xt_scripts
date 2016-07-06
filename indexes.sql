@@ -63,7 +63,7 @@ where
      ic.index_owner = i.owner
  and ic.index_name  = i.index_name
 order by
-         owner,table_name,seg_size desc, DISTINCT_KEYS, index_name,"#"
+         owner,table_name,index_name
 /
 clear break 
 col "#" clear 

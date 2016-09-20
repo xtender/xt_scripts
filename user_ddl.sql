@@ -6,7 +6,8 @@
 -- Last Modified: 28/01/2006
 -- -----------------------------------------------------------------------------------
 
-set long 20000 longchunksize 20000 pagesize 0 linesize 1000 feedback off verify off trimspool on
+--set long 20000 longchunksize 20000 pagesize 0 linesize 1000 feedback off verify off trimspool on
+set feed off head off
 column ddl format a1000
 
 begin
@@ -67,4 +68,5 @@ and    u.profile <> 'DEFAULT'
 and    rownum = 1
 /
 
-set linesize 80 pagesize 14 feedback on trimspool on verify on
+--set linesize 80 pagesize 14 feedback on trimspool on verify on
+set feed on

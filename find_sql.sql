@@ -10,7 +10,7 @@ from dual;
 
 col sql_id          format a13;
 col signature       format a21;
-col sql_text_trunc  format a100 word;
+col sql_text_trunc  format a300 word;
 col to_purge        format a30;
 
 SELECT/*+NOTME*/ *
@@ -22,7 +22,7 @@ from ( select
             , sa.plan_hash_value                                           as phv
             , sa.executions                                                as execs
             , sa.elapsed_time/1e6/decode(sa.executions,0,1,sa.executions)  as elaexe
-            , substr(sql_text,1,300)                                       as sql_text_trunc
+            , regexp_replace(substr(sql_text,1,300),'[^[:ALNUM] ]*',' ')        as sql_text_trunc
             , sa.sql_profile
        FROM gv$sql sa
        where

@@ -5,14 +5,14 @@ col snap_max_time for a19;
 with v as (
    select 
       st.dbid
-     ,st.plan_hash_value                                             as plan_hv
-     ,min(snap_id)                                                   as snap_min
-     ,max(snap_id)                                                   as snap_max
-     ,count(distinct snap_id)                                        as snaps
-     ,sum(st.executions_delta)                                       as execs
-     ,avg(st.elapsed_time_delta/1e6/nullif(st.executions_delta,0))   as ela_avg
-     ,max(st.elapsed_time_delta/1e6/nullif(st.executions_delta,0))   as ela_max
-     ,min(st.elapsed_time_delta/1e6/nullif(st.executions_delta,0))   as ela_min
+     ,st.plan_hash_value                                                as plan_hv
+     ,min(snap_id)                                                      as snap_min
+     ,max(snap_id)                                                      as snap_max
+     ,count(distinct snap_id)                                           as snaps
+     ,sum(st.executions_delta)                                          as execs
+     ,sum(st.elapsed_time_delta)/1e6/avg(nullif(st.executions_delta,0)) as ela_avg
+     ,max(st.elapsed_time_delta/1e6/nullif(st.executions_delta,0))      as ela_max
+     ,min(st.elapsed_time_delta/1e6/nullif(st.executions_delta,0))      as ela_min
    from dba_hist_sqlstat st
    where sql_id='&1'
    and dbid in (select i.dbid from dba_hist_database_instance i)

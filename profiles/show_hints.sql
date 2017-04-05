@@ -59,6 +59,35 @@ break on name on type on plan on plan_id skip 1
 
 @switch "substr('&_O_RELEASE',1,2)" 
 
+   @when "'12'" then
+      select--+ NO_XML_QUERY_REWRITE
+         &_if_nq    p.name  as name
+         &_if_nq   ,decode(p.obj_type,1,'Profile',2,'Baseline',3,'Patch') type
+         &_if_nq   ,case when p.plan_id = sd.plan_id then 'Main' else 'Other' end plan
+         &_if_nq   ,sd.plan_id
+         &_if_nq   ,x.n
+         &_if_nq   ,x.hints as outline_hints 
+         &_if_q    ',q''['||x.hints||']''' as outline_hints 
+      from sys.sqlobj$ p
+          ,sys.sqlobj$data sd
+          ,xmltable('/outline_data/hint' 
+                    passing xmltype(sd.comp_data)
+                    columns 
+                       n     for ordinality,
+                       hints varchar2(200) path '.'
+                   ) x
+      where
+           upper(p.name) like upper('&_profile_name')
+       and p.signature = sd.signature 
+       and p.category  = sd.category
+       and p.obj_type  = sd.obj_type
+       &_if_q and p.plan_id = sd.plan_id
+      order by
+        &_if_nq p.name,plan,sd.plan_id,
+           x.n
+   ;
+   /* end when */
+   
    @when "'11'" then
       select--+ NO_XML_QUERY_REWRITE
          &_if_nq    p.name  as name

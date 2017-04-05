@@ -25,6 +25,8 @@ begin
                            s.EVENT#=234
                         $ELSIF DBMS_DB_VERSION.VERSION=10 $THEN
                            s.event='enq: TM - contention'
+                        $ELSE
+                           s.event='enq: TM - contention'
                         $END
                          /*
                          event_id      = 668627480

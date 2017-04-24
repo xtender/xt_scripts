@@ -1,3 +1,4 @@
+col owner for a12;
 col object_type format a20;
 col object_name format a30;
 accept _owner prompt "Enter owner mask[%]: ";

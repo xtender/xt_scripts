@@ -54,14 +54,14 @@ select/*+ SQLSTAT */
                        ,snaps.end_interval_time                                                                                   as time_end
                        ,st.dbid
                        ,st.plan_hash_value                                                                                        as plan_hv
-                       ,to_char(decode(st.executions_delta,0,0,st.elapsed_time_delta / 1e6 / st.executions_delta),'999999.99990') as elaexe
-                       ,to_char(decode(st.executions_delta,0,0,st.cpu_time_delta     / 1e6 / st.executions_delta),'999999.99990') as elacpu
-                       ,to_char(decode(st.executions_delta,0,0,st.iowait_delta       / 1e6 / st.executions_delta),'999999.99990') as ela_io
-                       ,to_char(decode(st.executions_delta,0,0,st.apwait_delta       / 1e6 / st.executions_delta),'999999.99990') as ela_app
-                       ,to_char(decode(st.executions_delta,0,0,st.PLSEXEC_TIME_DELTA / 1e6 / st.executions_delta),'999999.99990') as ela_pls
-                       ,to_char(decode(st.executions_total,0,0,st.elapsed_time_total / 1e6 / st.executions_total),'999999.99990') as all_elaexe
                        ,st.executions_delta                                                                                       as cnt 
                        ,st.executions_total                                                                                       as all_cnt
+                       ,to_char(decode(st.executions_delta,0,st.elapsed_time_delta / 1e6,st.elapsed_time_delta / 1e6 / st.executions_delta),'999999.99990') as elaexe
+                       ,to_char(decode(st.executions_delta,0,st.cpu_time_delta     / 1e6,st.cpu_time_delta     / 1e6 / st.executions_delta),'999999.99990') as elacpu
+                       ,to_char(decode(st.executions_delta,0,st.iowait_delta       / 1e6,st.iowait_delta       / 1e6 / st.executions_delta),'999999.99990') as ela_io
+                       ,to_char(decode(st.executions_delta,0,st.apwait_delta       / 1e6,st.apwait_delta       / 1e6 / st.executions_delta),'999999.99990') as ela_app
+                       ,to_char(decode(st.executions_delta,0,st.PLSEXEC_TIME_DELTA / 1e6,st.PLSEXEC_TIME_DELTA / 1e6 / st.executions_delta),'999999.99990') as ela_pls
+                       ,to_char(decode(st.executions_total,0,st.elapsed_time_total / 1e6,st.elapsed_time_total / 1e6 / st.executions_total),'999999.99990') as all_elaexe
                        ,to_char(decode(st.executions_delta,0,0,st.buffer_gets_delta / st.executions_delta ),'99g999g999d90',q'[nls_numeric_characters='.`']') buf_gets_per_exec
                        ,to_char(decode(st.executions_delta,0,0,st.disk_reads_delta / st.executions_delta ),'999999.90')           as disk_reads_per_exec
                        ,st.module
@@ -93,7 +93,7 @@ where
   and st.dbid               = db.dbid
   and st.snap_id            = snaps.snap_id
 --  and st.instance_number    = snaps.instance_number
-  and st.executions_delta   > 0
+--  and st.executions_delta   > 0
 order by 1, 2 desc
 )
 select *

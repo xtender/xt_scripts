@@ -1,5 +1,10 @@
 col f format a2
-col inst_id     format 99
+col inst_id         format 99
+col QCSERIAL#       noprint;
+col QCINST_ID       noprint;
+col SERVER_GROUP    head SGRP;
+col SERVER_SET      head SSET;
+col SERVER#         head S#;
 col username    format a20;
 col terminal    format a20;
 col osuser      format a20;

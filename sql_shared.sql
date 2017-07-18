@@ -1,13 +1,13 @@
 col cur_n         for 999 noprint;
 
 col sql_id        for a13;
-col child_number  for 999;
+col child_number  for 9999 heading CHLD;
 
-col all_reasons   for a80;
+col all_reasons   for a40;
 
 col reason_n      for 999 heading N;
-col reason        for a35;
-col name          for a50;
+col reason        for a40;
+col name          for a30;
 col val           for a50;
 break on sql_id on child_number on all_reasons on reason_n on reason# on reason skip 1;
 
@@ -64,7 +64,7 @@ begin
         ),reasons as(
            select
                 p.cur_n
-               ,listagg(X_KEY||'='||x_val,', ') within group(order by x_key) reasons
+               ,listagg(X_KEY||'='||x_val,chr(10)) within group(order by x_key) reasons
            from params p
            where p.if_yes > 0
            group by p.cur_n

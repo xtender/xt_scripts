@@ -5,6 +5,8 @@ REM ****************************************************************************
 
 define _IF_ORA10_OR_HIGHER="--"
 define _IF_ORA11_OR_HIGHER="--"
+define _IF_ORA12_OR_HIGHER="--"
+define _IF_ORA122_OR_HIGHER="--"
 define _IF_LOWER_THAN_ORA11="--"
 define _IF_DBMS_SYSTEM_ACCESSIBLE="/* dbms_system is not accessible" /*dummy*/
 define _IF_X_ACCESSIBLE="--"
@@ -23,6 +25,7 @@ col snapper_ora09higher     noprint new_value _IF_ORA09_OR_HIGHER
 col snapper_ora10higher     noprint new_value _IF_ORA10_OR_HIGHER
 col snapper_ora11higher     noprint new_value _IF_ORA11_OR_HIGHER
 col snapper_ora12higher     noprint new_value _IF_ORA12_OR_HIGHER
+col snapper_ora122higher    noprint new_value _IF_ORA122_OR_HIGHER
 
 col dbms_system_accessible  noprint new_value _IF_DBMS_SYSTEM_ACCESSIBLE
 col x_accessible            noprint new_value _IF_X_ACCESSIBLE
@@ -111,6 +114,8 @@ select
     case when ver <  '09020007'  then ''   else '--'  end   snapper_ora9206lower,
     case when ver >= '09020007'  then ''   else '--'  end   snapper_ora9207higher,
     case when v2  >= '1102'      then ''   else '--'  end   snapper_ora112higher,
+    case when v2  >= '12'        then ''   else '--'  end   snapper_ora12higher,
+    case when v2  >= '1202'      then ''   else '--'  end   snapper_ora122higher,
     nvl(:v, '/* dbms_system is not accessible') dbms_system_accessible,
     nvl(:x, '--') x_accessible,
     null

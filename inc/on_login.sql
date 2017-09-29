@@ -31,8 +31,8 @@ col object_name format a30
 ------------------------------------------------
 -- Load information about version and session
 
-@inc/session_info
 @inc/version_info
+@inc/session_info
 @inc/colors
 
 alter session set nls_numeric_characters  =q'[.`]';
@@ -63,10 +63,10 @@ PROMPT =======  SID           &my_sid
 PROMPT =======  SERIAL#       &my_serial                       
 PROMPT =======  SPID          &my_spid                         
 REM prompt =======  DB_ID         &DB_ID 
-REM prompt =======  DB_NAME       &DB_NAME 
+REM prompt =======  DB_NAME       &DB_NAME / &DB_EDITION
 REM prompt =======  DB_INST_ID    &DB_INST_ID 
 REM prompt =======  DB_HOST_NAME  &DB_HOST_NAME
-prompt =======  DB_VERSION    &DB_VERSION
+prompt =======  DB_VERSION    &DB_VERSION / &DB_EDITION
 PROMPT ======================================================================
 
 /* end_if */

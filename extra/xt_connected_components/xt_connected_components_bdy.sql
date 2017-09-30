@@ -52,7 +52,7 @@ create or replace package body XT_CONNECTED_COMPONENTS is
          if not root_elems.exists(p_root) then
             dbms_output.put_line(p_root||':'||p_elem);
             root_elems(p_root):=strings(p_elem);
-         else
+         elsif not root.exists(p_elem) then
             root_elems(p_root).extend();
             root_elems(p_root)(root_elems(p_root).count):=p_elem;
          end if;
@@ -64,10 +64,6 @@ create or replace package body XT_CONNECTED_COMPONENTS is
          new_root varchar2(v_size);
          old_root varchar2(v_size);
       begin
-         if p is null or q is null then 
-            add_elem(nvl(p,q),nvl(p,q)); 
-            return;
-         end if;
          r1:=get_root(p);
          r2:=get_root(q);
          
@@ -75,8 +71,8 @@ create or replace package body XT_CONNECTED_COMPONENTS is
             return;
          elsif r1 is null or r2 is null then
             new_root := coalesce(r1,r2,p);
-            if r1 is null then add_elem(new_root,p); root(p):=new_root; end if;
-            if r2 is null then add_elem(new_root,q); root(q):=new_root; end if;
+            if r1 is null and p is not null then add_elem(new_root,p); root(p):=new_root; end if;
+            if r2 is null and q is not null then add_elem(new_root,q); root(q):=new_root; end if;
          else
             case when root_elems(r1).count > root_elems(r2).count 
                     then new_root:=r1; old_root:=r2;
@@ -176,7 +172,7 @@ create or replace package body XT_CONNECTED_COMPONENTS is
          if not root_elems.exists(p_root) then
             dbms_output.put_line(p_root||':'||p_elem);
             root_elems(p_root):=numbers(p_elem);
-         else
+         elsif not root.exists(p_elem) then
             root_elems(p_root).extend();
             root_elems(p_root)(root_elems(p_root).count):=p_elem;
          end if;
@@ -188,10 +184,6 @@ create or replace package body XT_CONNECTED_COMPONENTS is
          new_root varchar2(v_size);
          old_root varchar2(v_size);
       begin
-         if p is null or q is null then 
-            add_elem(nvl(p,q),nvl(p,q)); 
-            return;
-         end if;
          r1:=get_root(p);
          r2:=get_root(q);
          
@@ -199,8 +191,8 @@ create or replace package body XT_CONNECTED_COMPONENTS is
             return;
          elsif r1 is null or r2 is null then
             new_root := coalesce(r1,r2,p);
-            if r1 is null then add_elem(new_root,p); root(p):=new_root; end if;
-            if r2 is null then add_elem(new_root,q); root(q):=new_root; end if;
+            if r1 is null and p is not null then add_elem(new_root,p); root(p):=new_root; end if;
+            if r2 is null and q is not null then add_elem(new_root,q); root(q):=new_root; end if;
          else
             case when root_elems(r1).count > root_elems(r2).count 
                     then new_root:=r1; old_root:=r2;

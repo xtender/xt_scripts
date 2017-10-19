@@ -1,46 +1,47 @@
-with
- ts as (select/*+ materialize */ name,ts#,bitmapped,online$,contents$,blocksize,flags from sys.ts$)
-,fi as (select/*+ materialize */ * from sys.file$)
-,ktfbfe as (select/*+ materialize */ * from sys.x$ktfbfe)
-,free_space(tablespace_name, bytes) as (
-      select ts.name, 
-             sum(f.length) * ts.blocksize
-      from ts, sys.fet$ f
-      where ts.ts# = f.ts#
-        and ts.bitmapped = 0
-      group by ts.name,ts.blocksize
+with 
+ fi as (select/*+ materialize */ * from sys.file$)
+,used as (select/*+ materialize */ fi.ts#,sum(blocks) blocks from fi group by fi.ts#)
+,free as (
+   select ts#,sum(blocks) blocks
+   from (
+      select f.ts#,
+             sum(f.length) blocks
+      from sys.fet$ f
+      group by f.ts#
       union all
       select
-             ts.name,
-             sum(f.ktfbfeblks) * ts.blocksize
-      from ts, ktfbfe f
-      where ts.ts# = f.ktfbfetsn
-        and ts.bitmapped <> 0 and ts.online$ in (1,4) and ts.contents$ = 0
-      group by ts.name,ts.blocksize
+             f.ktfbfetsn,
+             sum(f.ktfbfeblks)
+      from sys.x$ktfbfe f
+      group by f.ktfbfetsn
       union all
       select
-             ts.name, 
-             sum(u.ktfbueblks) * ts.blocksize
-      from sys.recyclebin$ rb, ts, sys.x$ktfbue u, fi
-      where ts.ts# = rb.ts#
-        and rb.ts# = fi.ts#
+             rb.ts#, 
+             sum(u.ktfbueblks)
+      from sys.recyclebin$ rb, sys.x$ktfbue u, fi
+      where rb.ts# = fi.ts#
         and u.ktfbuefno = fi.relfile#
         and u.ktfbuesegtsn = rb.ts#
         and u.ktfbuesegfno = rb.file#
         and u.ktfbuesegbno = rb.block#
-        and ts.bitmapped <> 0 and ts.online$ in (1,4) and ts.contents$ = 0
-      group by ts.name,ts.blocksize
+      group by rb.ts#
       union all
-      select ts.name, 
-             sum(u.length) * ts.blocksize
-      from ts, sys.uet$ u, fi, sys.recyclebin$ rb
-      where ts.ts# = u.ts#
-        and u.ts# = fi.ts#
+      select u.ts#, 
+             sum(u.length)
+      from sys.uet$ u, fi, sys.recyclebin$ rb
+      where u.ts# = fi.ts#
         and u.segfile# = fi.relfile#
         and u.ts# = rb.ts#
         and u.segfile# = rb.file#
         and u.segblock# = rb.block#
-        and ts.bitmapped = 0
-      group by ts.name,ts.blocksize
+      group by u.ts#
+  )
+  group by ts#
 )
-select * from free_space
+select t.name
+      ,free.blocks*blocksize as free_space
+      ,used.blocks*blocksize 
+from sys.ts$ t,free,used
+where t.ts#=free.ts#
+  and t.ts#=used.ts#
+/

@@ -1,0 +1,21 @@
+In 12.2, the merging from $G is done automatically during sync index (or commit if sync-on-commit is used) when the stage_itab_max_rows value is reached. This value is typically 1M by default. 
+
+Therefore if $G only has 124 rows, no merging will be performed. 
+
+It is no longer necessary to register the merge job via exec ctx_ddl.add_auto_optimize('docindex',optlevel=>'MERGE'); 
+
+In fact this is disabled (you get the DRG-13904) unless the user changes the stage_itab_max_rows to be equal to 0. A value of 0 let's the user over-ride the automatic 12.2. behavior. 
+Regardless of the value of stage_itab_max_rows, the user can always perform a "manual" merge via the following API: 
+
+exec ctx_ddl.optimize_index('idx_name', part_name=>'partition_name', 'merge'); 
+
+where they specify the idx_name, part_name. 
+
+With this API, they can always "force a merge". 
+
+If ctx logging is enabled (for example: alter system set events 'TRACE[CONTEXT_INDEX] disk=low') 
+Then the trace file will show when/if a merge has happened and how many rows there were in $G. 
+
+The current value for stage_itab_max_rows can be checked as follows: 
+
+select prv_attribute from ctx_preference_values where PRV_ATTRIBUTE='STAGE_ITAB_MAX_ROWS'; 

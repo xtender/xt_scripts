@@ -9,6 +9,8 @@ tests/
 tmp/
 tpt/
 troubles1/
+sqlt/
+sqlhc/
 *backup*
 afiedt.sql
 sqlplus_settings.sql

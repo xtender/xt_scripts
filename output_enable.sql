@@ -1,1 +1,1 @@
-exec dbms_output.enable(1000000);
+call dbms_output.enable(1000000);

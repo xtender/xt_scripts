@@ -30,8 +30,8 @@ select
 &&_IF_ORA112_OR_HIGHER      ,count(*) over(partition by h.sql_exec_id)  as sql_exec_count
                             ,h.plsql_entry_object_id ple
                             ,h.plsql_object_id       plo
-                            ,h.wait_class
-                            ,h.event
+                            ,decode(h.session_state,'ON CPU','ON CPU', h.wait_class) wait_class
+                            ,decode(h.session_state,'ON CPU','ON CPU', h.event)      event
                             ,h.module
                             ,substr(h.program,1,15) program
                             ,h.action

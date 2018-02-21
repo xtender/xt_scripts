@@ -50,7 +50,7 @@ declare
        dbms_output.put_line('========================================================');
     end hr;
 begin
-    -- заполняем исходные переменные:
+    -- input variables:
     select dbid into l_dbid from v$database;
 --    l_dbid := :dbid;
     
@@ -66,7 +66,7 @@ begin
    end;
    --ar_profile_hints:=sys.sqlprof_attr('LEADING(P)','USE_CONCAT(@SEL$2)');
    --/*
-   -- получаем хинты запроса:
+   -- outline hints:
     select
         d.hint
         bulk collect into ar_profile_hints
@@ -97,7 +97,7 @@ begin
     for i in ar_profile_hints.first..ar_profile_hints.last loop
        dbms_output.put_line(ar_profile_hints(i));
     end loop;
-    -- Получаем текст запроса:
+    -- query text:
     select 
        coalesce(
           (select s1.sql_fulltext from v$sqlarea        s1 where p_sql_id = s1.sql_id)

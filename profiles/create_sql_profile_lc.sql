@@ -16,7 +16,7 @@ accept plan_hv prompt "Plan hash value[&plan_hv]: " default "&plan_hv";
 col sql_id          clear;
 col plan_hash_value clear;
 
-accept force_match prompt "Force_match[1]: " default 1;
+accept force_match prompt "Force_match[true/false]: " default "true";
 accept description prompt "Description[from lc]: " default "from lc";
 accept category    prompt "Category[DEFAULT]: " default "DEFAULT";
 
@@ -25,7 +25,7 @@ declare
    -- params:
     p_sql_id          varchar2(13):= '&sqlid';
     p_plan_hash_value number:=&plan_hv+0;
-    p_force_match     int:= nvl(&force_match+0,1);
+    p_force_match     boolean:= &force_match;
     p_description     varchar2(50):=nvl('&description','profile for &sqlid');
     p_category        varchar2(30):=nvl('&category','DEFAULT');
     
@@ -35,8 +35,7 @@ declare
     cl_sql_text      clob;
     l_profile_name   varchar2(30);
     l_dbid           number;
-    l_force_match    boolean;
-    
+        
     e_privs          exception;
     pragma exception_init(e_privs, -38171);
     
@@ -55,10 +54,7 @@ begin
 --    l_dbid := :dbid;
     
     l_profile_name := 'PROF_'||p_sql_id;
-    l_force_match:=case p_force_match 
-                        when 1 then TRUE
-                        else false
-                   end;
+    
    begin
       dbms_sqltune.drop_sql_profile(l_profile_name);
    exception when others then
@@ -113,7 +109,7 @@ begin
         ,description => p_description
         ,category    => nvl(p_category,'DEFAULT')
         ,replace     => true
-        ,force_match => l_force_match
+        ,force_match => p_force_match
     );
     
     hr;

@@ -1,12 +1,12 @@
 @inc/input_vars_init;
 
 prompt *** Simplified RTSM report
-prompt * Usage: @rtsm/sqlid_manual SQL_ID [px]
+prompt * Usage: @rtsm/sqlid_manual SQL_ID [px] [sql_exec_id]
 prompt * Add "px" to show stats by slaves
 prompt ;
 
 def sql_id=&1
-
+def sql_exec_id="&3"
 col if_parallel new_value _px noprint;
 select decode(count(*),0,'--','  ') if_parallel
 from dual 
@@ -74,6 +74,7 @@ sql_mon_manual
 &_px    ,listagg(PHYSICAL_WRITE_BYTES     ,'/') within group(order by sid) as per_slave_write_bytes
    from v$sql_plan_monitor r
    where r.sql_id='&sql_id'
+     and (&sql_exec_id+0=0 or r.sql_exec_id=&sql_exec_id+0)
      and r.starts>0
    group by 
      sql_id,sql_exec_start,sql_exec_id, SQL_PLAN_HASH_VALUE, SQL_CHILD_ADDRESS

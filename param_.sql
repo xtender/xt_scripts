@@ -1,5 +1,5 @@
 @inc/input_vars_init;
-col name	format a40
+col name	format a50
 col value	format a12
 col deflt	format a12
 col type 	format a12

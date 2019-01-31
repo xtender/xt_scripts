@@ -47,8 +47,10 @@ select--+ rule ordered
   ,trim(i.instance_number)                      as db_inst_id
   ,i.host_name                                  as db_host_name
   ,i.version                                    as db_version
-&_IF_ORA12_OR_HIGHER ,i.edition                 as db_edition
-&_IF_LOWER_THAN_ORA12 ,decode((select count(*) from v$version where lower(banner) like '%enterpri%'),1,'EE','SE') as db_edition
+&_IF_ORA18_OR_HIGHER   ,i.version_full          as db_version
+&_IF_LOWER_THAN_ORA18  ,i.version               as db_version
+&_IF_ORA12_OR_HIGHER   ,i.edition               as db_edition
+&_IF_LOWER_THAN_ORA12  ,decode((select count(*) from v$version where lower(banner) like '%enterpri%'),1,'EE','SE') as db_edition
   ,i.instance_role                              as db_role
   ,trim(userenv('SID')                        ) as my_sid
   ,trim(sys_context('USERENV','HOST')         ) as my_host

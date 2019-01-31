@@ -7,6 +7,7 @@ define _IF_ORA10_OR_HIGHER="--"
 define _IF_ORA11_OR_HIGHER="--"
 define _IF_ORA12_OR_HIGHER="--"
 define _IF_ORA122_OR_HIGHER="--"
+define _IF_ORA18_OR_HIGHER="--"
 define _IF_LOWER_THAN_ORA11="--"
 define _IF_DBMS_SYSTEM_ACCESSIBLE="/* dbms_system is not accessible" /*dummy*/
 define _IF_X_ACCESSIBLE="--"
@@ -20,12 +21,13 @@ col snapper_ora09lower      noprint new_value _IF_LOWER_THAN_ORA09
 col snapper_ora10lower      noprint new_value _IF_LOWER_THAN_ORA10
 col snapper_ora11lower      noprint new_value _IF_LOWER_THAN_ORA11
 col snapper_ora12lower      noprint new_value _IF_LOWER_THAN_ORA12
+col snapper_ora18lower      noprint new_value _IF_LOWER_THAN_ORA18
 
 col snapper_ora09higher     noprint new_value _IF_ORA09_OR_HIGHER
 col snapper_ora10higher     noprint new_value _IF_ORA10_OR_HIGHER
 col snapper_ora11higher     noprint new_value _IF_ORA11_OR_HIGHER
 col snapper_ora12higher     noprint new_value _IF_ORA12_OR_HIGHER
-col snapper_ora122higher    noprint new_value _IF_ORA122_OR_HIGHER
+col snapper_ora18higher     noprint new_value _IF_ORA18_OR_HIGHER
 
 col dbms_system_accessible  noprint new_value _IF_DBMS_SYSTEM_ACCESSIBLE
 col x_accessible            noprint new_value _IF_X_ACCESSIBLE
@@ -38,6 +40,7 @@ col snapper_ora9            noprint new_value _IF_ORA9
 col snapper_ora9206lower    noprint new_value _IF_ORA9206_OR_LOWER
 col snapper_ora9207higher   noprint new_value _IF_ORA9207_OR_HIGHER
 col snapper_ora112higher    noprint new_value _IF_ORA112_OR_HIGHER
+col snapper_ora122higher    noprint new_value _IF_ORA122_OR_HIGHER
 
 -- this block determines whether dbms_system.ksdwrt is accessible to us
 -- dbms_describe is required as all_procedures/all_objects may show this object
@@ -100,12 +103,14 @@ select
     case when v1  <  '10'        then ''   else '--'  end   snapper_ora10lower,
     case when v1  <  '11'        then ''   else '--'  end   snapper_ora11lower,
     case when v1  <  '12'        then ''   else '--'  end   snapper_ora12lower,
+    case when v1  <  '18'        then ''   else '--'  end   snapper_ora18lower,
 
     case when v1  >= '09'        then ''   else '--'  end   snapper_ora09higher,
     case when v1  >= '10'        then ''   else '--'  end   snapper_ora10higher,
     case when v1  >= '11'        then ''   else '--'  end   snapper_ora11higher,
     case when v1  >= '12'        then ''   else '--'  end   snapper_ora12higher,
-
+    case when v1  >= '18'        then ''   else '--'  end   snapper_ora18higher,
+    
     case when ver >= '1002'      then ''   else '--'  end   yes_blk_inst,
     case when ver >= '1002'      then '--' else ''    end   no_blk_inst,
     case when ver >= '10020003'  then ''   else '--'  end   yes_plsql_obj_id,
@@ -114,8 +119,8 @@ select
     case when ver <  '09020007'  then ''   else '--'  end   snapper_ora9206lower,
     case when ver >= '09020007'  then ''   else '--'  end   snapper_ora9207higher,
     case when v2  >= '1102'      then ''   else '--'  end   snapper_ora112higher,
-    case when v2  >= '12'        then ''   else '--'  end   snapper_ora12higher,
     case when v2  >= '1202'      then ''   else '--'  end   snapper_ora122higher,
+    
     nvl(:v, '/* dbms_system is not accessible') dbms_system_accessible,
     nvl(:x, '--') x_accessible,
     null

@@ -14,7 +14,7 @@ create sequence err_seq
 create or replace trigger trg_error_logging
 after servererror
 on schema
-disabled
+disable
 declare
    v_id       number   := err_seq.nextval();
    v_tmstmp   timestamp:= systimestamp;
@@ -40,6 +40,8 @@ begin
    end loop;
    commit;
 END;
+/
+select object_name,object_type,status from user_objects o where object_name='TRG_ERROR_LOGGING'
 /
 alter trigger trg_error_logging enable
 /

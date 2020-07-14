@@ -49,7 +49,7 @@ prompt dbms_metadata.get_ddl for &_type  &_owner..&_object....
 set timing off ver off feed off head off lines 10000 pagesize 0 newpage none
 exec DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'PRETTY',false);
 -------------- Spooling ------------------
-@inc/ddl.inc &_OWNER &_OBJECT
+@inc/ddl.inc &_OWNER &_OBJECT &_type
 -------------- End Spooling ------------------
 undef _OWNER;
 undef _OBJECT;

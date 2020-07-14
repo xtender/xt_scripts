@@ -22,23 +22,26 @@ declare
    sql_text   dbms_standard.ora_name_list_t;
    v_sql_text clob;
 begin
-   v_sql_text:=null;
-   n := ora_sql_txt(sql_text);
-   for i in 1..n loop
-      v_sql_text := v_sql_text || sql_text(i);
-   end loop;
+   -- only if plsql_debug is set to TRUE:
+   for r in (select * from v$parameter p where p.name='plsql_debug' and upper(p.value)='TRUE') loop
+       v_sql_text:=null;
+       n := ora_sql_txt(sql_text);
+       for i in 1..n loop
+          v_sql_text := v_sql_text || sql_text(i);
+       end loop;
 
-   for i in 1.. ora_server_error_depth
-   loop
-      if i=1 then
-         insert into error_log(id,seq,tmstmp,username,errcode,msg,sql_text)
-            values( v_id, i, v_tmstmp, user, ora_server_error(i), ora_server_error_msg(i), v_sql_text);
-      else
-         insert into error_log(id,seq,tmstmp,username,errcode,msg)
-            values( v_id, i, v_tmstmp, user, ora_server_error(i), ora_server_error_msg(i) );
-      end if;
-   end loop;
-   commit;
+       for i in 1.. ora_server_error_depth
+       loop
+          if i=1 then
+             insert into error_log(id,seq,tmstmp,username,errcode,msg,sql_text)
+                values( v_id, i, v_tmstmp, user, ora_server_error(i), ora_server_error_msg(i), v_sql_text);
+          else
+             insert into error_log(id,seq,tmstmp,username,errcode,msg)
+                values( v_id, i, v_tmstmp, user, ora_server_error(i), ora_server_error_msg(i) );
+          end if;
+       end loop;
+       commit;
+    end loop;
 END;
 /
 select object_name,object_type,status from user_objects o where object_name='TRG_ERROR_LOGGING'

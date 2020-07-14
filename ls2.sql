@@ -1,4 +1,4 @@
-set serverout on;
+--set serverout on;
 accept _dir_name prompt "Directory name: ";
 accept _f_mask prompt "File mask: ";
 accept _max_files prompt "Max number of files to output[100] :" default 100;
@@ -16,10 +16,6 @@ declare
       SYS.DBMS_BACKUP_RESTORE.SEARCHFILES(lv_pattern, lv_ns);
     
       FOR file_list IN (
-         SELECT FNAME_KRBMSFT AS file_name
-         FROM sys.X$KRBMSFT
-         WHERE FNAME_KRBMSFT LIKE '%'|| file_mask||'%'
-         and rownum< max_files
       ) 
       LOOP
          dbms_output.put_line(file_list.file_name);
@@ -30,4 +26,13 @@ begin
    list_files('&_dir_name', '&_f_mask', &_max_files);
 end;
 /
-set serverout off
+--set serverout off
+
+SELECT FNAME_KRBMSFT AS file_name
+FROM sys.X$KRBMSFT
+WHERE FNAME_KRBMSFT LIKE '%&_f_mask%'
+and rownum< &_max_files;
+
+SELECT count(*) cnt
+FROM sys.X$KRBMSFT
+WHERE FNAME_KRBMSFT LIKE '%&_f_mask%';

@@ -103,6 +103,7 @@ select--+ gather_plan_statistics
     ,inst
     ,sid
     ,serial
+    ,os_pid
     ,osuser
     ,machine
     ,action
@@ -113,7 +114,6 @@ select--+ gather_plan_statistics
 --    ,terminal
     ,program
     ,module
-    ,os_pid
     ,ora_pid||'' as ora_pid
     ,sql_id
     ,p1text

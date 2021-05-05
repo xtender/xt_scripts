@@ -1,3 +1,3 @@
-col MEMBER for a45;
-select * from v$logfile order by 1,2;
+col MEMBER for a75;
+select * from v$logfile order by type,group#,member;
 col MEMBER clear;

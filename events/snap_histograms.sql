@@ -78,8 +78,11 @@ begin
           100*sum(nvl(v2.WAIT_COUNT,0)-nvl(v1.WAIT_COUNT,0))  
                 over(partition by nvl(v2.EVENT           , v1.EVENT          )
                      order by nvl(v2.WAIT_TIME_MILLI , v1.WAIT_TIME_MILLI))
-             /sum(nvl(v2.WAIT_COUNT,0)-nvl(v1.WAIT_COUNT,0))  
-                over(partition by nvl(v2.EVENT           , v1.EVENT          )))
+             /nullif(
+                sum(nvl(v2.WAIT_COUNT,0)-nvl(v1.WAIT_COUNT,0))  
+                   over(partition by nvl(v2.EVENT           , v1.EVENT          ))
+                ,0)
+                )
                  as "running_total(%)"
          ,nvl(v2.LAST_UPDATE_TIME, v1.LAST_UPDATE_TIME) LAST_UPDATE_TIME
       from v1

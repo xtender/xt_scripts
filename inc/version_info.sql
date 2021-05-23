@@ -3,11 +3,13 @@ REM **  VERSION_CHECK: sets variables about ORACLE version in addition to _O_REA
 REM ** Based on Tanel Poder's TPT scripts.
 REM *******************************************************************************************
 
-define _IF_ORA10_OR_HIGHER="--"
-define _IF_ORA11_OR_HIGHER="--"
-define _IF_ORA12_OR_HIGHER="--"
-define _IF_ORA122_OR_HIGHER="--"
-define _IF_ORA18_OR_HIGHER="--"
+define _if_lower_than_ora10="--"
+define _IF_ORA10_OR_HIGHER=""
+define _IF_ORA11_OR_HIGHER=""
+define _IF_ORA12_OR_HIGHER=""
+define _IF_ORA122_OR_HIGHER=""
+define _IF_ORA18_OR_HIGHER=""
+define _IF_ORA19_OR_HIGHER=""
 define _IF_LOWER_THAN_ORA11="--"
 define _IF_DBMS_SYSTEM_ACCESSIBLE="/* dbms_system is not accessible" /*dummy*/
 define _IF_X_ACCESSIBLE="--"
@@ -28,6 +30,7 @@ col snapper_ora10higher     noprint new_value _IF_ORA10_OR_HIGHER
 col snapper_ora11higher     noprint new_value _IF_ORA11_OR_HIGHER
 col snapper_ora12higher     noprint new_value _IF_ORA12_OR_HIGHER
 col snapper_ora18higher     noprint new_value _IF_ORA18_OR_HIGHER
+col snapper_ora19higher     noprint new_value _IF_ORA19_OR_HIGHER
 
 col dbms_system_accessible  noprint new_value _IF_DBMS_SYSTEM_ACCESSIBLE
 col x_accessible            noprint new_value _IF_X_ACCESSIBLE
@@ -51,19 +54,6 @@ var x    varchar2(10)
 
 declare
 
-    o       sys.dbms_describe.number_table;
-    p       sys.dbms_describe.number_table;
-    l       sys.dbms_describe.number_table;
-    a       sys.dbms_describe.varchar2_table;
-    dty     sys.dbms_describe.number_table;
-    def     sys.dbms_describe.number_table;
-    inout   sys.dbms_describe.number_table;
-    len     sys.dbms_describe.number_table;
-    prec    sys.dbms_describe.number_table;
-    scal    sys.dbms_describe.number_table;
-    rad     sys.dbms_describe.number_table;
-    spa     sys.dbms_describe.number_table;
-
     tmp     number;
 
 begin
@@ -75,11 +65,28 @@ begin
         when others then null;
     end;
 
+    execute immediate q'[
+    declare
+        o       sys.dbms_describe.number_table;
+        p       sys.dbms_describe.number_table;
+        l       sys.dbms_describe.number_table;
+        a       sys.dbms_describe.varchar2_table;
+        dty     sys.dbms_describe.number_table;
+        def     sys.dbms_describe.number_table;
+        inout   sys.dbms_describe.number_table;
+        len     sys.dbms_describe.number_table;
+        prec    sys.dbms_describe.number_table;
+        scal    sys.dbms_describe.number_table;
+        rad     sys.dbms_describe.number_table;
+        spa     sys.dbms_describe.number_table;
+    begin
+
     sys.dbms_describe.describe_procedure(
         'DBMS_SYSTEM.KSDWRT', null, null,
         o, p, l, a, dty, def, inout, len, prec, scal, rad, spa
     );
-
+    end;]';
+    
     -- we never get to following statement if dbms_system is not accessible
     -- as sys.dbms_describe will raise an exception
     :v:= '-- dbms_system is accessible';
@@ -88,28 +95,20 @@ exception
     when others then null;
 end;
 /
-with 
-version as (
-    select 
-      ver
-     ,substr(ver,1,2) v1
-     ,substr(ver,1,4) v2
-    from (
-      select lpad('&_O_RELEASE',10,' ') ver from dual
-    )
-)
 select
     case when v1  <  '09'        then ''   else '--'  end   snapper_ora09lower,
     case when v1  <  '10'        then ''   else '--'  end   snapper_ora10lower,
     case when v1  <  '11'        then ''   else '--'  end   snapper_ora11lower,
     case when v1  <  '12'        then ''   else '--'  end   snapper_ora12lower,
     case when v1  <  '18'        then ''   else '--'  end   snapper_ora18lower,
+    case when v1  <  '19'        then ''   else '--'  end   snapper_ora19lower,
 
     case when v1  >= '09'        then ''   else '--'  end   snapper_ora09higher,
     case when v1  >= '10'        then ''   else '--'  end   snapper_ora10higher,
     case when v1  >= '11'        then ''   else '--'  end   snapper_ora11higher,
     case when v1  >= '12'        then ''   else '--'  end   snapper_ora12higher,
     case when v1  >= '18'        then ''   else '--'  end   snapper_ora18higher,
+    case when v1  >= '19'        then ''   else '--'  end   snapper_ora19higher,
     
     case when ver >= '1002'      then ''   else '--'  end   yes_blk_inst,
     case when ver >= '1002'      then '--' else ''    end   no_blk_inst,
@@ -125,5 +124,13 @@ select
     nvl(:x, '--') x_accessible,
     null
 from
-    version
+    (
+    select 
+      ver
+     ,substr(ver,1,2) v1
+     ,substr(ver,1,4) v2
+    from (
+      select lpad('&_O_RELEASE',10,' ') ver from dual
+    )
+    ) version
 /

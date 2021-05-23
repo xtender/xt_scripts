@@ -16,7 +16,7 @@ col SEG_SIZE        heading "Size(Mb)"
 col PARTITIONED     format a4 heading "Part"
 prompt &_C_REVERSE. *** Indexes: table_name like '&1' and owner like nvl(upper('&2'),'%') &_C_RESET
 prompt &_C_RED. *** Size(MB) is valid only for 8kb blocksize. It is just multiplication of blocks*8kb &_C_RESET
-break  on owner skip 3 on table_name on index_name on index_type on VISIBLE on UNIQ on BLEVEL on NUM_ROWS on SEG_BLOCKS on SEG_SIZE -
+break  on owner skip 3 on table_name on index_name on index_type on STATUS on VISIBLE on UNIQ on BLEVEL on NUM_ROWS on SEG_BLOCKS on SEG_SIZE -
        on LEAF_BLOCKS on DISTINCT_KEYS on CL_FACTOR on LAST_ANALYZED on PARTITIONED on created on last_ddl_time skip 1;
 
 with i as (
@@ -63,7 +63,7 @@ where
      ic.index_owner = i.owner
  and ic.index_name  = i.index_name
 order by
-         owner,table_name,index_name
+         owner,table_name,index_name,ic.column_position
 /
 clear break 
 col "#" clear 

@@ -3,6 +3,7 @@ col adr_home       for a80;
 col trace_filename for a40;
 select
     adr_home,
+    change_time,
     trace_filename
 from V$DIAG_TRACE_FILE 
 where lower(trace_filename) like lower('%&1%')

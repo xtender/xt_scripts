@@ -2,7 +2,7 @@
 col adr_home       for a40;
 col change_time    for a15;
 col modify_time    for a15;
-col trace_filename for a40;
+col trace_filename for a45;
 select
      adr_home
     ,trace_filename

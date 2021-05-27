@@ -7,3 +7,4 @@ where
      trace_filename like '&1'
  and function_name!='dbktWriteTimestampWCdbInfo'
 ;
+col payload clear;

@@ -48,3 +48,4 @@ where upper('&_cont')='Y'
 ;
 spool off;
 @inc/input_vars_undef;
+prompt Done.

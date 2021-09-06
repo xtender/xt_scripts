@@ -12,24 +12,28 @@ accept p_descr      prompt "Description: ";
 declare
    -- params:
    p_sql_id         varchar2(13)  :=q'[&p_sqlid]';
-   p_hints          clob          :=q'[&p_hints]';
+   p_hints          varchar2(4000):=q'[&p_hints]';
    p_name           varchar2(30)  :=q'[&p_name]';
    p_description    varchar2(120) :=q'[&p_descr]';
    cl_sql_text      clob;
-   res              varchar2(4000);
 begin
+   
+    select 
+       coalesce(
+          (select s1.sql_fulltext from v$sqlarea        s1 where p_sql_id = s1.sql_id)
+         ,(select s2.sql_text     from dba_hist_sqltext s2 where p_sql_id = s2.sql_id and s2.dbid = (select db.dbid from v$database db))
+       ) stext
+       into cl_sql_text
+    from dual;
     
-   res:=sys.dbms_sqldiag_internal.i_create_patch(
-      sql_id      => p_sql_id,
+   sys.dbms_sqldiag_internal.i_create_patch(
+      sql_text    => cl_sql_text,
       hint_text   => p_hints,
-      creator     => user,
       name        => p_name,
       description => p_description
    );
    
    dbms_output.put_line('SQL Profile '||p_name||' created on instance #'||sys_context('userenv','instance'));
-   dbms_output.put_line('Results:');
-   dbms_output.put_line(res);
 end;
 /
 undef p_sqlid p_hints p_name p_descr

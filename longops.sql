@@ -30,7 +30,8 @@ select
 &_IF_ORA11_OR_HIGHER ,l.sql_plan_operation
 &_IF_ORA11_OR_HIGHER ,l.sql_plan_options
 from v$session_longops l
-where last_update_time>sysdate - 0&_minutes/24/60;
+where last_update_time>sysdate - 0&_minutes/24/60
+order by 1,2,5 desc,6 desc;
 
 undef _minutes;
 col username            clear;

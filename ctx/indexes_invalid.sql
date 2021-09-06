@@ -16,6 +16,7 @@ from ctxsys.ctx_indexes
 where idx_owner like '&_owner_mask'
   and idx_name  like '&_index_mask'
   and idx_table like '&_table_mask'
+  and (idx_status!='INDEXED')
   and IDX_TABLE      !='DR$POLICY_TAB'
   and IDX_TABLE_OWNER!='CTXSYS'
 ;
@@ -38,10 +39,10 @@ from dba_indexes idx
 where idx.owner       like '&_owner_mask'
   and idx.index_name  like '&_index_mask'
   and idx.table_name  like '&_table_mask'
-  and idx.DOMIDX_STATUS is not null
+  and (idx.DOMIDX_STATUS != 'VALID' or DOMIDX_OPSTATUS!='VALID')
 ;
 
-col idx_owner   clear;
+col owner   clear;
 col idx_name    clear;
 col idx_table   clear;
 col idx_status  clear;

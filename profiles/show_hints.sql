@@ -57,7 +57,7 @@ col n               format 999
 col outline_hints   format a200
 break on name on type on plan on plan_id skip 1
 
-@switch "greatest(substr('&_O_RELEASE',1,2),'12')" 
+@switch "least(substr('&_O_RELEASE',1,2),'12')" 
 
    @when "'12'" then
       select--+ NO_XML_QUERY_REWRITE

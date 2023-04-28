@@ -1,11 +1,14 @@
 var s_end refcursor;
 
+declare t3 sys.ku$_ObjNumNamSet;
 begin
-   open :s_end for
-         select ku$_ObjNumNam(value,name) as val
-         from v$sesstat s join v$statname n using(statistic#)
-         where sid=decode(&&rs_sid+0,0,userenv('sid'),&&rs_sid)
-           and name like nvl('&&rs_mask','%');
+     select
+        ku$_ObjNumNam(value,name) as val
+        bulk collect into t3
+     from v$sesstat s join v$statname n using(statistic#)
+     where sid=&&rs_sid
+       and name like '&&rs_mask';
+   open :s_end for select t3 from dual;
 end;
 /
 -- compare:
@@ -15,9 +18,9 @@ declare
    rs_mid    ku$_ObjNumNamSet;
    rs_end    ku$_ObjNumNamSet;
 begin
-   fetch :s_beg bulk collect into rs_beg;
-   fetch :s_mid bulk collect into rs_mid;
-   fetch :s_end bulk collect into rs_end;
+   fetch :s_beg into rs_beg;
+   fetch :s_mid into rs_mid;
+   fetch :s_end into rs_end;
 
    open :res for
       with 
@@ -34,8 +37,8 @@ begin
          )
       select * 
       from d
-      --where  delta1!=delta2 
-      --   or (nvl('&&rs_mask','%')!='%' and name like '&&rs_mask')
+      where  delta1!=delta2 
+         or (nvl('&&rs_mask','%')!='%' and name like '&&rs_mask')
       ;
 end;
 /

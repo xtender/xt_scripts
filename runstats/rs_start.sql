@@ -1,12 +1,16 @@
+@inc/input_vars_init
 var s_beg refcursor;
-def rs_sid=&1
-def rs_mask="&2"
+accept rs_sid prompt "SID[current sid=&my_sid]: " default &my_sid
+accept rs_mask prompt "Statname mask[%]: " default "%"
 
+declare t1 sys.ku$_ObjNumNamSet;
 begin
-   open :s_beg for
-         select ku$_ObjNumNam(value,name) as val
-         from v$sesstat s join v$statname n using(statistic#)
-         where sid=decode(&&rs_sid+0,0,userenv('sid'),&&rs_sid)
-           and name like nvl('&&rs_mask','%');
+     select
+        ku$_ObjNumNam(value,name) as val 
+        bulk collect into t1
+     from v$sesstat s join v$statname n using(statistic#)
+     where sid=&rs_sid
+       and name like '&&rs_mask';
+   open :s_beg for select t1 a from dual;
 end;
 /

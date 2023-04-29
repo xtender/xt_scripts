@@ -2,10 +2,12 @@ col bugno                       format 99999999
 col SQL_FEATURE                 format a35
 col value                       format 999
 col description                 format a80
-col OPTIMIZER_FEATURE_ENABLE    format a10
+col OPTIMIZER_FEATURE_ENABLE    format a12 head OPT_FEAT_ENA
 col EVENT                       format 999999999
 col IS_DEFAULT                  format 999
-select * 
+select bugno,value,sql_feature,description
+   ,optimizer_feature_enable
+   ,event,is_default 
 from v$system_fix_control 
 where lower(description)    like lower('%&1%')
    or EVENT                 like '&1' 

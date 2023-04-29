@@ -6,7 +6,7 @@ col message_text          for a200;
 select
    to_char(originating_timestamp,'yyyy-mm-dd hh24:mi:ssxff TZR') originating_timestamp
   ,message_text
-  ,inst_id
+  --,inst_id
   ,component_id
   ,host_id
   ,host_address
@@ -22,7 +22,7 @@ select
 from --sys.x$dbgalertext
      v$diag_alert_ext
 where 
-   originating_timestamp between &beg and &end
+   originating_timestamp between timestamp'&beg' and &end
 and ( problem_key is not null
       or message_text like '%ORA-%'
       or message_text like '%WARNING%'

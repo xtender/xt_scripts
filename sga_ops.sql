@@ -18,6 +18,7 @@ select
         to_char(end_time,'dd-mon hh24:mi:ss')   end_time
 from
         v$sga_resize_ops o
+where o.start_time>sysdate-1
 order by
         o.start_time
 ;  

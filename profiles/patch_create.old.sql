@@ -12,26 +12,12 @@ accept p_descr      prompt "Description: ";
 declare
    -- params:
    p_sql_id         varchar2(13)  :=q'[&p_sqlid]';
-   p_hints          clob          :=q'[&p_hints]';
+   p_hints          varchar2(4000):=q'[&p_hints]';
    p_name           varchar2(30)  :=q'[&p_name]';
    p_description    varchar2(120) :=q'[&p_descr]';
    cl_sql_text      clob;
-   res              varchar2(4000);
 begin
-<<<<<<< HEAD
    
-   $IF DBMS_DB_VERSION.VERSION+DBMS_DB_VERSION.RELEASE/10>=12.2 $THEN
-     res:=
-       sys.dbms_sqldiag.create_sql_patch(
-          sql_id      => p_sql_id,
-          hint_text   => to_clob(p_hints),
-          name        => p_name,
-          description => p_description,
-          validate    => false
-       );
-     dbms_output.put_line(res);
-   $ELSE
-
     select 
        coalesce(
           (select s1.sql_fulltext from v$sqlarea        s1 where p_sql_id = s1.sql_id)
@@ -39,28 +25,15 @@ begin
        ) stext
        into cl_sql_text
     from dual;
-
-       sys.dbms_sqldiag_internal.i_create_patch(
-          sql_text    => cl_sql_text,
-          hint_text   => p_hints,
-          name        => p_name,
-          description => p_description
-       );
-   $END
-=======
     
-   res:=sys.dbms_sqldiag_internal.i_create_patch(
-      sql_id      => p_sql_id,
+   sys.dbms_sqldiag_internal.i_create_patch(
+      sql_text    => cl_sql_text,
       hint_text   => p_hints,
-      creator     => user,
       name        => p_name,
       description => p_description
    );
->>>>>>> 71c1af724216f29894cb4ab1ed61c367ad90e70e
    
    dbms_output.put_line('SQL Profile '||p_name||' created on instance #'||sys_context('userenv','instance'));
-   dbms_output.put_line('Results:');
-   dbms_output.put_line(res);
 end;
 /
 undef p_sqlid p_hints p_name p_descr

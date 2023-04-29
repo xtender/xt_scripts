@@ -13,7 +13,7 @@ snaps as (
          ,begin_interval_time as beg_time
          ,end_interval_time as end_time
    from dba_hist_snapshot sn
-   where dbid=(select distinct dbid from dba_hist_database_instance i where i.db_name='&_awr_db_name') 
+   where dbid in (select distinct dbid from dba_hist_database_instance i where i.db_name='&_awr_db_name') 
      --and snap_id between 63481 and 63504
                          --63490 and 63494
      and end_interval_time between timestamp'&_awr_beg_time' and timestamp'&_awr_end_time'

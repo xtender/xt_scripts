@@ -18,7 +18,6 @@ declare
    cl_sql_text      clob;
    res              varchar2(4000);
 begin
-<<<<<<< HEAD
    
    $IF DBMS_DB_VERSION.VERSION+DBMS_DB_VERSION.RELEASE/10>=12.2 $THEN
      res:=
@@ -47,16 +46,6 @@ begin
           description => p_description
        );
    $END
-=======
-    
-   res:=sys.dbms_sqldiag_internal.i_create_patch(
-      sql_id      => p_sql_id,
-      hint_text   => p_hints,
-      creator     => user,
-      name        => p_name,
-      description => p_description
-   );
->>>>>>> 71c1af724216f29894cb4ab1ed61c367ad90e70e
    
    dbms_output.put_line('SQL Profile '||p_name||' created on instance #'||sys_context('userenv','instance'));
    dbms_output.put_line('Results:');

@@ -20,7 +20,7 @@ col wait_class for a20 trunc;
 col event      for a50 trunc;
 
 with apex as (
-select
+select/*+ no_parallel */
   r.*
   ,regexp_substr(module,'([^/]+)/APEX:APP (\d+):(\d+)',1,1,null,1) apex_schema
   ,regexp_substr(module,'([^/]+)/APEX:APP (\d+):(\d+)',1,1,null,2) apex_app
@@ -39,7 +39,7 @@ where 1=1
   and px_server# is null
 )
 , rtsm_apex as (
-    select
+    select/*+ no_parallel */
        r.sid
       ,apex_schema
       ,apex_app
@@ -69,7 +69,7 @@ where 1=1
      ,o.*
   from apex r
          outer apply(
-           select 
+           select/*+ no_parallel */
               p.plan_object_name
              ,v.*
            from 

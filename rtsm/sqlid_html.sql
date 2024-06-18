@@ -11,7 +11,10 @@ select value nls_num_chars from nls_session_parameters where parameter='NLS_NUME
 alter session set nls_numeric_characters='.,';
 -------------------------
 define MONSQLID=&1
-spool &_TEMPDIR\xprof_&MONSQLID..html
+set termout on
+pro  &_TEMPDIR/xprof_&MONSQLID..html
+set termout off
+spool &_TEMPDIR/xprof_&MONSQLID..html
 
 @@xprof ALL ACTIVE SQL_ID "'&MONSQLID'"
 

@@ -16,15 +16,15 @@ col error_message   format a40
 col a1 format a5 head"";
 col a2 format a6 head "";
 
-select 
+select/*+ no_parallel */
    t.* 
    , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLE_OBJ and p.subprogram_id=PLE_SUB) PLE
    , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PL_OBJ and p.subprogram_id=PL_SUB) PLO
-from table(gv$(cursor(
+from (
 with v as (
 select 
      STATUS
-   , (select INSTANCE_NUMBER from v$instance)       as inst
+   , inst_id as inst
    , SID
    , SESSION_SERIAL#                                as serial#
    , SQL_PLAN_HASH_VALUE                            as plan_hv
@@ -70,7 +70,7 @@ select
    , PLSQL_SUBPROGRAM_ID        as PL_SUB
 --   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLSQL_OBJECT_ID and p.subprogram_id=PLSQL_SUBPROGRAM_ID) PLO
 
-from v$sql_monitor m
+from gv$sql_monitor m
 where 
   m.sql_id like '&1'
   &2 
@@ -80,7 +80,7 @@ where
   &6
 order by SQL_EXEC_START desc
 )
-select/*+ gather_plan_statistics */ 
+select/* gather_plan_statistics */ 
     v.*
 --   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PLE_OBJ and p.subprogram_id=PLE_SUB) PLE
 --   , (select p.owner||'.'||p.object_name||'.'||p.procedure_name from dba_procedures p where p.object_id=PL_OBJ and p.subprogram_id=PL_SUB) PLO
@@ -89,7 +89,7 @@ select/*+ gather_plan_statistics */
 
 from v
 where rownum<=20
-))) t
+) t
 ;
 
 col SQL_EXEC_START  clear;

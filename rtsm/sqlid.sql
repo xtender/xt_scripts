@@ -1,5 +1,5 @@
 @inc/input_vars_init;
-col sqlmon format a300;
+col sqlmon format a350;
 
 -- workaround for bug with:
 -- ORA-06502: PL/SQL: numeric or value error

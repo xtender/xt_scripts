@@ -72,7 +72,7 @@ sql_mon_manual
 &_px    ,listagg(PHYSICAL_READ_BYTES      ,'/') within group(order by sid) as per_slave_read_bytes
 &_px    ,listagg(PHYSICAL_WRITE_REQUESTS  ,'/') within group(order by sid) as per_slave_write_reqs
 &_px    ,listagg(PHYSICAL_WRITE_BYTES     ,'/') within group(order by sid) as per_slave_write_bytes
-   from v$sql_plan_monitor r
+   from gv$sql_plan_monitor r
    where r.sql_id='&sql_id'
      and (&sql_exec_id+0=0 or r.sql_exec_id=&sql_exec_id+0)
      and r.starts>0

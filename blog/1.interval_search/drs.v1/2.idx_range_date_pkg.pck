@@ -61,7 +61,12 @@ CREATE OR REPLACE PACKAGE BODY idx_range_date_pkg AS
   function get_index_tab_index(ia sys.ODCIIndexInfo) return varchar2 deterministic is
   begin
     return '"'||ia.IndexSchema || '"."' || ia.IndexName ||'_DRS1_IND"';
-  end;  
+  end;
+
+  function get_index_tab_index2(ia sys.ODCIIndexInfo) return varchar2 deterministic is
+  begin
+    return '"'||ia.IndexSchema || '"."' || ia.IndexName ||'_DRS1_RID"';
+  end;
   
   procedure p_debug(str varchar2) is
   begin
@@ -163,6 +168,8 @@ CREATE OR REPLACE PACKAGE BODY idx_range_date_pkg AS
         p_exec(stmt2);
         
         stmt3:='create index '||get_index_tab_index(ia)||' on '||get_index_tab_name(ia)||'(end_date,beg_date,rid) local';
+        p_exec(stmt3);
+        stmt3:='create index '||get_index_tab_index2(ia)||' on '||get_index_tab_name(ia)||'(rid) local';
         p_exec(stmt3);
         dbms_stats.gather_table_stats(ia.IndexSchema,get_index_tab_name_only(ia));
   end ODCIIndexCreate_pr;

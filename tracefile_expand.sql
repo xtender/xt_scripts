@@ -1,9 +1,9 @@
 col tracefile_name format a100;
 SELECT VALUE as tracefile_name FROM V$DIAG_INFO WHERE NAME = 'Default Trace File';
 col tracefile_name clear;
-col payload		for a300;
+col payload		for a300 word;
 
-select *
+select payload
 from (
   select 
     v.*

@@ -7,6 +7,7 @@ rdbms/
 test/
 tests/
 tmp/
+temp/
 tpt/
 troubles1/
 sqlt/
@@ -14,5 +15,6 @@ sqlhc/
 *backup*
 afiedt.sql
 sqlplus_settings.sql
+settings.sql
 tmp.sql
 glogin.sql

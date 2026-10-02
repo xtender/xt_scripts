@@ -2,7 +2,7 @@ prompt ***;
 prompt Drop SQL Patch;
 prompt ***;
 
-set feed on serverout on;
+set feed on;
 
 accept p_name       prompt "Patch name: ";
 

@@ -22,17 +22,8 @@ from
 	,sys.x$ksppcv b
 where
 	a.indx = b.indx
-and (
-	   a.ksppinm like nullif('%&1%','%%') escape '\'
-	or a.ksppinm like nullif('%&2%','%%') escape '\'
-	or a.ksppinm like nullif('%&3%','%%') escape '\'
-	or a.ksppinm like nullif('%&4%','%%') escape '\'
-	or a.ksppinm like nullif('%&5%','%%') escape '\'
-	or a.ksppinm like nullif('%&6%','%%') escape '\'
-	or a.ksppinm like nullif('%&7%','%%') escape '\'
-	or a.ksppinm like nullif('%&8%','%%') escape '\'
-	or a.ksppinm like nullif('%&9%','%%') escape '\'
-)
+and a.ksppinm like '%optimizer%' escape '\'
+and lower(a.ksppdesc) like lower('%&1%') escape '\'
 order by name
 /
 col name	clear;

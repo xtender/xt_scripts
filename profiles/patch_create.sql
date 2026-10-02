@@ -22,11 +22,11 @@ begin
    $IF DBMS_DB_VERSION.VERSION+DBMS_DB_VERSION.RELEASE/10>=12.2 $THEN
      res:=
        sys.dbms_sqldiag.create_sql_patch(
-          sql_id      => p_sql_id,
-          hint_text   => to_clob(p_hints),
-          name        => p_name,
-          description => p_description,
-          validate    => false
+          sql_id      => p_sql_id
+         ,hint_text   => to_clob(p_hints)
+         ,name        => p_name
+         ,description => p_description
+         ,validate    => false
        );
      dbms_output.put_line(res);
    $ELSE
@@ -53,3 +53,4 @@ begin
 end;
 /
 undef p_sqlid p_hints p_name p_descr
+set serverout off;

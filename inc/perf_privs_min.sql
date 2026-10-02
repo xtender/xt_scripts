@@ -1,0 +1,16 @@
+GRANT SELECT ANY DICTIONARY             TO &rname;
+GRANT ANALYZE ANY DICTIONARY            TO &rname;
+GRANT ANALYZE ANY                       TO &rname;
+GRANT ADMINISTER SQL MANAGEMENT OBJECT  TO &rname;
+GRANT ALTER ANY SQL PROFILE             TO &rname;
+GRANT DROP ANY SQL PROFILE              TO &rname;
+GRANT ADVISOR                           TO &rname;
+GRANT CREATE ANY JOB                    TO &rname;
+GRANT RESTRICTED SESSION                TO &rname;
+GRANT ADMINISTER ANY SQL TUNING SET     TO &rname;
+GRANT ADMINISTER SQL TUNING SET         TO &rname;
+GRANT CREATE PROCEDURE                  TO &rname;
+GRANT SELECT ANY TABLE                  TO &rname;
+GRANT CREATE ANY SQL PROFILE            TO &rname;
+GRANT CREATE TABLE                      TO &rname;
+grant EXECUTE ANY PROCEDURE              to &uname;

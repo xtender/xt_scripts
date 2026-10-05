@@ -1,11 +1,11 @@
 accept _query prompt "Enter the query: ";
 
-set termout off timing off head off feed off serverout off
+set termout on timing off head off feed off serverout off
 
 var cur refcursor;
 
 declare
-    m_sql_in        clob :=q'[&_query]';
+    m_sql_in        clob :=q'[&_query.]';
     m_sql_out       clob := empty_clob();
     v_sql_splitted  ku$_vcnt;
  
